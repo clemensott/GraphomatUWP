@@ -1,0 +1,12 @@
+g:\users\clemens\documents\visual studio 2015\Projects\GraphomatIcon\GraphomatIcon\bin\Debug\GraphomatIcon.exe.config
+g:\users\clemens\documents\visual studio 2015\Projects\GraphomatIcon\GraphomatIcon\bin\Debug\GraphomatIcon.exe
+g:\users\clemens\documents\visual studio 2015\Projects\GraphomatIcon\GraphomatIcon\bin\Debug\GraphomatIcon.pdb
+g:\users\clemens\documents\visual studio 2015\Projects\GraphomatIcon\GraphomatIcon\obj\Debug\GraphomatIcon.csprojResolveAssemblyReference.cache
+g:\users\clemens\documents\visual studio 2015\Projects\GraphomatIcon\GraphomatIcon\obj\Debug\GraphomatIcon.exe
+g:\users\clemens\documents\visual studio 2015\Projects\GraphomatIcon\GraphomatIcon\obj\Debug\GraphomatIcon.pdb
+C:\Users\Clemens\Documents\Visual Studio 2015\Projects\GraphomatUWP\GraphomatIcon\GraphomatIcon\bin\Debug\GraphomatIcon.exe.config
+C:\Users\Clemens\Documents\Visual Studio 2015\Projects\GraphomatUWP\GraphomatIcon\GraphomatIcon\obj\Debug\GraphomatIcon.exe
+C:\Users\Clemens\Documents\Visual Studio 2015\Projects\GraphomatUWP\GraphomatIcon\GraphomatIcon\obj\Debug\GraphomatIcon.pdb
+C:\Users\Clemens\Documents\Visual Studio 2015\Projects\GraphomatUWP\GraphomatIcon\GraphomatIcon\bin\Debug\GraphomatIcon.exe
+C:\Users\Clemens\Documents\Visual Studio 2015\Projects\GraphomatUWP\GraphomatIcon\GraphomatIcon\bin\Debug\GraphomatIcon.pdb
+C:\Users\Clemens\Documents\Visual Studio 2015\Projects\GraphomatUWP\GraphomatIcon\GraphomatIcon\obj\Debug\GraphomatIcon.csprojResolveAssemblyReference.cache
