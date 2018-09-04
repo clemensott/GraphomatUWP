@@ -191,7 +191,7 @@ namespace GraphomatDrawingLibUwp
             while (drawPoints.Count < size) drawPoints.Add(new Vector2());
         }
 
-        public void Draw(ICanvasResourceCreator iCreater,
+        public void Draw2(ICanvasResourceCreator iCreater,
             CanvasDrawingSession drawingSession, Vector2 actualPixelSize, bool isSelected)
         {
             bool figureEnded = true;
@@ -235,6 +235,58 @@ namespace GraphomatDrawingLibUwp
             if (!figureEnded) cpb.EndFigure(CanvasFigureLoop.Open);
 
             drawingSession.DrawGeometry(CanvasGeometry.CreatePath(cpb), Graph.Color, curThickness);
+        }
+
+        public void Draw(ICanvasResourceCreator iCreater,
+            CanvasDrawingSession drawingSession, Vector2 actualPixelSize, bool isSelected)
+        {
+            bool figureEnded = true;
+            int endIndex, i;
+            float curThickness = thickness * (isSelected ? 2 : 1);
+            CanvasPathBuilder cpb = new CanvasPathBuilder(iCreater);
+
+            i = drawPoints.FindIndex(x => x.X >= 0 && !float.IsNaN(x.Y));
+            endIndex = drawPoints.FindIndex(x => x.X > actualPixelSize.X);
+
+            if (i == -1) return;
+            if (endIndex == -1) endIndex = drawPoints.Count;
+
+            while (i < endIndex)
+            {
+                if (figureEnded)
+                {
+                    if (!float.IsNaN(drawPoints[i].Y) && IsInView(drawPoints[i], actualPixelSize))
+                    {
+                        cpb.BeginFigure(drawPoints[i]);
+                        figureEnded = false;
+                    }
+                }
+                else if (!float.IsNaN(drawPoints[i].Y))
+                {
+                    if (IsInView(drawPoints[i], actualPixelSize)) cpb.AddLine(drawPoints[i]);
+                    else
+                    {
+                        cpb.EndFigure(CanvasFigureLoop.Open);
+                        figureEnded = true;
+                    }
+                }
+                else
+                {
+                    cpb.EndFigure(CanvasFigureLoop.Open);
+                    figureEnded = true;
+                }
+
+                i++;
+            }
+
+            if (!figureEnded) cpb.EndFigure(CanvasFigureLoop.Open);
+
+            drawingSession.DrawGeometry(CanvasGeometry.CreatePath(cpb), Graph.Color, curThickness);
+        }
+
+        private bool IsInView(Vector2 point, Vector2 pixelSize)
+        {
+            return !(point.Y + thickness / 2 < 0 || point.Y - thickness / 2 > pixelSize.Y);
         }
 
         public float IsNearCurve(Vector2 vector)

@@ -19,6 +19,8 @@
                                                                                        />
 
         <local:ZoomButtonsControl x:ConnectionId='3' Width="100" Height="100"                            />
+        <TextBlock x:ConnectionId='4' Name="tblDebug" Text="Debug" Visibility="Collapsed"/>
+        <CheckBox x:ConnectionId='5' Content="WithBuilder" Name="cbxWithBuilder" Width="50" Height="20"/>
     </Grid>
 </UserControl>
 

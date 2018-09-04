@@ -97,5 +97,27 @@ namespace MathFunction
         {
             return Equation;
         }
+
+        public static string GetRandomEquation(System.Random ran)
+        {
+            var allTypes = FunctionParts.AllTypes;
+
+            int partsLenght = ran.Next(5, 20);
+            string equation = "";
+
+            for (int i = 0; i < partsLenght; i++)
+            {
+                int partType= ran.Next(allTypes.Count + 1);
+
+                equation += partType == allTypes.Count ? GetRandomNumber(ran) : allTypes[partType].ToEquationString();
+            }
+
+            return equation;
+        }
+
+        private static string GetRandomNumber(System.Random ran)
+        {
+            return (ran.NextDouble() * ran.Next(-100000, 100000)).ToString();
+        }
     }
 }

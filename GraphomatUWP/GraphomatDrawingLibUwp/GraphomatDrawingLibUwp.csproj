@@ -126,6 +126,7 @@
     </Compile>
     <Compile Include="Graph.cs" />
     <Compile Include="GraphDrawing.cs" />
+    <Compile Include="RandomGraph.cs" />
     <Compile Include="ViewArgs.cs" />
     <Compile Include="ViewDimensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

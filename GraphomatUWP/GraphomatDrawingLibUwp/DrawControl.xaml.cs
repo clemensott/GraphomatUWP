@@ -2,7 +2,9 @@
 using Microsoft.Graphics.Canvas.UI.Xaml;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
+using Windows.Foundation;
 using Windows.Graphics.Display;
 using Windows.UI.Input;
 using Windows.UI.Xaml;
@@ -16,6 +18,20 @@ namespace GraphomatDrawingLibUwp
 
     public sealed partial class DrawControl : UserControl
     {
+        private long ticks;
+
+        private void StartTimer()
+        {
+            ticks = DateTime.Now.Ticks;
+        }
+
+        private long GetTimerMillis()
+        {
+            long delta = DateTime.Now.Ticks - ticks;
+
+            return delta / TimeSpan.TicksPerMillisecond;
+        }
+
         public const float MoreRenderFactor = 3;
         private const float defaultValueWidthAndHeight = 10F, defaultMiddelOfView = 0F,
             minDistancesBetweenPointersPercent = 0.05F, showAutoZoomPercent = 1.1F;
@@ -524,13 +540,22 @@ namespace GraphomatDrawingLibUwp
             {
                 bool isThick = i == selectedIndex || i == graphNearPointerIndex;
 
-                childrenDrawing[i].Draw(sender, args.DrawingSession, actualPixelSize, isThick);
+                if (cbxWithBuilder.IsChecked == true)
+                    childrenDrawing[i].Draw(sender, args.DrawingSession, actualPixelSize, isThick);
+                else childrenDrawing[i].Draw2(sender, args.DrawingSession, actualPixelSize, isThick);
             }
 
             lock (this)
             {
                 isDrew = true;
             }
+        }
+
+        private void Debug(object obj)
+        {
+            tblDebug.Text = debugText = string.Format("{0}\n{1}", obj, debugText);
+
+            if (debugText.Length > 100) debugText.Remove(100);
         }
     }
 }

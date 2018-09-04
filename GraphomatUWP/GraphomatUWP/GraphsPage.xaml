@@ -63,6 +63,7 @@
             <CommandBar.PrimaryCommands>
                 <AppBarButton Label="Back" Icon="Back" Click="Back_Click"/>
                 <AppBarButton Label="Add Graph" Icon="Add" Click="AddGraph_Click"/>
+                <AppBarButton Label="AddRandom" Icon="AllApps" Click="AddRandom_Click"/>
             </CommandBar.PrimaryCommands>
         </CommandBar>
     </Page.BottomAppBar>

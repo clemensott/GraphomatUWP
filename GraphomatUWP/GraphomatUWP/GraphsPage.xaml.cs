@@ -58,5 +58,18 @@ namespace GraphomatUWP
 
             (sender as DataGrid).SelectedItem = null;
         }
+
+        private void AddRandom_Click(object sender, RoutedEventArgs e)
+        {
+            List<Graph> graphs = ViewModel.Current.Graphs;
+            graphs.Add(RandomGraph.Get());
+
+            for (int i = 0; i < 10; i++)
+            {
+             //   graphs.Add(new RandomGraph());
+            }
+
+            ViewModel.Current.Graphs = graphs;
+        }
     }
 }

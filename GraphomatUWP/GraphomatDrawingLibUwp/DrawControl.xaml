@@ -19,5 +19,7 @@
                               Tapped="ccDraw_Tapped" DoubleTapped="ccDraw_DoubleTapped"/>
 
         <local:ZoomButtonsControl Width="100" Height="100" Zoomed="ZoomButtons_Zoomed"/>
+        <TextBlock Name="tblDebug" Text="Debug" Visibility="Collapsed"/>
+        <CheckBox Content="WithBuilder" Name="cbxWithBuilder" Width="50" Height="20"/>
     </Grid>
 </UserControl>
