@@ -4,9 +4,9 @@ namespace MathFunction
 {
     class PartAbs : PartCalcOneValue
     {
-        public override PartRuleKind GetRuleKind()
+        public override string[] GetLowerLooks()
         {
-            return PartRuleKind.OpenBracketStrocke;
+            return new string[] { "abs" };
         }
 
         protected override double Calc()
@@ -14,12 +14,7 @@ namespace MathFunction
             return Math.Abs(Value2.Value);
         }
 
-        public override string ToEquationString()
-        {
-            return "|";
-        }
-
-        public override PartCalc Clone()
+        public override FunctionPart Clone()
         {
             return new PartAbs();
         }

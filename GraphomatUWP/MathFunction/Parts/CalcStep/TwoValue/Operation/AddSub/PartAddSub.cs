@@ -16,7 +16,7 @@ namespace MathFunction
 
         protected override bool IsOptimalNextPart(PartRuleKind nextKind)
         {
-            return nextKind == PartRuleKind.OpenBracketStrocke ||
+            return nextKind == PartRuleKind.OpenBracket ||
                 nextKind == PartRuleKind.OneValueFunction || nextKind == PartRuleKind.Value;
         }
 

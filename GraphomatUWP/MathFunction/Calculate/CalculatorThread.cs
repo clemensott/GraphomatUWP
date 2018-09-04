@@ -26,7 +26,7 @@ namespace MathFunction
 
             foreach (PartCalc step in orderedPartCalcs)
             {
-                Steps.Add(step.Clone());
+                Steps.Add((PartCalc)step.Clone());
             }
         }
 

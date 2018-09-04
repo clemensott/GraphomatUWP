@@ -4,17 +4,17 @@ namespace MathFunction
 {
     class PartTan : PartCalcOneValue
     {
+        public override string[] GetLowerLooks()
+        {
+            return new string[] { "tan" };
+        }
+
         protected override double Calc()
         {
-            return Math.Tan(Value2.Value / 180.0 * Math.PI);
+            return Math.Tan(Value2.Value);
         }
 
-        public override string ToEquationString()
-        {
-            return "tan";
-        }
-
-        public override PartCalc Clone()
+        public override FunctionPart Clone()
         {
             return new PartTan();
         }

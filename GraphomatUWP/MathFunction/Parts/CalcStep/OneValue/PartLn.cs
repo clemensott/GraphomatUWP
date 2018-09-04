@@ -4,17 +4,17 @@ namespace MathFunction
 {
     class PartLn : PartCalcOneValue
     {
+        public override string[] GetLowerLooks()
+        {
+            return new string[] { "ln" };
+        }
+
         protected override double Calc()
         {
             return Math.Log(Value2.Value);
         }
 
-        public override string ToEquationString()
-        {
-            return "ln";
-        }
-
-        public override PartCalc Clone()
+        public override FunctionPart Clone()
         {
             return new PartLn();
         }

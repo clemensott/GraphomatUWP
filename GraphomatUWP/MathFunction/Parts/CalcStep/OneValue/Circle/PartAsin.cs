@@ -4,17 +4,17 @@ namespace MathFunction
 {
     class PartAsin : PartCalcOneValue
     {
+        public override string[] GetLowerLooks()
+        {
+            return new string[] { "asin", "arcsin" };
+        }
+
         protected override double Calc()
         {
-            return Math.Asin(Value2.Value) * 180.0 / Math.PI;
+            return Math.Asin(Value2.Value);
         }
 
-        public override string ToEquationString()
-        {
-            return "asin";
-        }
-
-        public override PartCalc Clone()
+        public override FunctionPart Clone()
         {
             return new PartAsin();
         }

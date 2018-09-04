@@ -2,17 +2,17 @@
 {
     class PartSign : PartCalcOneValue
     {
+        public override string[] GetLowerLooks()
+        {
+            return new string[] { "-" };
+        }
+
         protected override double Calc()
         {
             return -1 * Value2.Value;
         }
 
-        public override string ToEquationString()
-        {
-            return "-";
-        }
-
-        public override PartCalc Clone()
+        public override FunctionPart Clone()
         {
             return new PartSign();
         }

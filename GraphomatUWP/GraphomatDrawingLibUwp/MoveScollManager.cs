@@ -14,31 +14,14 @@ using Windows.UI.Xaml.Input;
 
 namespace GraphomatDrawingLibUwp
 {
-    delegate void MoveScrollEventHandler(object sender, MoveScrollEventArgs e);
-
     class MoveScollManager
     {
-        public event MoveScrollEventHandler MoveScrollView;
-        public const float OverRender = 3;
         private const int waitMoveMoreMillis = 20, periodMoveMoreMillis = 1;
         private const long refDeltaMoveTicks = 10 * TimeSpan.TicksPerMillisecond;
         private const double moveMoreSlowDownFactor = 0.95, minDeltaMiddleOfView = 0.1, ignoreMinDeltaMiddleOfView = 0.0001;
         private const float minDistancesBetweenPointersPercent = 0.05F;
 
-        private static MoveScollManager instance;
-
-        public static MoveScollManager Current
-        {
-            get
-            {
-                if (instance == null) instance = new MoveScollManager();
-
-                return instance;
-            }
-        }
-
         private bool startAverageDistanceWidthPossible, startAverageDistanceHeightPossible;
-        private int moveMoreCounter;
         private long preMoveTicks, preDeltaMoveTicks;
         private double startAveragePointX, startAveragePointY, startAverageDistanceWidth,
             startAverageDistanceHeight, startDeltaMiddleOfViewX, startDeltaMiddleOfViewY,
@@ -184,7 +167,7 @@ namespace GraphomatDrawingLibUwp
 
             StartMoveMoreTimer();
 
-            SetCreateMoveScrollEventArgsAndTriggerEvent(newViewWidth,
+            SetCreateMoveScrollArgsAndTriggerEvent(newViewWidth,
                 newViewHeight, newMiddleOfViewX, newMiddleOfViewY);
         }
 
@@ -236,7 +219,7 @@ namespace GraphomatDrawingLibUwp
             newMiddleOfViewX = CurrentViewDimensions.MiddleOfViewValuePoint.X - preDeltaMiddleOfViewX;
             newMiddleOfViewY = CurrentViewDimensions.MiddleOfViewValuePoint.Y - preDeltaMiddleOfViewY;
 
-            SetCreateMoveScrollEventArgsAndTriggerEvent(CurrentViewDimensions.ViewValueSize.X,
+            SetCreateMoveScrollArgsAndTriggerEvent(CurrentViewDimensions.ViewValueSize.X,
                 CurrentViewDimensions.ViewValueSize.Y, newMiddleOfViewX, newMiddleOfViewY);
         }
 
@@ -374,26 +357,26 @@ namespace GraphomatDrawingLibUwp
             double newMiddleOfViewX = CurrentViewDimensions.MiddleOfViewValuePoint.X;
             double newMiddleOfViewY = CurrentViewDimensions.MiddleOfViewValuePoint.Y;
 
-            SetCreateMoveScrollEventArgsAndTriggerEvent(newViewWidth,
+            SetCreateMoveScrollArgsAndTriggerEvent(newViewWidth,
                 newViewHeight, newMiddleOfViewX, newMiddleOfViewY);
         }
 
-        private void SetCreateMoveScrollEventArgsAndTriggerEvent(double newViewWidth,
+        private void SetCreateMoveScrollArgsAndTriggerEvent(double newViewWidth,
             double newViewHeight, double newMiddleOfViewX, double newMiddleOfViewY)
         {
             CurrentViewDimensions = new ViewDimensions(newViewWidth,
                 newViewHeight, newMiddleOfViewX, newMiddleOfViewY);
-            MoveScrollEventArgs args = GetMoveScrollEventArgs(CurrentViewDimensions);
+            MoveScrollArgs args = GetMoveScrollArgs(CurrentViewDimensions);
 
-            if (!AreViewDimensionsPossible(CurrentViewDimensions) && MoveScrollView == null) return;
+            if (!AreViewDimensionsPossible(CurrentViewDimensions)) return;
 
             MoveScrollView(this, args);
             canvas.Invalidate();
         }
 
-        private MoveScrollEventArgs GetMoveScrollEventArgs(ViewDimensions newViewDimensions)
+        private MoveScrollArgs GetMoveScrollArgs(ViewDimensions newViewDimensions)
         {
-            return new MoveScrollEventArgs(newViewDimensions.Clone());
+            return new MoveScrollArgs(newViewDimensions.Clone());
         }
 
         private bool AreViewDimensionsPossible(ViewDimensions viewDimensions)
@@ -417,11 +400,6 @@ namespace GraphomatDrawingLibUwp
             if (float.IsNaN(viewDimensions.ViewValueSize.Y)) return false;
 
             return true;
-        }
-
-        public void RefreshCanvas()
-        {
-            canvas.Invalidate();
         }
     }
 }

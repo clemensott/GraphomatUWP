@@ -4,6 +4,11 @@ namespace MathFunction
 {
     class PartPow : PartPowRoot
     {
+        public override string[] GetLowerLooks()
+        {
+            return new string[] { "^" };
+        }
+
         protected override double Calc()
         {
             return Math.Pow(Value1.Value, Value2.Value);
@@ -14,7 +19,7 @@ namespace MathFunction
             return "^";
         }
 
-        public override PartCalc Clone()
+        public override FunctionPart Clone()
         {
             return new PartPow();
         }

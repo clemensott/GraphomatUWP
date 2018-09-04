@@ -6,6 +6,7 @@ namespace MathFunction
 {
     class FunctionConverter
     {
+        private const string numberReplaceChar = "!";
         private string equation;
         private FunctionParts parts;
 
@@ -25,162 +26,56 @@ namespace MathFunction
 
         private void ImprovedEquationSetCalcParts()
         {
+            if (string.IsNullOrEmpty(equation)) throw new ArgumentException("Equation is null or empty.");
+
             equation = "(" + equation.Replace(" ", "").ToLower() + ")";
 
             parts = GetAsFunctionPartList();
+
             CheckIfPossibleEquationAndImprove();
             ImproveFunctionParts();
         }
 
         private FunctionParts GetAsFunctionPartList()
         {
-            if (string.IsNullOrEmpty(equation)) throw new ArgumentException("Equation is null or empty.");
+            parts = new FunctionParts(equation.Length);
 
-            parts = new FunctionParts();
-
-            foreach (char c in equation) parts.Add(null);
-
-            AddSingleCharParts();
-            AddMultiCharParts();
             AddValuesParts();
+            AddOtherParts();
 
-            BracketStrockeCheck.Do(ref parts, equation);
-
-            for (int i = parts.Count - 1; i >= 0; i--)
-            {
-                if (parts[i] == null) parts.RemoveAt(i);
-            }
+            AddMissingBrackets();
+            RemoveNullFromParts();
 
             return parts;
         }
 
-        private void AddSingleCharParts()
-        {
-            string shortedEquation = equation;
-
-            for (int i = 0; i < equation.Length; i++)
-            {
-                switch (equation[i])
-                {
-                    case '(':
-                        parts[i] = new PartOpenBracket();
-                        break;
-
-                    case ')':
-                        parts[i] = new PartCloseBracket();
-                        break;
-
-                    case '+':
-                        parts[i] = new PartAdd();
-                        break;
-
-                    case '-':
-                        parts[i] = new PartSub();
-                        break;
-
-                    case '*':
-                        parts[i] = new PartMult();
-                        break;
-
-                    case '/':
-                        parts[i] = new PartDiv();
-                        break;
-
-                    case '^':
-                        parts[i] = new PartPow();
-                        break;
-
-                    case 'r':
-                        parts[i] = new PartRoot();
-                        break;
-
-                    case 'x':
-                        parts[i] = new PartValue();
-                        break;
-
-                    case 'e':
-                        parts[i] = new PartValue(Math.E);
-                        break;
-                }
-            }
-        }
-
-        private void AddMultiCharParts()
-        {
-            string pi = "pi", asin = "asin", acos = "acos", atan = "atan", sin = "sin",
-                 cos = "cos", tan = "tan", log = "log", ln = "ln", lg = "lg";
-
-            for (int i = 0; i < equation.Length; i++)
-            {
-                string shortedEquation = equation.Remove(0, i);
-
-                if (shortedEquation.StartsWith(pi))
-                {
-                    parts[i] = new PartValue(Math.PI);
-                    i += pi.Length - 1;
-                }
-                else if (shortedEquation.StartsWith(asin))
-                {
-                    parts[i] = new PartAsin();
-                    i += asin.Length - 1;
-                }
-                else if (shortedEquation.StartsWith(acos))
-                {
-                    parts[i] = new PartAcos();
-                    i += acos.Length - 1;
-                }
-                else if (shortedEquation.StartsWith(atan))
-                {
-                    parts[i] = new PartAtan();
-                    i += atan.Length - 1;
-                }
-                else if (shortedEquation.StartsWith(sin))
-                {
-                    parts[i] = new PartSin();
-                    i += sin.Length - 1;
-                }
-                else if (shortedEquation.StartsWith(cos))
-                {
-                    parts[i] = new PartCos();
-                    i += cos.Length - 1;
-                }
-                else if (shortedEquation.StartsWith(tan))
-                {
-                    parts[i] = new PartTan();
-                    i += tan.Length - 1;
-                }
-                else if (shortedEquation.StartsWith(log))
-                {
-                    parts[i] = new PartLog();
-                    i += log.Length - 1;
-                }
-                else if (shortedEquation.StartsWith(ln))
-                {
-                    parts[i] = new PartLn();
-                    i += ln.Length - 1;
-                }
-                else if (shortedEquation.StartsWith(lg))
-                {
-                    parts[i] = new PartLg();
-                    i += lg.Length - 1;
-                }
-            }
-        }
-
         private void AddValuesParts()
         {
+            string equationWithReplacedNumbers = "";
+
             for (int i = 0; i < equation.Length; i++)
             {
                 if (parts[i] == null && IsDoubleChar(equation[i]))
                 {
-                    int j = 1;
+                    int startIndex = i;
+                    string valueText = "";
 
-                    while (equation.Length > i + j && IsDoubleChar(equation[i + j])) j++;
+                    do
+                    {
+                        valueText += equation[i].ToString();
+                        equationWithReplacedNumbers += numberReplaceChar;
+                        i++;
+                    }
+                    while (i < equation.Length && IsDoubleChar(equation[i]));
 
-                    parts[i] = new PartValue(equation.Remove(0, i).Remove(j));
-                    i += j - 1;
+                    equationWithReplacedNumbers += equation[i];
+
+                    parts[startIndex] = new PartValue(valueText);
                 }
+                else equationWithReplacedNumbers += equation[i].ToString();
             }
+
+            equation = equationWithReplacedNumbers;
         }
 
         private bool IsDoubleChar(char c)
@@ -188,14 +83,44 @@ namespace MathFunction
             return char.IsNumber(c) || c == ',' || c == '.' || c == 'e';
         }
 
-        private void CheckIfPossibleEquationAndImprove()
+        private void AddOtherParts()
         {
-            if (parts.Count == 0) throw new ArgumentException("No possible argument.");
+            for (int i = 0; i < equation.Length; i++)
+            {
+                foreach (FunctionPart partType in FunctionParts.AllTypes)
+                {
+                    if (partType.IsType(equation, ref i))
+                    {
+                        if(partType is PartSign) { }
+                        i--;
+                        parts[i] = partType.Clone();
+                        break;
+                    }
+                }
+            }
+        }
 
-            RemoveNullFromParts();
+        private void AddMissingBrackets()
+        {
+            int level = 0;
 
-            CheckIfEquationIsPossible();
-            AddPartAbsToParts();
+            foreach (char c in equation)
+            {
+                if (c == '(') level++;
+                else if (c == ')') level--;
+
+                if (level < 0)
+                {
+                    parts.Insert(0, new PartOpenBracket());
+                    level++;
+                }
+            }
+
+            while (level > 0)
+            {
+                parts.Insert(0, new PartCloseBracket());
+                level--;
+            }
         }
 
         private void RemoveNullFromParts()
@@ -206,6 +131,13 @@ namespace MathFunction
             }
         }
 
+        private void CheckIfPossibleEquationAndImprove()
+        {
+            if (parts.Count == 0) throw new ArgumentException("No possible argument.");
+
+            CheckIfEquationIsPossible();
+        }
+
         private void CheckIfEquationIsPossible()
         {
             for (int i = 0; i < parts.Count - 1; i++)
@@ -214,44 +146,31 @@ namespace MathFunction
             }
         }
 
-        private void AddPartAbsToParts()
-        {
-            for (int i = parts.Count - 1; i >= 0; i--)
-            {
-                if (parts[i].GetRuleKind() == PartRuleKind.OpenBracketStrocke)
-                {
-                    (parts[i] as PartOpenBracketStrocke).AddPartAbsToParts(ref parts);
-                }
-            }
-        }
-
         private void ImproveFunctionParts()
         {
             int partsCountBeforeImpoving;
 
-            while (true)
+            do
             {
                 partsCountBeforeImpoving = parts.Count;
 
-                RemoveUnnecessaryBracketsAndStrockes();
-                SetValuesAndLevels();
-                CalculateWhatPossibleIs();
-
-                if (parts.Count == partsCountBeforeImpoving) break;
-
-                ResetValueVariableDependening();
+                RemoveUnnecessaryBrackets();
+                //ResetValueVariableDependening();
             }
+            while (parts.Count != partsCountBeforeImpoving);
+
+            SetValuesAndLevels();
 
             parts.Remove(parts.First());
             parts.Remove(parts.Last());
         }
 
-        private void RemoveUnnecessaryBracketsAndStrockes()
+        private void RemoveUnnecessaryBrackets()
         {
-            RemoveUnnecessaryBracketsAndStrockesNextLevel(0);
+            RemoveUnnecessaryBracketsNextLevel(0);
         }
 
-        private int RemoveUnnecessaryBracketsAndStrockesNextLevel(int levelStartIndex)
+        private int RemoveUnnecessaryBracketsNextLevel(int levelStartIndex)
         {
             int i = levelStartIndex + 1;
             bool beforeUnnecessaryPossible = IsPartAddOrOpenBracket(levelStartIndex - 1);
@@ -259,23 +178,23 @@ namespace MathFunction
 
             while (i < parts.Count)
             {
-                if (parts[i].GetRuleKind() == PartRuleKind.OpenBracketStrocke)
+                if (parts[i].GetRuleKind() == PartRuleKind.OpenBracket)
                 {
-                    i = RemoveUnnecessaryBracketsAndStrockesNextLevel(i);
+                    i = RemoveUnnecessaryBracketsNextLevel(i);
                 }
                 else if (parts[i].GetActionKind() == PartActionKind.CalcStep) haveCalcStep = true;
-                else if (parts[i].GetRuleKind() == PartRuleKind.CloseBracketStrocke) break;
+                else if (parts[i].GetRuleKind() == PartRuleKind.CloseBracket) break;
 
                 i++;
             }
 
-            return RemoveBracketsStrockesIfPossible(levelStartIndex, i, haveCalcStep, beforeUnnecessaryPossible);
+            return RemoveBracketsIfPossible(levelStartIndex, i, haveCalcStep, beforeUnnecessaryPossible);
         }
 
         private bool IsPartAddOrOpenBracket(int index)
         {
             if (index < 0) return true;
-            if (parts[index].GetRuleKind() == PartRuleKind.OpenBracketStrocke) return true;
+            if (parts[index].GetRuleKind() == PartRuleKind.OpenBracket) return true;
             if (parts[index].GetRuleKind() != PartRuleKind.AddSub) return false;
 
             return parts[index] is PartAdd;
@@ -284,42 +203,42 @@ namespace MathFunction
         private bool IsPartAddSubOrCloseBracket(int index)
         {
             return index >= parts.Count || parts[index].GetRuleKind() == PartRuleKind.AddSub ||
-                parts[index].GetRuleKind() == PartRuleKind.CloseBracketStrocke;
+                parts[index].GetRuleKind() == PartRuleKind.CloseBracket;
         }
 
-        private int RemoveBracketsStrockesIfPossible(int levelStartIndex, int currentIndex,
+        private int RemoveBracketsIfPossible(int levelStartIndex, int curIndex,
             bool haveCalcStep, bool beforeUnnecessaryPossible)
         {
-            if (!IsBracketsStrockesRemove(levelStartIndex,
-                currentIndex, haveCalcStep, beforeUnnecessaryPossible)) return currentIndex;
+            if (!IsBracketsRemove(levelStartIndex,
+                curIndex, haveCalcStep, beforeUnnecessaryPossible)) return curIndex;
 
-            parts.RemoveAt(currentIndex);
-            currentIndex--;
+            parts.RemoveAt(curIndex);
+            curIndex--;
             parts.RemoveAt(levelStartIndex);
-            currentIndex--;
+            curIndex--;
 
-            return currentIndex;
+            return curIndex;
         }
 
-        private bool IsBracketsStrockesRemove(int levelStartIndex, int currentIndex,
+        private bool IsBracketsRemove(int levelStartIndex, int curIndex,
             bool haveCalcStep, bool beforeUnnecessaryPossible)
         {
-            if (levelStartIndex == 0) return false;
+            if (levelStartIndex == 0 || curIndex == parts.Count - 1) return false;
 
-            if (IsBracket(parts[levelStartIndex]))
+            if (IsBracket(levelStartIndex))
             {
-                return !haveCalcStep || (beforeUnnecessaryPossible && IsPartAddSubOrCloseBracket(currentIndex));
+                return !haveCalcStep || (beforeUnnecessaryPossible && IsPartAddSubOrCloseBracket(curIndex + 1));
             }
 
-            return parts[levelStartIndex + 1].GetRuleKind() == PartRuleKind.OpenBracketStrocke &&
-                parts[currentIndex - 1].GetRuleKind() == PartRuleKind.CloseBracketStrocke &&
-                !IsBracket(parts[levelStartIndex + 1]) && !IsBracket(parts[currentIndex - 1]);
+            return parts[levelStartIndex + 1].GetRuleKind() == PartRuleKind.OpenBracket &&
+                parts[curIndex - 1].GetRuleKind() == PartRuleKind.CloseBracket &&
+                !IsBracket(levelStartIndex + 1) && !IsBracket(curIndex - 1);
         }
 
-        private bool IsBracket(FunctionPart part)
+        private bool IsBracket(int index)
         {
-            if (part.GetRuleKind() == PartRuleKind.OpenBracketStrocke) return part is PartOpenBracket;
-            else if (part.GetRuleKind() == PartRuleKind.CloseBracketStrocke) return part is PartCloseBracket;
+            if (parts[index].GetRuleKind() == PartRuleKind.OpenBracket) return parts[index] is PartOpenBracket;
+            else if (parts[index].GetRuleKind() == PartRuleKind.CloseBracket) return parts[index] is PartCloseBracket;
 
             return false;
         }
@@ -343,8 +262,8 @@ namespace MathFunction
                     partCalc.Level = GetLevel(levelIds);
                 }
 
-                if (parts[i].GetRuleKind() == PartRuleKind.CloseBracketStrocke) levelIds.RemoveAt(0);
-                else if (parts[i].GetRuleKind() == PartRuleKind.OpenBracketStrocke) levelIds.Add(nextLevelId++);
+                if (parts[i].GetRuleKind() == PartRuleKind.CloseBracket) levelIds.RemoveAt(0);
+                else if (parts[i].GetRuleKind() == PartRuleKind.OpenBracket) levelIds.Add(nextLevelId++);
             }
         }
 
@@ -363,88 +282,6 @@ namespace MathFunction
             int levelId = levelIds.Last();
 
             return new Level(level, levelId);
-        }
-
-        private void CalculateWhatPossibleIs()
-        {
-            List<PartCalc> orderedPartCalcs = parts.GetAsOrderedPartCalcs();
-
-            for (int i = 0; i < orderedPartCalcs.Count; i++)
-            {
-                if (orderedPartCalcs[i].VariableDependingLevel() == 1 && orderedPartCalcs[i].IsChangeOrderAble())
-                {
-                    for (int j = i + 1; j < orderedPartCalcs.Count; j++)
-                    {
-                        if (CanChangeOrderOfFunctionParts(orderedPartCalcs[i], orderedPartCalcs[j]))
-                        {
-                            AdjustValues(j, i, ref orderedPartCalcs);
-                            CalculateAndRemovePartCalc(j, ref orderedPartCalcs);
-                        }
-                    }
-                }
-
-                orderedPartCalcs[i].SetValuesVariableDepending(true);
-
-                if (orderedPartCalcs[i].VariableDependingLevel() == 0)
-                {
-                    orderedPartCalcs[i].Do();
-                    parts.Remove(orderedPartCalcs[i]);
-                    parts.Remove(orderedPartCalcs[i].Value1);
-                }
-            }
-        }
-
-        private bool CanChangeOrderOfFunctionParts(PartCalc part1, PartCalc part2)
-        {
-            return part1.GetKindPriority() == part2.GetKindPriority() &&
-                part1.Level.Id == part2.Level.Id && part2.VariableDependingLevel() < 2;
-        }
-
-        private void AdjustValues(int fromIndex, int toIndex, ref List<PartCalc> orderedPartCalcs)
-        {
-            ChangeValuesFromPartCalcsAndGetValueF1(orderedPartCalcs[fromIndex] as PartCalc,
-                orderedPartCalcs[toIndex] as PartCalc);
-
-            FindOtherPartCalcsWithValueF2AndReplace(fromIndex, orderedPartCalcs);
-        }
-
-        private void ChangeValuesFromPartCalcsAndGetValueF1(PartCalc partCalcFrom, PartCalc partCalcTo)
-        {
-            partCalcFrom.Value1 = partCalcTo.Value1;
-            partCalcTo.Value1 = partCalcFrom.Value2;
-        }
-
-        private void FindOtherPartCalcsWithValueF2AndReplace(int fromIndex, List<PartCalc> orderedPartCalcs)
-        {
-            for (int i = fromIndex; i < orderedPartCalcs.Count; i++)
-            {
-                if (orderedPartCalcs[i].GetActionKind() == PartActionKind.CalcStep)
-                {
-                    PartCalc partCalcTmp = orderedPartCalcs[i] as PartCalc;
-
-                    if (partCalcTmp.Value1 == orderedPartCalcs[fromIndex].Value2)
-                    {
-                        partCalcTmp.Value1 = orderedPartCalcs[fromIndex].Value1;
-                    }
-                }
-            }
-        }
-
-        private void CalculateAndRemovePartCalc(int index, ref List<PartCalc> orderedCalcParts)
-        {
-            int value1PartsIndex;
-
-            orderedCalcParts[index].Do();
-
-            value1PartsIndex = parts.IndexOf(orderedCalcParts[index].Value1);
-
-            parts.Remove(orderedCalcParts[index].Value1);
-            parts.Remove(orderedCalcParts[index].Value2);
-            parts.Remove(orderedCalcParts[index]);
-
-            parts.Insert(value1PartsIndex, orderedCalcParts[index].Value2);
-
-            orderedCalcParts.RemoveAt(index);
         }
 
         private void ResetValueVariableDependening()

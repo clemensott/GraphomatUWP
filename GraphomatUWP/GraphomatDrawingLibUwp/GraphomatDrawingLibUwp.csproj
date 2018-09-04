@@ -115,6 +115,7 @@
     <Compile Include="Axes\Lines\IHorizontalLineText.cs" />
     <Compile Include="Axes\Lines\ILineText.cs" />
     <Compile Include="Axes\Lines\IVerticalLineText.cs" />
+    <Compile Include="Axes\Lines\LineTextMesuare - Kopieren.cs" />
     <Compile Include="Axes\Lines\LineTextMesuare.cs" />
     <Compile Include="Axes\Lines\VerticalLine.cs" />
     <Compile Include="Axes\Lines\VerticalLineText.cs" />
@@ -124,10 +125,15 @@
       <DependentUpon>DrawControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Graph.cs" />
-    <Compile Include="MoveScollManager.cs" />
-    <Compile Include="MoveScrollEventArgs.cs" />
+    <Compile Include="GraphDrawing.cs" />
+    <Compile Include="ViewArgs.cs" />
     <Compile Include="ViewDimensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewPixelSize.cs" />
+    <Compile Include="ZoomButtonsControl.xaml.cs">
+      <DependentUpon>ZoomButtonsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ZoomButtonsEventArgs.cs" />
     <EmbeddedResource Include="Properties\GraphomatDrawingLibUwp.rd.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -138,6 +144,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="DrawControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ZoomButtonsControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

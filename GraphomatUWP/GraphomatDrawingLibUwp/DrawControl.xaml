@@ -5,11 +5,19 @@
     xmlns:local="using:GraphomatDrawingLibUwp"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:canvas="using:Microsoft.Graphics.Canvas.UI.Xaml"
     mc:Ignorable="d"
-    d:DesignHeight="300"
-    d:DesignWidth="400">
+    d:DesignHeight="300" d:DesignWidth="400" ManipulationMode="All" Loaded="Control_Loaded"
+    PointerEntered="Control_PointerEntered" PointerExited="Control_PointerExited"
+    PointerPressed="Control_PointerPressed" PointerMoved="Control_PointerMoved" 
+    PointerReleased="Control_PointerReleased" PointerWheelChanged="Control_PointerWheelChanged" 
+    PointerCaptureLost="Control_PointerCaptureLost" ManipulationDelta="Control_ManipulationDelta"
+    SizeChanged="Control_SizeChanged">
 
-    <Grid>
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <canvas:CanvasControl x:Name="ccDraw" Draw="CanvasControl_Draw" 
+                              Tapped="ccDraw_Tapped" DoubleTapped="ccDraw_DoubleTapped"/>
 
+        <local:ZoomButtonsControl Width="100" Height="100" Zoomed="ZoomButtons_Zoomed"/>
     </Grid>
 </UserControl>

@@ -13,17 +13,6 @@ namespace GraphomatDrawingLibUwp
     class AxesGraph
     {
         private const float thickness = 2, strokeLenght = 10;
-        private static AxesGraph instance;
-
-        public static AxesGraph Current
-        {
-            get
-            {
-                if (instance == null) instance = new AxesGraph();
-
-                return instance;
-            }
-        }
 
         private readonly float[] possibleDistanceBetweenStrokes = new float[] { 1, 1.5F, 2, 3, 5, 7 };
 
@@ -32,63 +21,68 @@ namespace GraphomatDrawingLibUwp
         private VerticalLine yAxisLine;
         private List<HorizontalLineText> yAxisStrokes;
         private Color color;
+        private ViewArgs preViewArgs;
 
-        private AxesGraph()
+        public AxesGraph(ViewArgs args)
         {
+            preViewArgs = args;
+
             xAxisLine = new HorizontalLine();
             yAxisLine = new VerticalLine();
 
             xAxisStrokes = new List<VerticalLineText>();
             yAxisStrokes = new List<HorizontalLineText>();
 
-            ViewDimensions viewDimensions = MoveScollManager.Current.CurrentViewDimensions;
-
-            SetAxesLines(viewDimensions);
-            SetXAxisStrokes(viewDimensions);
-            SetYAxisStrokes(viewDimensions);
+            SetAxesLines(args);
+            SetXAxisStrokes(args);
+            SetYAxisStrokes(args);
 
             color = Color.FromArgb(255, 0, 0, 0);
-
-            MoveScollManager.Current.MoveScrollView += MoveScrollManager_MoveScrollView;
         }
 
-        private void MoveScrollManager_MoveScrollView(object sender, MoveScrollEventArgs e)
+        public void MoveScrollView(ViewArgs args)
         {
-            SetAxesLines(e.ViewDimensions);
-            SetXAxisStrokes(e.ViewDimensions);
-            SetYAxisStrokes(e.ViewDimensions);
+            SetAxesLines(args);
+            SetXAxisStrokes(args);
+            SetYAxisStrokes(args);
         }
 
-        private void SetAxesLines(ViewDimensions viewDimensions)
+        private void SetAxesLines(ViewArgs args)
         {
             float valuePerAcutalPixelX, valuePerAcutalPixelY;
 
-            valuePerAcutalPixelX = viewDimensions.ViewValueSize.X / viewDimensions.ActualPixelSize.X;
-            valuePerAcutalPixelY = viewDimensions.ViewValueSize.Y / viewDimensions.ActualPixelSize.Y;
+            valuePerAcutalPixelX = args.ViewDimensions.ViewValueSize.X / args.ViewPixelSize.ActualPixelSize.X;
+            valuePerAcutalPixelY = args.ViewDimensions.ViewValueSize.Y / args.ViewPixelSize.ActualPixelSize.Y;
 
-            xAxisLine.Y = viewDimensions.TopLeftValuePoint.Y / valuePerAcutalPixelY * -1;
-            yAxisLine.X = viewDimensions.TopLeftValuePoint.X / valuePerAcutalPixelX * -1;
+            xAxisLine.Y = args.ViewDimensions.TopLeftValuePoint.Y / valuePerAcutalPixelY * -1;
+            yAxisLine.X = args.ViewDimensions.TopLeftValuePoint.X / valuePerAcutalPixelX * -1;
 
-            xAxisLine.X2 = viewDimensions.ActualPixelSize.X;
-            yAxisLine.Y2 = viewDimensions.ActualPixelSize.Y;
+            xAxisLine.X2 = args.ViewPixelSize.ActualPixelSize.X;
+            yAxisLine.Y2 = args.ViewPixelSize.ActualPixelSize.Y;
         }
 
-        private void SetXAxisStrokes(ViewDimensions viewDimensions)
+        private void SetXAxisStrokes(ViewArgs args)
         {
             int xAxisStrokeCount;
-            float actualPixelWidth = viewDimensions.ActualPixelSize.X,
-                valueWidth = viewDimensions.ViewValueSize.X,
-                valueDistanceBetweenStrokes = GetValueDistanceBetweenStrokes(actualPixelWidth, valueWidth);
+            float actualPixelWidth, valueWidth, valueDistanceBetweenStrokes, min, max;
 
-            List<float> multiples = GetMultipleFromValuesInView(valueDistanceBetweenStrokes,
-                viewDimensions.TopLeftValuePoint.X, viewDimensions.BottomRightValuePoint.X);
+            actualPixelWidth = args.ViewPixelSize.ActualPixelSize.X;
+            valueWidth = args.ViewDimensions.ViewValueSize.X;
+            valueDistanceBetweenStrokes = GetValueDistanceBetweenStrokes(actualPixelWidth, valueWidth);
+
+            min = args.ViewDimensions.TopLeftValuePoint.X -
+                (args.OverRender - 1) / 2F * args.ViewDimensions.ViewValueSize.X;
+            max = args.ViewDimensions.BottomRightValuePoint.X +
+                (args.OverRender - 1) / 2F * args.ViewDimensions.ViewValueSize.X;
+
+            List<float> multiples = GetMultipleFromValuesInView(valueDistanceBetweenStrokes, min, max);
 
             for (xAxisStrokeCount = 0; xAxisStrokeCount < multiples.Count; xAxisStrokeCount++)
             {
                 float x, y1, y2;
 
                 x = GetAcutalPixelValue(multiples[xAxisStrokeCount], yAxisLine.X,
-                    viewDimensions.ViewValueSize.X / viewDimensions.ActualPixelSize.X);
+                    args.ViewDimensions.ViewValueSize.X / args.ViewPixelSize.ActualPixelSize.X);
                 y1 = xAxisLine.Y - strokeLenght / 2;
                 y2 = xAxisLine.Y + strokeLenght / 2;
 
@@ -98,17 +92,21 @@ namespace GraphomatDrawingLibUwp
             while (xAxisStrokes.Count > xAxisStrokeCount) xAxisStrokes.RemoveAt(xAxisStrokeCount);
         }
 
-        private void SetYAxisStrokes(ViewDimensions viewDimensions)
+        private void SetYAxisStrokes(ViewArgs args)
         {
             int yAxisStrokeCount;
-            float actualPixelHeight, valueHeight, valueDistanceBetweenStrokes;
+            float actualPixelHeight, valueHeight, valueDistanceBetweenStrokes, min, max;
 
-            actualPixelHeight = viewDimensions.ActualPixelSize.Y;
-            valueHeight = viewDimensions.ViewValueSize.Y;
+            actualPixelHeight = args.ViewPixelSize.ActualPixelSize.Y;
+            valueHeight = args.ViewDimensions.ViewValueSize.Y;
             valueDistanceBetweenStrokes = GetValueDistanceBetweenStrokes(actualPixelHeight, valueHeight);
 
-            List<float> multiples = GetMultipleFromValuesInView(valueDistanceBetweenStrokes,
-                viewDimensions.TopLeftValuePoint.Y, viewDimensions.BottomRightValuePoint.Y);
+            min = args.ViewDimensions.TopLeftValuePoint.Y -
+              (args.OverRender - 1) / 2F * args.ViewDimensions.ViewValueSize.Y;
+            max = args.ViewDimensions.BottomRightValuePoint.Y +
+                (args.OverRender - 1) / 2F * args.ViewDimensions.ViewValueSize.Y;
+
+            List<float> multiples = GetMultipleFromValuesInView(valueDistanceBetweenStrokes, min, max);
 
             for (yAxisStrokeCount = 0; yAxisStrokeCount < multiples.Count; yAxisStrokeCount++)
             {
@@ -117,7 +115,7 @@ namespace GraphomatDrawingLibUwp
                 x1 = yAxisLine.X - strokeLenght / 2;
                 x2 = yAxisLine.X + strokeLenght / 2;
                 y = GetAcutalPixelValue(multiples[yAxisStrokeCount] * -1, xAxisLine.Y,
-                    -1 * viewDimensions.ViewValueSize.Y / viewDimensions.ActualPixelSize.Y);
+                    -1 * args.ViewDimensions.ViewValueSize.Y / args.ViewPixelSize.ActualPixelSize.Y);
 
                 SetYAxisStroke(yAxisStrokeCount, x1, x2, y, multiples[yAxisStrokeCount] * -1);
             }
@@ -137,14 +135,14 @@ namespace GraphomatDrawingLibUwp
                 if (!SetMinMultiAbsIfSmaller(ref minMultiAbs, ref minMultiAbsDistance,
                      aboutValueDistanceBetweenStrokes, distance * factor))
                 {
-                    return Convert.ToSingle(minMultiAbsDistance);
+                    return (float)minMultiAbsDistance;
                 }
             }
 
             SetMinMultiAbsIfSmaller(ref minMultiAbs, ref minMultiAbsDistance,
                 aboutValueDistanceBetweenStrokes, possibleDistanceBetweenStrokes[0] * 10 * factor);
 
-            return Convert.ToSingle(minMultiAbsDistance);
+            return (float)minMultiAbsDistance;
         }
 
         private double GetAboutNumberOfStrokes(double pixelWidthOrHeight)
@@ -154,7 +152,7 @@ namespace GraphomatDrawingLibUwp
 
         private double GetFactor(double aboutValueDistanceBetweenStrokes)
         {
-            if (aboutValueDistanceBetweenStrokes == 0) { }
+            if (aboutValueDistanceBetweenStrokes <= 0) { }
 
             if (aboutValueDistanceBetweenStrokes < 1)
             {
@@ -266,10 +264,9 @@ namespace GraphomatDrawingLibUwp
             yAxisStrokes[index].Value = value;
         }
 
-        public void Draw(CanvasDrawingSession drawingSession)
+        public void Draw(CanvasDrawingSession drawingSession, Vector2 actualSize)
         {
             ILineText preLineText = null;
-            Vector2 actualSize = MoveScollManager.Current.ActualPixelSize;
 
             if (IsInView(xAxisLine, actualSize))
             {
@@ -320,38 +317,39 @@ namespace GraphomatDrawingLibUwp
                 vl.Point1.X - thickness / 2 > actualSize.X);
         }
 
-        private bool IsInView(ILineText currentLine, ILineText preLine, Vector2 actualSize)
+        private bool IsInView(ILineText curLine, ILineText preLine, Vector2 actualSize)
         {
             bool changedPosition = false;
 
-            if (Overlap(currentLine, preLine))
+            if (Overlap(curLine, preLine))
             {
-                currentLine.ChangePosition();
+                curLine.ChangePosition();
                 changedPosition = true;
             }
 
             for (int i = 0; i < 2; i++)
             {
-                Vector2 topLeft = currentLine.TopLeftPoint, bottomRight = currentLine.BottomRightPoint;
+                Vector2 topLeft = curLine.TopLeftPoint, bottomRight = curLine.BottomRightPoint;
 
                 if (topLeft.X > 0 && topLeft.Y > 0 && bottomRight.X < actualSize.X &&
                     bottomRight.Y < actualSize.Y) return true;
 
-                if (!changedPosition) currentLine.ChangePosition();
+                if (!changedPosition) curLine.ChangePosition();
                 else break;
             }
 
             for (int i = 0; i < 2; i++)
             {
-                Vector2 topLeft = currentLine.TopLeftPoint, bottomRight = currentLine.BottomRightPoint;
+                Vector2 topLeft = curLine.TopLeftPoint, bottomRight = curLine.BottomRightPoint;
 
                 if ((topLeft.X > 0 && topLeft.Y > 0 && topLeft.X < actualSize.X && topLeft.Y < actualSize.Y) ||
-                    (bottomRight.X > 0 && bottomRight.Y > 0 && bottomRight.X < actualSize.X && bottomRight.Y < actualSize.Y))
+                    (bottomRight.X > 0 && bottomRight.Y > 0 &&
+                    bottomRight.X < actualSize.X && bottomRight.Y < actualSize.Y))
                 {
                     return true;
                 }
 
-                if (!changedPosition) currentLine.ChangePosition();
+                if (!changedPosition) curLine.ChangePosition();
                 else break;
             }
 

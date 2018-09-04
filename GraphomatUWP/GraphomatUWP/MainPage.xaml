@@ -5,24 +5,23 @@
     xmlns:local="using:GraphomatUWP"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:canvas="using:Microsoft.Graphics.Canvas.UI.Xaml"
+    xmlns:g="using:GraphomatDrawingLibUwp"
     mc:Ignorable="d"
     Loaded="Page_Loaded">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Name="gdMain">
-            <canvas:CanvasControl Name="canvasControl" Draw="canvasControl_Draw"/>
- 
-        <TextBlock Name="tblTicks" Text=""/>
-
-        <!--StackPanel>
-         <TextBox Name="tbxEquation" Text="25ln(x^2)(||(-x)||)" Margin="20"/>
-                  <TextBlock Name="tblImprove" Margin="20" HorizontalAlignment="Center"/>
-            <TextBox Name="tbxX" Text="9" Margin="20"/>
-
-            <TextBlock Name="tblY" Margin="20" HorizontalAlignment="Center"/>
-
-            <Button Content="Calc" Click="Button_Click" HorizontalAlignment="Center"/> 
-
-        </>  -->
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <g:DrawControl SelectedGraphIndex="{Binding SelectedGraphIndex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                       ValueSize="{Binding ValueSize,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                       MiddleOfView="{Binding MiddleOfView,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                       Children="{Binding Graphs}" DoubleTapped="DrawControl_DoubleTapped" 
+                       DoubleTappedCurve="DrawControl_DoubleTappedCurve"/>
     </Grid>
+
+    <Page.BottomAppBar>
+        <CommandBar>
+            <CommandBar.PrimaryCommands>
+                <AppBarButton Label="Equations" Icon="List" Click="EquationAppBar_Click"/>
+            </CommandBar.PrimaryCommands>
+        </CommandBar>
+    </Page.BottomAppBar>
 </Page>

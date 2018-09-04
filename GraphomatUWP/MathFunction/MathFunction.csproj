@@ -107,26 +107,22 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BracketStrockeCheck.cs" />
     <Compile Include="Calculate\Calculator.cs" />
     <Compile Include="Calculate\CalculatorThread.cs" />
     <Compile Include="FunctionConverter.cs" />
+    <Compile Include="Parts\Value\PartConstants.cs" />
     <Compile Include="Parts\FunctionParts.cs" />
     <Compile Include="Parts\CalcStep\Level.cs" />
     <Compile Include="Parts\CalcStep\OneValue\PartAbs.cs" />
-    <Compile Include="Parts\BracketStrocke\PartCloseBracket.cs" />
-    <Compile Include="Parts\BracketStrocke\PartCloseBracketStrocke.cs" />
-    <Compile Include="Parts\BracketStrocke\PartCloseStrocke.cs" />
+    <Compile Include="Parts\Bracket\PartCloseBracket.cs" />
     <Compile Include="Parts\CalcStep\OneValue\PartSign.cs" />
-    <Compile Include="Parts\BracketStrocke\PartOpenBracket.cs" />
-    <Compile Include="Parts\BracketStrocke\PartOpenBracketStrocke.cs" />
-    <Compile Include="Parts\BracketStrocke\PartOpenStrocke.cs" />
-    <Compile Include="Parts\BracketStrocke\PartBracketStrocke.cs" />
+    <Compile Include="Parts\Bracket\PartOpenBracket.cs" />
+    <Compile Include="Parts\Bracket\PartBracket.cs" />
     <Compile Include="Parts\CalcStep\PartCalc.cs" />
     <Compile Include="Parts\CalcStep\TwoValue\Operation\PartOperation.cs" />
     <Compile Include="Parts\FunktionPart.cs" />
     <Compile Include="Parts\CalcStep\TwoValue\Operation\MultDiv\PartMultDiv.cs" />
-    <Compile Include="Parts\PartValue.cs" />
+    <Compile Include="Parts\Value\PartValue.cs" />
     <Compile Include="Parts\CalcStep\TwoValue\Function\PowRootStep\PartPow.cs" />
     <Compile Include="Parts\CalcStep\TwoValue\Function\PowRootStep\PartRoot.cs" />
     <Compile Include="Parts\CalcStep\TwoValue\Operation\MultDiv\PartDiv.cs" />
@@ -146,6 +142,7 @@
     <Compile Include="Parts\CalcStep\OneValue\PartLn.cs" />
     <Compile Include="Calculate\PartValueCalc.cs" />
     <Compile Include="Calculate\PositionPartValue.cs" />
+    <Compile Include="Parts\Value\PartVariable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Parts\CalcStep\OneValue\Circle\PartTan.cs" />
     <Compile Include="Parts\CalcStep\OneValue\Circle\PartCos.cs" />

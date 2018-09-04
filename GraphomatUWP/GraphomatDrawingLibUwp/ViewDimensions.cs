@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.Foundation;
+﻿using System.Numerics;
 
 namespace GraphomatDrawingLibUwp
 {
@@ -18,33 +12,33 @@ namespace GraphomatDrawingLibUwp
 
         public Vector2 BottomRightValuePoint { get; private set; }
 
-        public Vector2 ActualPixelSize { get; private set; }
-
-        public ViewDimensions(double viewValueWidth, double viewValueHeight, double middleOfViewX, 
-            double middleOfViewY) : this(Convert.ToSingle(viewValueWidth), Convert.ToSingle(viewValueHeight),
-                  Convert.ToSingle(middleOfViewX), Convert.ToSingle(middleOfViewY))
+        public ViewDimensions(Vector2 valueSize, Vector2 middleOfViewValue) :
+            this(valueSize.X, valueSize.Y, middleOfViewValue.X, middleOfViewValue.Y)
         {
         }
 
-        public ViewDimensions(float viewValueWidth, float viewValueHeight, 
-            float middleOfViewX, float middleOfViewY)
+        public ViewDimensions(double viewValueWidth, double viewValueHeight, double middleOfViewValueX,
+            double middleOfViewValueY) : this((float)viewValueWidth, (float)viewValueHeight, 
+                (float)middleOfViewValueX, (float)middleOfViewValueY)
+        {
+        }
+
+        public ViewDimensions(float viewValueWidth, float viewValueHeight, float middleOfViewValueX,
+            float middleOfViewValueY)
         {
             ViewValueSize = new Vector2(viewValueWidth, viewValueHeight);
-            MiddleOfViewValuePoint = new Vector2(middleOfViewX, middleOfViewY);
+            MiddleOfViewValuePoint = new Vector2(middleOfViewValueX, middleOfViewValueY);
 
-            TopLeftValuePoint = new Vector2(middleOfViewX - viewValueWidth / 2,
-                middleOfViewY - viewValueHeight / 2);
-            BottomRightValuePoint = new Vector2(middleOfViewX + viewValueWidth / 2,
-                middleOfViewY + viewValueHeight / 2);
-
-            Vector2 actualPixelSize = MoveScollManager.Current.ActualPixelSize;
-            ActualPixelSize = new Vector2(actualPixelSize.X, actualPixelSize.Y);
+            TopLeftValuePoint = new Vector2(middleOfViewValueX - viewValueWidth / 2,
+                middleOfViewValueY - viewValueHeight / 2);
+            BottomRightValuePoint = new Vector2(middleOfViewValueX + viewValueWidth / 2,
+                middleOfViewValueY + viewValueHeight / 2);
         }
 
         public ViewDimensions Clone()
         {
-            return new ViewDimensions(ViewValueSize.X, ViewValueSize.Y,
-                MiddleOfViewValuePoint.X, MiddleOfViewValuePoint.Y);
+            return new ViewDimensions(ViewValueSize.X, ViewValueSize.Y, MiddleOfViewValuePoint.X,
+                MiddleOfViewValuePoint.Y);
         }
     }
 }

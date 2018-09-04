@@ -70,7 +70,7 @@ namespace GraphomatDrawingLibUwp
 
         private void SetValuePoint(float value)
         {
-            LineTextMeasure.Measure(value, TextSize, out valueTextWidth, out valueTextHeight);
+            LineTextMeasure2.Measure(value, TextSize, out valueTextWidth, out valueTextHeight);
             this.value = value;
             iVerticalLineText = new VerticalLineTextUnder();
         }

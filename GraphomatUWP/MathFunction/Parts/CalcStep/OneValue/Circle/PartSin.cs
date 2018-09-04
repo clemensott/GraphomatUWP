@@ -4,17 +4,17 @@ namespace MathFunction
 {
     class PartSin : PartCalcOneValue
     {
+        public override string[] GetLowerLooks()
+        {
+            return new string[] { "sin" };
+        }
+
         protected override double Calc()
         {
-            return Math.Sin(Value2.Value / 180.0 * Math.PI);
+            return Math.Sin(Value2.Value);
         }
-
-        public override string ToEquationString()
-        {
-            return "sin";
-        }
-
-        public override PartCalc Clone()
+        
+        public override FunctionPart Clone()
         {
             return new PartSin();
         }

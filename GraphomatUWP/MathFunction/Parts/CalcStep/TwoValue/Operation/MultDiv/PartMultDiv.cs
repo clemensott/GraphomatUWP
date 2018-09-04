@@ -1,6 +1,6 @@
 ﻿namespace MathFunction
 {
-    abstract class PartMultDiv : PartCalcTwoValue
+    abstract class PartMultDiv : PartOperation
     {
         public override int GetKindPriority()
         {
@@ -14,13 +14,13 @@
 
         protected override bool IsOptimalNextPart(PartRuleKind nextKind)
         {
-            return nextKind == PartRuleKind.AddSub || nextKind == PartRuleKind.OpenBracketStrocke ||
+            return nextKind == PartRuleKind.OpenBracket ||
                 nextKind == PartRuleKind.OneValueFunction || nextKind == PartRuleKind.Value;
         }
 
         protected override bool IsPossibleNextPart(PartRuleKind nextKind)
         {
-            return IsOptimalNextPart(nextKind);
+            return nextKind == PartRuleKind.AddSub || IsOptimalNextPart(nextKind);
         }
     }
 }

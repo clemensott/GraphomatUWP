@@ -4,6 +4,11 @@ namespace MathFunction
 {
     class PartLog : PartCalcTwoValue
     {
+        public override string[] GetLowerLooks()
+        {
+            return new string[] { "log" };
+        }
+
         public override int GetKindPriority()
         {
             return 5;
@@ -14,12 +19,7 @@ namespace MathFunction
             return Math.Log(Value2.Value, Value1.Value);
         }
 
-        public override string ToEquationString()
-        {
-            return "log";
-        }
-
-        public override PartCalc Clone()
+        public override FunctionPart Clone()
         {
             return new PartLog();
         }

@@ -12,16 +12,15 @@ namespace MathFunction
 
         public List<PositionPartValue> Positions { get; private set; }
 
-        public PartValueCalc(PartValue partValue, List<PositionPartValue> positions)
+        public PartValueCalc(PartValue partValue, List<PositionPartValue> positions) : base(partValue.Value)
         {
             Value = startValue = partValue.Value;
             IsVariable = partValue.IsVariable;
-            Value = partValue.Value;
 
             Positions = positions;
         }
 
-        public PartValueCalc(PartValueCalc toClone)
+        public PartValueCalc(PartValueCalc toClone) : base(toClone.Value)
         {
             Value = startValue = toClone.Value;
             IsVariable = toClone.IsVariable;

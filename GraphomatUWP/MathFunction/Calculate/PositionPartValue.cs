@@ -12,7 +12,7 @@ namespace MathFunction
 
         public bool IsValue1 { get; private set; }
 
-        public PositionPartValue(int index,bool isValue1)
+        public PositionPartValue(int index, bool isValue1)
         {
             PartCalcIndex = index;
             IsValue1 = isValue1;

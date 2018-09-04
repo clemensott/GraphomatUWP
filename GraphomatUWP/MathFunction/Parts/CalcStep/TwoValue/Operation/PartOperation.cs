@@ -12,5 +12,10 @@ namespace MathFunction
         {
             return true;
         }
+
+        public override string ToEquationString()
+        {
+            return " " + GetLowerLooks()[0] + " ";
+        }
     }
 }

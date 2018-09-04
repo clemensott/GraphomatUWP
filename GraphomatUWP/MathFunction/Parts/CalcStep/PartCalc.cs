@@ -22,7 +22,27 @@ namespace MathFunction
         {
             if (nextKind == PartRuleKind.OneValueFunction)
             {
-                parts.Insert(thisIndex - 1, new PartOpenBracket());
+                bool foundValue = false;
+                int nextValueIndex, level = 0;
+
+                for (int i = thisIndex + 1; true; i++)
+                {
+                    if (i >= parts.Count) return false;
+
+                    if (parts[i].GetRuleKind() == PartRuleKind.Value) foundValue = true;
+                    else if (parts[i].GetRuleKind() == PartRuleKind.OpenBracket) level++;
+                    else if (parts[i].GetRuleKind() == PartRuleKind.CloseBracket) level--;
+
+                    if (foundValue && level == 0)
+                    {
+                        nextValueIndex = i;
+                        break;
+                    }
+                }
+
+                parts.Insert(nextValueIndex + 1, new PartCloseBracket());
+                parts.Insert(thisIndex + 1, new PartOpenBracket());
+
                 return true;
             }
             else if (nextKind == PartRuleKind.AddSub)
@@ -36,7 +56,7 @@ namespace MathFunction
 
         protected override bool IsOptimalNextPart(PartRuleKind nextKind)
         {
-            return nextKind == PartRuleKind.OpenBracketStrocke || nextKind == PartRuleKind.Value;
+            return nextKind == PartRuleKind.OpenBracket || nextKind == PartRuleKind.Value;
         }
 
         protected override bool IsPossibleNextPart(PartRuleKind nextKind)
@@ -72,7 +92,5 @@ namespace MathFunction
 
             Value2.IsVariableDepending = value;
         }
-
-        public abstract PartCalc Clone();
     }
 }
