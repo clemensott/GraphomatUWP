@@ -49,7 +49,7 @@ namespace GraphomatDrawingLibUwp
         public Graph(string name, string equation, Color color) : base(equation)
         {
             Name = name;
-            Equation = equation;
+            OriginalEquation = equation;
             Color = color;
         }
     }

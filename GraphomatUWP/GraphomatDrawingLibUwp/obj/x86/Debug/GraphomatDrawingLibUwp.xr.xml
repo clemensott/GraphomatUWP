@@ -14,7 +14,9 @@
       <RootEvent Name="PointerReleased" />
       <RootEvent Name="PointerWheelChanged" />
       <RootEvent Name="PointerCaptureLost" />
+      <RootEvent Name="ManipulationStarted" />
       <RootEvent Name="ManipulationDelta" />
+      <RootEvent Name="ManipulationCompleted" />
       <RootEvent Name="SizeChanged" />
     </RootType>
     <RootType FullName="Windows.UI.Xaml.Controls.Grid">
@@ -47,12 +49,6 @@
       <RootProperty Name="Name" />
       <RootProperty Name="Text" />
       <RootProperty Name="Visibility" />
-    </RootType>
-    <RootType FullName="Windows.UI.Xaml.Controls.CheckBox">
-      <RootProperty Name="Name" />
-      <RootProperty Name="Content" />
-      <RootProperty Name="Width" />
-      <RootProperty Name="Height" />
     </RootType>
     <RootType FullName="GraphomatDrawingLibUwp.DrawControl" />
     <RootType FullName="Windows.UI.Xaml.Controls.ColumnDefinition">

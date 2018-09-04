@@ -1,48 +1,38 @@
-﻿namespace MathFunction
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace MathFunction
 {
-    class PartValue : FunctionPart
+    abstract class PartValue : PartResult
     {
-        private bool isVariableDepending;
-        private double value;
-        protected PartValue realValue;
-
-        public bool IsVariable { get; protected set; }
-
-        public bool IsVariableDepending
+        public override int GetPriorityValue()
         {
-            get { return IsVariable || isVariableDepending; }
-            set { isVariableDepending = true; }
+            return 8;
         }
 
-        public double Value
+        public override PriorityType GetPriorityType()
         {
-            get { return realValue == null || realValue == this ? value : realValue.Value; }
-            set
-            {
-                if (realValue == null) this.value = value;
-                else realValue.Value = value;
-            }
+            return PriorityType.Same;
         }
 
-        public PartValue(string value) : this(double.Parse(value))
+        public override PartRuleType GetRuleType()
         {
+            return PartRuleType.Value;
         }
 
-        public PartValue(double value)
+        public override double GetResult(double x)
         {
-            this.value = value;
+            return valueRight.GetResult(x);
         }
 
-        public override string[] GetLowerLooks()
+        protected override bool WasAbleToChangeIfNecessary(Parts parts,
+            int thisIndex, PartRuleType nextType)
         {
-            return new string[] { Value.ToString() };
-        }
-
-        protected override bool WasAbleToChangeIfNecessary(ref FunctionParts parts,
-            int thisIndex, PartRuleKind nextKind)
-        {
-            if (nextKind == PartRuleKind.OpenBracket || nextKind == PartRuleKind.Value ||
-                nextKind == PartRuleKind.OneValueFunction)
+            if (nextType == PartRuleType.Start || nextType == PartRuleType.Value ||
+                nextType == PartRuleType.OneValueFunction)
             {
                 parts.Insert(thisIndex + 1, new PartMult());
                 return true;
@@ -51,50 +41,24 @@
             return false;
         }
 
-        protected override bool IsOptimalNextPart(PartRuleKind nextKind)
+        protected override bool IsOptimalNextPart(PartRuleType nextType)
         {
-            return nextKind == PartRuleKind.AddSub || nextKind == PartRuleKind.CloseBracket ||
-                nextKind == PartRuleKind.MultDiv || nextKind == PartRuleKind.TwoValueFunction;
+            return nextType == PartRuleType.AddSub || nextType == PartRuleType.End ||
+                nextType == PartRuleType.MultDiv || nextType == PartRuleType.TwoValueFunction;
         }
 
-        protected override bool IsPossibleNextPart(PartRuleKind nextKind)
+        protected override bool IsPossibleNextPart(PartRuleType nextType)
         {
-            if (IsOptimalNextPart(nextKind)) return true;
+            if (IsOptimalNextPart(nextType)) return true;
 
-            return nextKind == PartRuleKind.OpenBracket || nextKind == PartRuleKind.OneValueFunction ||
-                nextKind == PartRuleKind.Value;
+            return nextType == PartRuleType.Start || nextType == PartRuleType.OneValueFunction ||
+                nextType == PartRuleType.Value;
         }
 
-        public override PartRuleKind GetRuleKind()
+        public override void SetValues(Parts parts)
         {
-            return PartRuleKind.Value;
-        }
-
-        public override PartActionKind GetActionKind()
-        {
-            return PartActionKind.Value;
-        }
-
-        public static void CombinePartValuesAndSetValue(PartValue value1, PartValue value2, double setValue)
-        {
-            value2.Value = setValue;
-            value1.SetRealValue(value2);
-        }
-
-        private void SetRealValue(PartValue value)
-        {
-            if (realValue == null) realValue = value;
-            else realValue.SetRealValue(value);
-        }
-
-        public override FunctionPart Clone()
-        {
-            return new PartValue(Value);
-        }
-
-        public override string ToString()
-        {
-            return ToEquationString();
+            valueRight = this;
+            Used = true;
         }
     }
 }

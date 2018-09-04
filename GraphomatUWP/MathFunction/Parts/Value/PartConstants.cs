@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MathFunction
 {
-    class PartConstants : PartValue
+    class PartConstants : PartSimpleValue
     {
         private string[] names;
 
@@ -22,14 +22,9 @@ namespace MathFunction
             this.names = names;
         }
 
-        public override string[] GetLowerLooks()
+        protected override string[] GetLowerLooks()
         {
             return names;
-        }
-
-        public override FunctionPart Clone()
-        {
-            return new PartConstants(Value, Name);
         }
     }
 }

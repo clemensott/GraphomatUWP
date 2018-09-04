@@ -23,7 +23,7 @@ namespace GraphomatDrawingLibUwp
                 string equation = Function.GetRandomEquation(ran);
 
                 System.Diagnostics.Debug.WriteLine(equation);
-                graph.Equation = equation;
+                graph.OriginalEquation = equation;
 
             } while (!graph.IsPossible || !IsGoodGraph(graph));
 

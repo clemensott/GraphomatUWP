@@ -1,4 +1,9 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace MathFunction
@@ -6,11 +11,8 @@ namespace MathFunction
     public class Function : INotifyPropertyChanged
     {
         private bool isPossible;
-        private string original, improve;
-        private Calculator calculator;
-
-        [XmlIgnore]
-        public double this[double x] { get { return GetResult(x); } }
+        private string original;
+        private PartBracket lowestLevel;
 
         [XmlIgnore]
         public bool IsPossible
@@ -25,7 +27,9 @@ namespace MathFunction
             }
         }
 
-        public string Equation
+        public double this[double x] { get { return GetResult(x); } }
+
+        public string OriginalEquation
         {
             get { return original; }
             set
@@ -33,7 +37,9 @@ namespace MathFunction
                 if (IsOriginalEquation(value)) return;
 
                 original = value;
+
                 SetImprovedEquation();
+
                 NotifyPropertyChanged("Equation");
                 NotifyPropertyChanged("OriginalAndImprovedEquations");
                 NotifyPropertyChanged("ImprovedEquation");
@@ -41,15 +47,15 @@ namespace MathFunction
         }
 
         [XmlIgnore]
-        public string ImprovedEquation { get { return IsPossible ? improve : "0 (Equationerror)"; } }
+        public string ImprovedEquation { get { return GetImprovedEquation(); } }
 
         [XmlIgnore]
-        public string OriginalAndImprovedEquations { get { return Equation + " = " + ImprovedEquation; } }
+        public string OriginalAndImprovedEquations { get { return OriginalEquation + " = " + ImprovedEquation; } }
 
         public Function(string equation)
         {
             original = "";
-            Equation = equation;
+            OriginalEquation = equation;
         }
 
         private bool IsOriginalEquation(string equation)
@@ -57,16 +63,20 @@ namespace MathFunction
             return equation.Replace(" ", "").ToLower() == original.Replace(" ", "").ToLower();
         }
 
+        private string GetImprovedEquation()
+        {
+            if (!IsPossible) return "0 (Error)";
+
+            string improved = lowestLevel.ToEquationString();
+
+            return improved.Remove(improved.Length - 1).Remove(0, 1);
+        }
+
         private void SetImprovedEquation()
         {
-            FunctionParts parts;
-
             try
             {
-                parts = FunctionConverter.GetCalcParts(original);
-                calculator = new Calculator(parts);
-                improve = parts.Equation;
-
+                lowestLevel = new PartBracket(original);
                 IsPossible = true;
             }
             catch
@@ -77,7 +87,7 @@ namespace MathFunction
 
         public double GetResult(double x)
         {
-            return IsPossible ? calculator.GetResult(x) : 0;
+            return IsPossible ? lowestLevel.GetResult(x) : 0;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -95,19 +105,19 @@ namespace MathFunction
 
         public override string ToString()
         {
-            return Equation;
+            return OriginalEquation;
         }
 
-        public static string GetRandomEquation(System.Random ran)
+        public static string GetRandomEquation(Random ran)
         {
-            var allTypes = FunctionParts.AllTypes;
+            var allTypes = Parts.GetAllTypes();
 
             int partsLenght = ran.Next(5, 20);
             string equation = "";
 
             for (int i = 0; i < partsLenght; i++)
             {
-                int partType= ran.Next(allTypes.Count + 1);
+                int partType = ran.Next(allTypes.Count + 1);
 
                 equation += partType == allTypes.Count ? GetRandomNumber(ran) : allTypes[partType].ToEquationString();
             }

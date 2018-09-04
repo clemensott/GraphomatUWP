@@ -38,12 +38,12 @@ namespace GraphomatUWP
 
         private void EquationAppBar_Click(object sender, RoutedEventArgs e)
         {
-            Frame.Navigate(typeof(GraphsPage));
+            Frame.Navigate(typeof(GraphsPage), "Appbar");
         }
 
         private void DrawControl_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
         {
-            Frame.Navigate(typeof(GraphsPage)); 
+            Frame.Navigate(typeof(GraphsPage), "Double");
         }
 
         private void DrawControl_DoubleTappedCurve(object sender, Graph tappedGraph)

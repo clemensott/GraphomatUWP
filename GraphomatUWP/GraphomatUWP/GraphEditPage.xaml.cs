@@ -27,7 +27,7 @@ namespace GraphomatUWP
             if (e.Parameter is Graph) originalGraph = e.Parameter as Graph;
             else originalGraph = new Graph();
 
-            tmpGraph = new Graph(originalGraph.Name, originalGraph.Equation, originalGraph.Color);
+            tmpGraph = new Graph(originalGraph.Name, originalGraph.OriginalEquation, originalGraph.Color);
 
             DataContext = tmpGraph;
         }
@@ -35,7 +35,7 @@ namespace GraphomatUWP
         private void Accept_Click(object sender, RoutedEventArgs e)
         {
             originalGraph.Name = tmpGraph.Name;
-            originalGraph.Equation = tmpGraph.Equation;
+            originalGraph.OriginalEquation = tmpGraph.OriginalEquation;
             originalGraph.Color = tmpGraph.Color;
 
             if (!ViewModel.Current.Graphs.Contains(originalGraph))

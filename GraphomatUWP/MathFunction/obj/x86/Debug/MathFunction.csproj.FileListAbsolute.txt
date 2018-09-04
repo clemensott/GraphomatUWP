@@ -48,3 +48,38 @@ C:\Users\Clemens\Documents\Visual Studio 2015\Projects\GraphomatUWP\GraphomatUWP
 C:\Users\Clemens\Documents\Visual Studio 2015\Projects\GraphomatUWP\GraphomatUWP\MathFunction\obj\x86\Debug\qualifiers.txt
 C:\Users\Clemens\Documents\Visual Studio 2015\Projects\GraphomatUWP\GraphomatUWP\MathFunction\obj\x86\Debug\qualifiers.txt.intermediate
 C:\Users\Clemens\Documents\Visual Studio 2015\Projects\GraphomatUWP\GraphomatUWP\MathFunction\obj\x86\Debug\MultipleQualifiersPerDimensionFound.txt
+C:\Users\Clemens\Documents\Visual Studio 2015\Projects\GraphomatUWP\GraphomatUWP\MathFunction\obj\x86\Debug\MathFunction.csprojResolveAssemblyReference.cache
+D:\Dokumente\Visual Studio 2015\Projects\GraphomatUWP\GraphomatUWP\MathFunction\bin\x86\Debug\MathFunction.dll
+D:\Dokumente\Visual Studio 2015\Projects\GraphomatUWP\GraphomatUWP\MathFunction\bin\x86\Debug\MathFunction.pdb
+D:\Dokumente\Visual Studio 2015\Projects\GraphomatUWP\GraphomatUWP\MathFunction\bin\x86\Debug\MathFunction.pri
+D:\Dokumente\Visual Studio 2015\Projects\GraphomatUWP\GraphomatUWP\MathFunction\obj\x86\Debug\MathFunction.csprojResolveAssemblyReference.cache
+D:\Dokumente\Visual Studio 2015\Projects\GraphomatUWP\GraphomatUWP\MathFunction\obj\x86\Debug\MathFunction.dll
+D:\Dokumente\Visual Studio 2015\Projects\GraphomatUWP\GraphomatUWP\MathFunction\obj\x86\Debug\MathFunction.pdb
+D:\Dokumente\Visual Studio 2015\Projects\GraphomatUWP\GraphomatUWP\MathFunction\obj\x86\Debug\priconfig.xml
+D:\Dokumente\Visual Studio 2015\Projects\GraphomatUWP\GraphomatUWP\MathFunction\obj\x86\Debug\priconfig.xml.intermediate
+D:\Dokumente\Visual Studio 2015\Projects\GraphomatUWP\GraphomatUWP\MathFunction\obj\x86\Debug\layout.resfiles
+D:\Dokumente\Visual Studio 2015\Projects\GraphomatUWP\GraphomatUWP\MathFunction\obj\x86\Debug\layout.resfiles.intermediate
+D:\Dokumente\Visual Studio 2015\Projects\GraphomatUWP\GraphomatUWP\MathFunction\obj\x86\Debug\resources.resfiles
+D:\Dokumente\Visual Studio 2015\Projects\GraphomatUWP\GraphomatUWP\MathFunction\obj\x86\Debug\resources.resfiles.intermediate
+D:\Dokumente\Visual Studio 2015\Projects\GraphomatUWP\GraphomatUWP\MathFunction\obj\x86\Debug\pri.resfiles
+D:\Dokumente\Visual Studio 2015\Projects\GraphomatUWP\GraphomatUWP\MathFunction\obj\x86\Debug\pri.resfiles.intermediate
+D:\Dokumente\Visual Studio 2015\Projects\GraphomatUWP\GraphomatUWP\MathFunction\obj\x86\Debug\qualifiers.txt
+D:\Dokumente\Visual Studio 2015\Projects\GraphomatUWP\GraphomatUWP\MathFunction\obj\x86\Debug\qualifiers.txt.intermediate
+D:\Dokumente\Visual Studio 2015\Projects\GraphomatUWP\GraphomatUWP\MathFunction\obj\x86\Debug\MultipleQualifiersPerDimensionFound.txt
+D:\Projects\GraphomatUWP\GraphomatUWP\MathFunction\bin\x86\Debug\MathFunction.dll
+D:\Projects\GraphomatUWP\GraphomatUWP\MathFunction\bin\x86\Debug\MathFunction.pdb
+D:\Projects\GraphomatUWP\GraphomatUWP\MathFunction\bin\x86\Debug\MathFunction.pri
+D:\Projects\GraphomatUWP\GraphomatUWP\MathFunction\obj\x86\Debug\MathFunction.dll
+D:\Projects\GraphomatUWP\GraphomatUWP\MathFunction\obj\x86\Debug\MathFunction.pdb
+D:\Projects\GraphomatUWP\GraphomatUWP\MathFunction\obj\x86\Debug\priconfig.xml
+D:\Projects\GraphomatUWP\GraphomatUWP\MathFunction\obj\x86\Debug\priconfig.xml.intermediate
+D:\Projects\GraphomatUWP\GraphomatUWP\MathFunction\obj\x86\Debug\layout.resfiles
+D:\Projects\GraphomatUWP\GraphomatUWP\MathFunction\obj\x86\Debug\layout.resfiles.intermediate
+D:\Projects\GraphomatUWP\GraphomatUWP\MathFunction\obj\x86\Debug\resources.resfiles
+D:\Projects\GraphomatUWP\GraphomatUWP\MathFunction\obj\x86\Debug\resources.resfiles.intermediate
+D:\Projects\GraphomatUWP\GraphomatUWP\MathFunction\obj\x86\Debug\pri.resfiles
+D:\Projects\GraphomatUWP\GraphomatUWP\MathFunction\obj\x86\Debug\pri.resfiles.intermediate
+D:\Projects\GraphomatUWP\GraphomatUWP\MathFunction\obj\x86\Debug\qualifiers.txt
+D:\Projects\GraphomatUWP\GraphomatUWP\MathFunction\obj\x86\Debug\qualifiers.txt.intermediate
+D:\Projects\GraphomatUWP\GraphomatUWP\MathFunction\obj\x86\Debug\MultipleQualifiersPerDimensionFound.txt
+D:\Projects\GraphomatUWP\GraphomatUWP\MathFunction\obj\x86\Debug\MathFunction.csprojResolveAssemblyReference.cache

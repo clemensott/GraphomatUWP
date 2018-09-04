@@ -12,6 +12,6 @@
     SizeChanged="Control_SizeChanged">
 
     <Grid>
-        <canvas:CanvasControl Name="ccColors" Draw="DrawColors" Height="512"/>
+        <canvas:CanvasControl x:Name="ccColors" Draw="DrawColors" Height="512"/>
     </Grid>
 </UserControl>

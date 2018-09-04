@@ -1,20 +1,16 @@
-﻿namespace MathFunction
+﻿using System;
+
+namespace MathFunction
 {
     class PartVariable : PartValue
     {
-        public PartVariable() : base(double.NaN)
+        public PartVariable()
         {
-            IsVariable = IsVariableDepending = true;
         }
 
-        public override string[] GetLowerLooks()
+        protected override string[] GetLowerLooks()
         {
             return new string[] { "x" };
-        }
-
-        public override FunctionPart Clone()
-        {
-            return new PartVariable();
         }
 
         public override string ToEquationString()
@@ -25,6 +21,16 @@
         public override string ToString()
         {
             return base.ToEquationString();
+        }
+
+        public override double GetResult(double x)
+        {
+            return x;
+        }
+
+        public override Part Clone()
+        {
+            return new PartVariable();
         }
     }
 }

@@ -71,9 +71,9 @@ namespace GraphomatDrawingLibUwp
             valueDistanceBetweenStrokes = GetValueDistanceBetweenStrokes(actualPixelWidth, valueWidth);
 
             min = args.ViewDimensions.TopLeftValuePoint.X -
-                (args.OverRender - 1) / 2F * args.ViewDimensions.ViewValueSize.X;
+                (args.BufferFactor - 1) / 2F * args.ViewDimensions.ViewValueSize.X;
             max = args.ViewDimensions.BottomRightValuePoint.X +
-                (args.OverRender - 1) / 2F * args.ViewDimensions.ViewValueSize.X;
+                (args.BufferFactor - 1) / 2F * args.ViewDimensions.ViewValueSize.X;
 
             List<float> multiples = GetMultipleFromValuesInView(valueDistanceBetweenStrokes, min, max);
 
@@ -102,9 +102,9 @@ namespace GraphomatDrawingLibUwp
             valueDistanceBetweenStrokes = GetValueDistanceBetweenStrokes(actualPixelHeight, valueHeight);
 
             min = args.ViewDimensions.TopLeftValuePoint.Y -
-              (args.OverRender - 1) / 2F * args.ViewDimensions.ViewValueSize.Y;
+              (args.BufferFactor - 1) / 2F * args.ViewDimensions.ViewValueSize.Y;
             max = args.ViewDimensions.BottomRightValuePoint.Y +
-                (args.OverRender - 1) / 2F * args.ViewDimensions.ViewValueSize.Y;
+                (args.BufferFactor - 1) / 2F * args.ViewDimensions.ViewValueSize.Y;
 
             List<float> multiples = GetMultipleFromValuesInView(valueDistanceBetweenStrokes, min, max);
 

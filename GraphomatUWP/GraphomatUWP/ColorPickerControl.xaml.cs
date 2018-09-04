@@ -28,9 +28,9 @@ namespace GraphomatUWP
 
         private void Control_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            analogColors = GetAnalogColors(ccColors.ActualWidth);
+            //analogColors = GetAnalogColors(ccColors.ActualWidth);
 
-            ccColors.Invalidate();
+           // ccColors.Invalidate();
         }
 
         private void DrawColors(CanvasControl sender, CanvasDrawEventArgs args)
@@ -50,7 +50,7 @@ namespace GraphomatUWP
                 rect1.Y = 0;
             }
 
-            return;
+            //return;
             Rect rect = new Rect(0, 0, rectWidthAndHeight, rectWidthAndHeight);
             int columns = Convert.ToInt32((sender.ActualWidth + rectMargin) / (rectWidthAndHeight + rectMargin));
             int rows = allColors.Count / columns + (allColors.Count % columns > 0 ? 1 : 0);

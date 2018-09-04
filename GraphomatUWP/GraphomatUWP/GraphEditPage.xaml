@@ -15,7 +15,7 @@
                 <TextBox Text="{Binding Name,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <TextBlock Text="Equation:" Margin="0,20,0,5"/>
-                <TextBox Text="{Binding Equation,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" InputScope="FormulaNumber"/>
+                <TextBox Text="{Binding OriginalEquation,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" InputScope="FormulaNumber"/>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="=" Margin="0,5"/>
                     <TextBlock Text="{Binding ImprovedEquation}" Margin="5"/>

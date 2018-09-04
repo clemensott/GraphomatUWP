@@ -329,7 +329,7 @@ namespace GraphomatDrawingLibUwp.GraphomatDrawingLibUwp_XamlTypeInfo
             case 15:   //  MathFunction.Function
                 userType = new global::GraphomatDrawingLibUwp.GraphomatDrawingLibUwp_XamlTypeInfo.XamlUserType(this, typeName, type, GetXamlTypeByName("Object"));
                 userType.AddMemberName("IsPossible");
-                userType.AddMemberName("Equation");
+                userType.AddMemberName("OriginalEquation");
                 userType.AddMemberName("ImprovedEquation");
                 userType.AddMemberName("OriginalAndImprovedEquations");
                 xamlType = userType;
@@ -492,15 +492,15 @@ namespace GraphomatDrawingLibUwp.GraphomatDrawingLibUwp_XamlTypeInfo
             var that = (global::MathFunction.Function)instance;
             that.IsPossible = (global::System.Boolean)Value;
         }
-        private object get_17_Function_Equation(object instance)
+        private object get_17_Function_OriginalEquation(object instance)
         {
             var that = (global::MathFunction.Function)instance;
-            return that.Equation;
+            return that.OriginalEquation;
         }
-        private void set_17_Function_Equation(object instance, object Value)
+        private void set_17_Function_OriginalEquation(object instance, object Value)
         {
             var that = (global::MathFunction.Function)instance;
-            that.Equation = (global::System.String)Value;
+            that.OriginalEquation = (global::System.String)Value;
         }
         private object get_18_Function_ImprovedEquation(object instance)
         {
@@ -626,11 +626,11 @@ namespace GraphomatDrawingLibUwp.GraphomatDrawingLibUwp_XamlTypeInfo
                 xamlMember.Getter = get_16_Function_IsPossible;
                 xamlMember.Setter = set_16_Function_IsPossible;
                 break;
-            case "MathFunction.Function.Equation":
+            case "MathFunction.Function.OriginalEquation":
                 userType = (global::GraphomatDrawingLibUwp.GraphomatDrawingLibUwp_XamlTypeInfo.XamlUserType)GetXamlTypeByName("MathFunction.Function");
-                xamlMember = new global::GraphomatDrawingLibUwp.GraphomatDrawingLibUwp_XamlTypeInfo.XamlMember(this, "Equation", "String");
-                xamlMember.Getter = get_17_Function_Equation;
-                xamlMember.Setter = set_17_Function_Equation;
+                xamlMember = new global::GraphomatDrawingLibUwp.GraphomatDrawingLibUwp_XamlTypeInfo.XamlMember(this, "OriginalEquation", "String");
+                xamlMember.Getter = get_17_Function_OriginalEquation;
+                xamlMember.Setter = set_17_Function_OriginalEquation;
                 break;
             case "MathFunction.Function.ImprovedEquation":
                 userType = (global::GraphomatDrawingLibUwp.GraphomatDrawingLibUwp_XamlTypeInfo.XamlUserType)GetXamlTypeByName("MathFunction.Function");

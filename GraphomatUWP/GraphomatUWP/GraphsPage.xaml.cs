@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Navigation;
 
 namespace GraphomatUWP
 {
@@ -14,6 +15,12 @@ namespace GraphomatUWP
             this.InitializeComponent();
 
             DataContext = ViewModel.Current;
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine(e.Parameter);
+            base.OnNavigatedTo(e);
         }
 
         private void FindIcon_Tapped(object sender, TappedRoutedEventArgs e)
