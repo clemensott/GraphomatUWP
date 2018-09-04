@@ -1,0 +1,4 @@
+C:\Users\Clemens\Documents\Visual Studio 2015\Projects\GraphomatUWP\GraphomatUWP\GraphomatDrawingLibUwp\GraphomatDrawingLibUwp.csproj;x64
+C:\Users\Clemens\Documents\Visual Studio 2015\Projects\GraphomatUWP\GraphomatUWP\GraphomatUWP\GraphomatUWP.csproj;x64
+C:\Users\Clemens\Documents\Visual Studio 2015\Projects\GraphomatUWP\GraphomatUWP\MathFunction\MathFunction.csproj;x64
+C:\Users\Clemens\Documents\Visual Studio 2015\Projects\GraphomatUWP\GraphomatUWP\MathFunction\MathFunction.csproj;x64
