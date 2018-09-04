@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphomatUWP", "GraphomatUWP\GraphomatUWP.csproj", "{322D8DA0-E21E-4B34-8B7D-B00F4DE8D771}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathFunction", "MathFunction\MathFunction.csproj", "{B8CFD42F-E0D0-49D6-8E91-412752C7E997}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphomatDrawingLibUwp", "GraphomatDrawingLibUwp\GraphomatDrawingLibUwp.csproj", "{A43991C1-29B9-42AB-A3DF-938BCEE48E0C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,6 +57,22 @@ Global
 		{B8CFD42F-E0D0-49D6-8E91-412752C7E997}.Release|x64.Build.0 = Release|x64
 		{B8CFD42F-E0D0-49D6-8E91-412752C7E997}.Release|x86.ActiveCfg = Release|x86
 		{B8CFD42F-E0D0-49D6-8E91-412752C7E997}.Release|x86.Build.0 = Release|x86
+		{A43991C1-29B9-42AB-A3DF-938BCEE48E0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A43991C1-29B9-42AB-A3DF-938BCEE48E0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A43991C1-29B9-42AB-A3DF-938BCEE48E0C}.Debug|ARM.ActiveCfg = Debug|ARM
+		{A43991C1-29B9-42AB-A3DF-938BCEE48E0C}.Debug|ARM.Build.0 = Debug|ARM
+		{A43991C1-29B9-42AB-A3DF-938BCEE48E0C}.Debug|x64.ActiveCfg = Debug|x64
+		{A43991C1-29B9-42AB-A3DF-938BCEE48E0C}.Debug|x64.Build.0 = Debug|x64
+		{A43991C1-29B9-42AB-A3DF-938BCEE48E0C}.Debug|x86.ActiveCfg = Debug|x86
+		{A43991C1-29B9-42AB-A3DF-938BCEE48E0C}.Debug|x86.Build.0 = Debug|x86
+		{A43991C1-29B9-42AB-A3DF-938BCEE48E0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A43991C1-29B9-42AB-A3DF-938BCEE48E0C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A43991C1-29B9-42AB-A3DF-938BCEE48E0C}.Release|ARM.ActiveCfg = Release|ARM
+		{A43991C1-29B9-42AB-A3DF-938BCEE48E0C}.Release|ARM.Build.0 = Release|ARM
+		{A43991C1-29B9-42AB-A3DF-938BCEE48E0C}.Release|x64.ActiveCfg = Release|x64
+		{A43991C1-29B9-42AB-A3DF-938BCEE48E0C}.Release|x64.Build.0 = Release|x64
+		{A43991C1-29B9-42AB-A3DF-938BCEE48E0C}.Release|x86.ActiveCfg = Release|x86
+		{A43991C1-29B9-42AB-A3DF-938BCEE48E0C}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
