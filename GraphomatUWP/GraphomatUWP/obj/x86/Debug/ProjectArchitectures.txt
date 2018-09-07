@@ -1,4 +1,0 @@
-D:\Projects\GraphomatUWP\GraphomatUWP\GraphomatDrawingLibUwp\GraphomatDrawingLibUwp.csproj;x86
-D:\Projects\GraphomatUWP\GraphomatUWP\GraphomatUWP\GraphomatUWP.csproj;x86
-D:\Projects\GraphomatUWP\GraphomatUWP\MathFunction\MathFunction.csproj;x86
-D:\Projects\GraphomatUWP\GraphomatUWP\MathFunction\MathFunction.csproj;x86
