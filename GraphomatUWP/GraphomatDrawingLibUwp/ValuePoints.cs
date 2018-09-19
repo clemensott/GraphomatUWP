@@ -25,26 +25,26 @@ namespace GraphomatDrawingLibUwp
 
         public void Calculate(ViewArgs args)
         {
-            int pointsCount = Convert.ToInt32(args.ViewPixelSize.ActualPixelSize.X) + 1;
+            int pointsCount = Convert.ToInt32(args.PixelSize.ActualPixelSize.X) + 1;
 
             points = new Vector2[pointsCount];
 
-            minX = args.ViewDimensions.TopLeftValuePoint.X;
-            deltaX = args.ViewDimensions.ViewValueSize.X / pointsCount;
+            minX = args.ValueDimensions.Left;
+            deltaX = args.ValueDimensions.Width / pointsCount;
 
             Parallel.For(0, pointsCount, new Action<int, ParallelLoopState>(Calculate));
         }
 
         public void Recalculate(ViewArgs args)
         {
-            int pointsCount = Convert.ToInt32(args.ViewPixelSize.RawPixelWidth *
+            int pointsCount = Convert.ToInt32(args.PixelSize.RawPixelWidth *
                 DrawControl.PixelBufferFactor * DrawControl.PixelBufferFactor);
 
             points = new Vector2[pointsCount];
 
-            minX = args.ViewDimensions.MiddleOfViewValuePoint.X -
-                args.ViewDimensions.ViewValueSize.X * DrawControl.PixelBufferFactor / 2;
-            deltaX = args.ViewDimensions.ViewValueSize.X * DrawControl.PixelBufferFactor / pointsCount;
+            minX = args.ValueDimensions.Middle.X -
+                args.ValueDimensions.Width * DrawControl.PixelBufferFactor / 2;
+            deltaX = args.ValueDimensions.Width * DrawControl.PixelBufferFactor / pointsCount;
 
             Parallel.For(0, pointsCount, new Action<int, ParallelLoopState>(Calculate));
         }
@@ -59,7 +59,7 @@ namespace GraphomatDrawingLibUwp
 
         public IEnumerator<Vector2> GetEnumerator()
         {
-            return points.ToList().GetEnumerator();
+            return ((IEnumerable<Vector2>)points).GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

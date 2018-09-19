@@ -45,7 +45,6 @@ namespace GraphomatDrawingLibUwp
         {
             var s = sender as DrawControl;
 
-            s.Children = e.NewValue as List<Graph>;
             s.children = e.NewValue as List<Graph>;
             s.SetGraphDrawingList();
         }
@@ -56,10 +55,11 @@ namespace GraphomatDrawingLibUwp
 
         private static void OnValueSizePropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
-            Vector2 value = (Vector2)e.NewValue;
             var s = sender as DrawControl;
+            Vector2 oldValue = (Vector2)e.NewValue;
+            Vector2 newValue = (Vector2)e.NewValue;
 
-            s.ValueSize = value;
+            if (!IsOverZero(newValue) || !IsInfinityOrNaN(newValue)) s.ValueSize = oldValue;
         }
 
 
@@ -69,10 +69,11 @@ namespace GraphomatDrawingLibUwp
 
         private static void OnMiddleOfViewPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
-            Vector2 value = (Vector2)e.NewValue;
             var s = sender as DrawControl;
+            Vector2 oldValue = (Vector2)e.NewValue;
+            Vector2 newValue = (Vector2)e.NewValue;
 
-            s.MiddleOfView = value;
+            if (IsInfinityOrNaN(newValue)) s.MiddleOfView = oldValue;
         }
 
         public static readonly DependencyProperty SelectedGraphIndexProperty = DependencyProperty.
@@ -82,10 +83,16 @@ namespace GraphomatDrawingLibUwp
         private static void OnSelectedGraphIndexPropertyChanged(DependencyObject sender,
             DependencyPropertyChangedEventArgs e)
         {
-            int value = (int)e.NewValue;
             var s = sender as DrawControl;
+            int newValue = (int)e.NewValue;
+            int oldValue = (int)e.OldValue;
 
-            s.SelectedGraphIndex = value;
+            if (!IsValidSelectionIndex(newValue, s.Children.Count))
+            {
+                s.SelectedGraphIndex = newValue = IsValidSelectionIndex(oldValue, s.Children.Count) ? oldValue : -1;
+            }
+
+            s.ZoomToChild(s.childrenDrawing?.ElementAtOrDefault(newValue));
         }
 
         private string debugText = "";
@@ -95,7 +102,7 @@ namespace GraphomatDrawingLibUwp
         private float oldMiddleOfViewY, oldViewHeight;
         private double startAverageDistanceWidth, startAverageDistanceHeight;
         private List<PointerPoint> pointerPoints;
-        private ViewDimensions startViewDimensions;
+        private ViewValueDimensions startValueDimensions;
         private AxesGraph axes;
         private List<Graph> children;
         private List<GraphDrawer> childrenDrawing;
@@ -104,13 +111,13 @@ namespace GraphomatDrawingLibUwp
         public event TappedCurveEventHandler TappedCurve;
         public event DoubleTappedCurveEventHandler DoubleTappedCurve;
 
-        internal ViewDimensions CurrentViewDimensions
+        internal ViewValueDimensions CurrentValueDimensions
         {
-            get { return new ViewDimensions(ValueSize, MiddleOfView); }
+            get { return new ViewValueDimensions(ValueSize, MiddleOfView); }
             private set
             {
-                ValueSize = value.ViewValueSize;
-                MiddleOfView = value.MiddleOfViewValuePoint;
+                ValueSize = value.Size;
+                MiddleOfView = value.Middle;
             }
         }
 
@@ -123,57 +130,30 @@ namespace GraphomatDrawingLibUwp
             }
         }
 
-        internal ViewArgs ViewArgs { get { return new ViewArgs(CurrentViewDimensions, CurrentViewPixelSize); } }
+        internal ViewArgs ViewArgs { get { return new ViewArgs(CurrentValueDimensions, CurrentViewPixelSize); } }
 
         public int SelectedGraphIndex
         {
             get { return (int)GetValue(SelectedGraphIndexProperty); }
-            set
-            {
-                int selectedIndex = SelectedGraphIndex;
-
-                if (value >= -1 && value < Children.Count && value != selectedIndex)
-                {
-                    selectedIndex = value;
-                    SetValue(SelectedGraphIndexProperty, selectedIndex);
-                }
-
-                ZoomToChild(selectedIndex < 0 || childrenDrawing == null ||
-                    selectedIndex >= childrenDrawing.Count ? null : childrenDrawing[selectedIndex]);
-            }
+            set { SetValue(SelectedGraphIndexProperty, value); }
         }
 
         public Vector2 ValueSize
         {
             get { return (Vector2)GetValue(ValueSizeProperty); }
-            set
-            {
-                if (value == ValueSize || !IsOverZero(value) || IsInfinityOrNaN(value)) return;
-
-                SetValue(ValueSizeProperty, value);
-            }
+            set { SetValue(ValueSizeProperty, value); }
         }
 
         public Vector2 MiddleOfView
         {
             get { return (Vector2)GetValue(MiddleOfViewProperty); }
-            set
-            {
-                if (value == MiddleOfView || IsInfinityOrNaN(value)) return;
-
-                SetValue(MiddleOfViewProperty, value);
-            }
+            set { SetValue(MiddleOfViewProperty, value); }
         }
 
         public List<Graph> Children
         {
             get { return (List<Graph>)GetValue(ChildrenProperty); }
-            set
-            {
-                if (Children == value) return;
-
-                SetValue(ChildrenProperty, value);
-            }
+            set { SetValue(ChildrenProperty, value); }
         }
 
         private bool PixelSizeLoaded { get { return CurrentViewPixelSize.RawPixelWidth > 0; } }
@@ -258,7 +238,7 @@ namespace GraphomatDrawingLibUwp
             startAverageDistanceWidthHighEnough = startAverageDistanceHeightHighEnough = true;
             GetAverageDistanceBetweenPointers(out startAverageDistanceWidth, out startAverageDistanceHeight);
 
-            startViewDimensions = CurrentViewDimensions.Clone();
+            startValueDimensions = CurrentValueDimensions;
         }
 
         private void Control_PointerMoved(object sender, PointerRoutedEventArgs e)
@@ -320,16 +300,16 @@ namespace GraphomatDrawingLibUwp
             if (averageDistanceWidthRatio > 0 && !double.IsNaN(averageDistanceWidthRatio) &&
                 !double.IsInfinity(averageDistanceWidthRatio))
             {
-                newViewWidth = startViewDimensions.ViewValueSize.X * averageDistanceWidthRatio;
+                newViewWidth = startValueDimensions.Width * averageDistanceWidthRatio;
             }
-            else newViewWidth = CurrentViewDimensions.ViewValueSize.X;
+            else newViewWidth = CurrentValueDimensions.Width;
 
             if (averageDistanceHeightRatio > 0 && !double.IsNaN(averageDistanceHeightRatio) &&
                 !double.IsInfinity(averageDistanceHeightRatio))
             {
-                newViewHeight = startViewDimensions.ViewValueSize.Y * averageDistanceHeightRatio;
+                newViewHeight = startValueDimensions.Height * averageDistanceHeightRatio;
             }
-            else newViewHeight = CurrentViewDimensions.ViewValueSize.Y;
+            else newViewHeight = CurrentValueDimensions.Height;
         }
 
         private void GetAverageDistanceBetweenPointers(out double width, out double height)
@@ -371,7 +351,7 @@ namespace GraphomatDrawingLibUwp
             startAverageDistanceWidthHighEnough = startAverageDistanceHeightHighEnough = true;
             GetAverageDistanceBetweenPointers(out startAverageDistanceWidth, out startAverageDistanceHeight);
 
-            startViewDimensions = CurrentViewDimensions.Clone();
+            startValueDimensions = CurrentValueDimensions;
         }
 
         private void Control_PointerWheelChanged(object sender, PointerRoutedEventArgs e)
@@ -381,7 +361,7 @@ namespace GraphomatDrawingLibUwp
 
         private void ZoomButtons_Zoomed(object sender, ZoomButtonsEventArgs args)
         {
-            CurrentViewDimensions = args.GetChangedViewDimensions(CurrentViewDimensions);
+            CurrentValueDimensions = args.GetChangedValueDimensions(CurrentValueDimensions);
 
             SetViewDimensionToAxesAndChildren();
         }
@@ -433,7 +413,7 @@ namespace GraphomatDrawingLibUwp
             ccDraw.Invalidate();
         }
 
-        private bool IsInfinityOrNaN(Vector2 vector)
+        private static bool IsInfinityOrNaN(Vector2 vector)
         {
             if (float.IsInfinity(vector.X)) return true;
             if (float.IsInfinity(vector.Y)) return true;
@@ -444,12 +424,17 @@ namespace GraphomatDrawingLibUwp
             return false;
         }
 
-        private bool IsOverZero(Vector2 vector)
+        private static bool IsOverZero(Vector2 vector)
         {
             if (vector.X <= 0) return false;
             if (vector.Y <= 0) return false;
 
             return true;
+        }
+
+        private static bool IsValidSelectionIndex(int index, int count)
+        {
+            return index >= -1 && index < count;
         }
 
         private void Control_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
@@ -464,20 +449,20 @@ namespace GraphomatDrawingLibUwp
             ccDraw.Invalidate();
         }
 
-        private bool AreViewDimensionsPossible(ViewDimensions viewDimensions)
+        private bool AreValueDimensionsPossible(ViewValueDimensions valueDimensions)
         {
-            if (float.IsInfinity(viewDimensions.MiddleOfViewValuePoint.X)) return false;
-            if (float.IsInfinity(viewDimensions.MiddleOfViewValuePoint.Y)) return false;
-            if (float.IsInfinity(viewDimensions.ViewValueSize.X)) return false;
-            if (float.IsInfinity(viewDimensions.ViewValueSize.Y)) return false;
+            if (float.IsInfinity(valueDimensions.Middle.X)) return false;
+            if (float.IsInfinity(valueDimensions.Middle.Y)) return false;
+            if (float.IsInfinity(valueDimensions.Width)) return false;
+            if (float.IsInfinity(valueDimensions.Height)) return false;
 
-            if (float.IsNaN(viewDimensions.MiddleOfViewValuePoint.X)) return false;
-            if (float.IsNaN(viewDimensions.MiddleOfViewValuePoint.Y)) return false;
-            if (float.IsNaN(viewDimensions.ViewValueSize.X)) return false;
-            if (float.IsNaN(viewDimensions.ViewValueSize.Y)) return false;
+            if (float.IsNaN(valueDimensions.Middle.X)) return false;
+            if (float.IsNaN(valueDimensions.Middle.Y)) return false;
+            if (float.IsNaN(valueDimensions.Width)) return false;
+            if (float.IsNaN(valueDimensions.Height)) return false;
 
-            if (viewDimensions.ViewValueSize.X <= 0) return false;
-            if (viewDimensions.ViewValueSize.Y <= 0) return false;
+            if (valueDimensions.Width <= 0) return false;
+            if (valueDimensions.Height <= 0) return false;
 
             return true;
         }
@@ -503,9 +488,9 @@ namespace GraphomatDrawingLibUwp
 
             if (child != null)
             {
-                System.Diagnostics.Debug.WriteLine("SetToOld: {0}\t{1}", oldViewHeight, CurrentViewDimensions.ViewValueSize.Y);
-                oldMiddleOfViewY = CurrentViewDimensions.MiddleOfViewValuePoint.Y;
-                oldViewHeight = CurrentViewDimensions.ViewValueSize.Y;
+                System.Diagnostics.Debug.WriteLine("SetToOld: {0}\t{1}", oldViewHeight, CurrentValueDimensions.Height);
+                oldMiddleOfViewY = CurrentValueDimensions.Middle.Y;
+                oldViewHeight = CurrentValueDimensions.Height;
 
                 child.GetMinAndMaxValue(out minValue, out maxValue);
 
@@ -520,7 +505,7 @@ namespace GraphomatDrawingLibUwp
         {
             GraphDrawer tappedChild;
 
-            RestoreOldViewDimensions();
+            RestoreOldValueDimensions();
 
             if (!GetNearestChildDrawingInRange(e.GetPosition(ccDraw).ToVector2(), out tappedChild)) return;
             if (DoubleTappedCurve == null) return;
@@ -529,7 +514,7 @@ namespace GraphomatDrawingLibUwp
             DoubleTappedCurve(this, tappedChild.Graph);
         }
 
-        private void RestoreOldViewDimensions()
+        private void RestoreOldValueDimensions()
         {
             System.Diagnostics.Debug.WriteLine("SetFromOld: {0}\t{1}", oldViewHeight, ValueSize.Y);
             MiddleOfView = new Vector2(MiddleOfView.X, oldMiddleOfViewY);

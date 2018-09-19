@@ -1,17 +1,17 @@
 ﻿namespace GraphomatDrawingLibUwp
 {
-    class ViewArgs
+    struct ViewArgs
     {
         public float BufferFactor { get { return DrawControl.PixelBufferFactor; } }
 
-        public ViewDimensions ViewDimensions { get; private set; }
+        public ViewValueDimensions ValueDimensions { get; private set; }
 
-        public ViewPixelSize ViewPixelSize { get; private set; }
+        public ViewPixelSize PixelSize { get; private set; }
 
-        public ViewArgs(ViewDimensions viewDimensions, ViewPixelSize viewPixelSize)
+        public ViewArgs(ViewValueDimensions valueDimensions, ViewPixelSize pixelSize)
         {
-            ViewDimensions = viewDimensions;
-            ViewPixelSize = viewPixelSize;
+            ValueDimensions = valueDimensions;
+            PixelSize = pixelSize;
         }
     }
 }

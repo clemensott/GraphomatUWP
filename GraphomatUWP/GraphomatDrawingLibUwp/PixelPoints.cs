@@ -30,11 +30,11 @@ namespace GraphomatDrawingLibUwp
 
             points = new Vector2[valuePoints.Count];
 
-            valuePerActualPixelY = args.ViewDimensions.ViewValueSize.Y / args.ViewPixelSize.ActualPixelSize.Y;
-            originFromTopY = args.ViewDimensions.TopLeftValuePoint.Y / valuePerActualPixelY * -1;
+            valuePerActualPixelY = args.ValueDimensions.Height / args.PixelSize.Height;
+            originFromTopY = args.ValueDimensions.Top / valuePerActualPixelY * -1;
 
-            actualPixelXPerValue = args.ViewPixelSize.ActualPixelSize.X / args.ViewDimensions.ViewValueSize.X;
-            leftSideX = args.ViewDimensions.TopLeftValuePoint.X;
+            actualPixelXPerValue = args.PixelSize.ActualPixelSize.X / args.ValueDimensions.Width;
+            leftSideX = args.ValueDimensions.Left;
 
             for (int i = 0; i < points.Length; i++)
             {
@@ -56,11 +56,11 @@ namespace GraphomatDrawingLibUwp
 
             if (valuePoints.Count < 2) return;
 
-            rawPixelWidth = args.ViewPixelSize.RawPixelWidth;
-            valueWidth = args.ViewDimensions.ViewValueSize.X;
+            rawPixelWidth = args.PixelSize.RawPixelWidth;
+            valueWidth = args.ValueDimensions.Width;
 
-            valuePerActualPixelY = args.ViewDimensions.ViewValueSize.Y / args.ViewPixelSize.ActualPixelSize.Y;
-            originFromTopY = args.ViewDimensions.TopLeftValuePoint.Y / valuePerActualPixelY * -1;
+            valuePerActualPixelY = args.ValueDimensions.Height / args.PixelSize.Height;
+            originFromTopY = args.ValueDimensions.Top / valuePerActualPixelY * -1;
 
             valuesValueWidth = valuePoints[valuePoints.Count - 1].X - valuePoints[0].X;
             pixelPointsLength = Convert.ToInt32(rawPixelWidth * valuesValueWidth / valueWidth) + 1;
@@ -72,8 +72,8 @@ namespace GraphomatDrawingLibUwp
             selectValueMin = (1 - rawPixelXPerValues) / 2F * valuePerRawPixelX;
             selectValueMax = (1 + rawPixelXPerValues) / 2F * valuePerRawPixelX;
 
-            actualPixelXPerValue = args.ViewPixelSize.ActualPixelSize.X / valueWidth;
-            leftSideX = args.ViewDimensions.TopLeftValuePoint.X;
+            actualPixelXPerValue = args.PixelSize.ActualPixelSize.X / valueWidth;
+            leftSideX = args.ValueDimensions.Left;
 
             for (int i = 0; i < valuePoints.Count && pixelPointsIndex < pixelPointsLength; i++)
             {

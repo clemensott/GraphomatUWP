@@ -17,7 +17,7 @@ namespace GraphomatDrawingLibUwp
         private bool isMoving, valuesAreOutdated;
         private ValuePoints valuePoints;
         private PixelPointsManager pixelManager;
-        private ViewDimensions lastUpdatedValuesViewDimensions;
+        private ViewValueDimensions lastUpdatedValuesValueDimensions;
         private Graph graph;
         private ViewArgs preViewArgs;
 
@@ -46,13 +46,13 @@ namespace GraphomatDrawingLibUwp
             valuePoints.Recalculate(args);
             pixelManager.Recalculate(args);
 
-            lastUpdatedValuesViewDimensions = args.ViewDimensions;
+            lastUpdatedValuesValueDimensions = args.ValueDimensions;
         }
 
         internal void Move(Vector2 deltaValue)
         {
-            Vector2 deltaPixel = deltaValue / preViewArgs.ViewDimensions.ViewValueSize *
-                preViewArgs.ViewPixelSize.ActualPixelSize;
+            Vector2 deltaPixel = deltaValue / preViewArgs.ValueDimensions.Size *
+                preViewArgs.PixelSize.ActualPixelSize;
 
             pixelManager.Points.Offset -= deltaPixel;
         }
@@ -73,16 +73,16 @@ namespace GraphomatDrawingLibUwp
                 {
                     valuePoints.Recalculate(args);
 
-                    lastUpdatedValuesViewDimensions = args.ViewDimensions;
+                    lastUpdatedValuesValueDimensions = args.ValueDimensions;
                     valuesAreOutdated = false;
                 }
 
                 pixelManager.Points.Recalculate(args);
             }
-            else if (args.ViewDimensions.ViewValueSize == preViewArgs.ViewDimensions.ViewValueSize)
+            else if (args.ValueDimensions.Size == preViewArgs.ValueDimensions.Size)
             {
-                Vector2 deltaValue = args.ViewDimensions.MiddleOfViewValuePoint -
-                    preViewArgs.ViewDimensions.MiddleOfViewValuePoint;
+                Vector2 deltaValue = args.ValueDimensions.Middle -
+                    preViewArgs.ValueDimensions.Middle;
 
                 Move(deltaValue);
             }
@@ -94,21 +94,22 @@ namespace GraphomatDrawingLibUwp
         private bool AreValuesOutDated(ViewArgs e)
         {
             float outOfLastViewAreaX = (e.BufferFactor - 1) / 2 *
-                lastUpdatedValuesViewDimensions.ViewValueSize.X;
+                lastUpdatedValuesValueDimensions.Width;
 
-            if (lastUpdatedValuesViewDimensions.ViewValueSize.X * e.BufferFactor <
-                e.ViewDimensions.ViewValueSize.X) return true;
+            if (lastUpdatedValuesValueDimensions.Width * e.BufferFactor <
+                e.ValueDimensions.Width) return true;
 
-            if (e.ViewDimensions.ViewValueSize.X * e.BufferFactor <
-               lastUpdatedValuesViewDimensions.ViewValueSize.X) return true;
+            if (e.ValueDimensions.Width * e.BufferFactor <
+               lastUpdatedValuesValueDimensions.Width) return true;
 
-            if (e.ViewDimensions.TopLeftValuePoint.X <
-                lastUpdatedValuesViewDimensions.TopLeftValuePoint.X - outOfLastViewAreaX) return true;
+            if (e.ValueDimensions.Left <
+                lastUpdatedValuesValueDimensions.Left - outOfLastViewAreaX) return true;
 
-            return lastUpdatedValuesViewDimensions.BottomRightValuePoint.X + outOfLastViewAreaX <
-                 e.ViewDimensions.BottomRightValuePoint.X;
+            return lastUpdatedValuesValueDimensions.Right + outOfLastViewAreaX <
+                 e.ValueDimensions.Right;
         }
 
+        private ViewArgs viewArgs;
         public void Draw2(ICanvasResourceCreator iCreater,
             CanvasDrawingSession drawingSession, Vector2 actualPixelSize, bool isSelected)
         {
@@ -222,6 +223,40 @@ namespace GraphomatDrawingLibUwp
             return !(point.Y + thickness / 2 < 0 || point.Y - thickness / 2 > pixelSize.Y);
         }               //              */
 
+        private int index;
+        private float lowerX, upperX,endX;
+        private IEnumerable<IEnumerable<Vector2>> GetValuePointsSections()
+        {
+            index = -1;
+            lowerX = viewArgs.ValueDimensions.Left + viewArgs.ValueDimensions.Width / viewArgs.PixelSize.Width;
+            upperX = viewArgs.ValueDimensions.Left - viewArgs.ValueDimensions.Width / viewArgs.PixelSize.Width;
+            endX = viewArgs.ValueDimensions.Right;
+
+            IEnumerator<Vector2> enumerator = valuePoints.ToList().GetEnumerator();
+
+            while (lowerX < endX)
+            {
+                yield return GetValuePoints(enumerator);
+            }
+        }
+
+        private IEnumerable<Vector2> GetValuePoints(IEnumerator<Vector2> enumerator)
+        {
+            while (lowerX < endX)
+            {
+                index++;
+
+                if (float.IsNaN(enumerator.Current.Y))
+                {
+                    while (float.IsNaN(enumerator.Current.Y) && enumerator.MoveNext()) index++;
+
+                    yield break;
+                }
+
+
+            }
+        }
+
         public float IsNearCurve(Vector2 vector)
         {
             pixelManager.BeginUsing();
@@ -275,8 +310,8 @@ namespace GraphomatDrawingLibUwp
         {
             float minX, maxX;
 
-            minX = preViewArgs.ViewDimensions.TopLeftValuePoint.X;
-            maxX = preViewArgs.ViewDimensions.BottomRightValuePoint.X;
+            minX = preViewArgs.ValueDimensions.Left;
+            maxX = preViewArgs.ValueDimensions.Right;
 
             min = float.MaxValue;
             max = float.MinValue;

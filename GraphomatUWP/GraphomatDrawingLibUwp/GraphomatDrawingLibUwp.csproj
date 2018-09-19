@@ -127,8 +127,11 @@
     <Compile Include="GraphDrawer.cs" />
     <Compile Include="RandomGraph.cs" />
     <Compile Include="ValuePoints.cs" />
+    <Compile Include="ValueList\ValuePointNode.cs" />
+    <Compile Include="ValueList\ValuePoints.cs" />
+    <Compile Include="ValueList\ValuePointsEnumerator.cs" />
     <Compile Include="ViewArgs\ViewArgs.cs" />
-    <Compile Include="ViewArgs\ViewDimensions.cs" />
+    <Compile Include="ViewArgs\ViewValueDimensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewArgs\ViewPixelSize.cs" />
     <Compile Include="Controls\ZoomButtonsControl.xaml.cs">

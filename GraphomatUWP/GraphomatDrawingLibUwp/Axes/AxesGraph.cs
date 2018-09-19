@@ -51,14 +51,14 @@ namespace GraphomatDrawingLibUwp
         {
             float valuePerAcutalPixelX, valuePerAcutalPixelY;
 
-            valuePerAcutalPixelX = args.ViewDimensions.ViewValueSize.X / args.ViewPixelSize.ActualPixelSize.X;
-            valuePerAcutalPixelY = args.ViewDimensions.ViewValueSize.Y / args.ViewPixelSize.ActualPixelSize.Y;
+            valuePerAcutalPixelX = args.ValueDimensions.Width / args.PixelSize.ActualPixelSize.X;
+            valuePerAcutalPixelY = args.ValueDimensions.Height / args.PixelSize.Height;
 
-            xAxisLine.Y = args.ViewDimensions.TopLeftValuePoint.Y / valuePerAcutalPixelY * -1;
-            yAxisLine.X = args.ViewDimensions.TopLeftValuePoint.X / valuePerAcutalPixelX * -1;
+            xAxisLine.Y = args.ValueDimensions.Top / valuePerAcutalPixelY * -1;
+            yAxisLine.X = args.ValueDimensions.Left / valuePerAcutalPixelX * -1;
 
-            xAxisLine.X2 = args.ViewPixelSize.ActualPixelSize.X;
-            yAxisLine.Y2 = args.ViewPixelSize.ActualPixelSize.Y;
+            xAxisLine.X2 = args.PixelSize.ActualPixelSize.X;
+            yAxisLine.Y2 = args.PixelSize.Height;
         }
 
         private void SetXAxisStrokes(ViewArgs args)
@@ -66,14 +66,14 @@ namespace GraphomatDrawingLibUwp
             int xAxisStrokeCount;
             float actualPixelWidth, valueWidth, valueDistanceBetweenStrokes, min, max;
 
-            actualPixelWidth = args.ViewPixelSize.ActualPixelSize.X;
-            valueWidth = args.ViewDimensions.ViewValueSize.X;
+            actualPixelWidth = args.PixelSize.ActualPixelSize.X;
+            valueWidth = args.ValueDimensions.Width;
             valueDistanceBetweenStrokes = GetValueDistanceBetweenStrokes(actualPixelWidth, valueWidth);
 
-            min = args.ViewDimensions.TopLeftValuePoint.X -
-                (args.BufferFactor - 1) / 2F * args.ViewDimensions.ViewValueSize.X;
-            max = args.ViewDimensions.BottomRightValuePoint.X +
-                (args.BufferFactor - 1) / 2F * args.ViewDimensions.ViewValueSize.X;
+            min = args.ValueDimensions.Left -
+                (args.BufferFactor - 1) / 2F * args.ValueDimensions.Width;
+            max = args.ValueDimensions.Right +
+                (args.BufferFactor - 1) / 2F * args.ValueDimensions.Width;
 
             List<float> multiples = GetMultipleFromValuesInView(valueDistanceBetweenStrokes, min, max);
 
@@ -82,7 +82,7 @@ namespace GraphomatDrawingLibUwp
                 float x, y1, y2;
 
                 x = GetAcutalPixelValue(multiples[xAxisStrokeCount], yAxisLine.X,
-                    args.ViewDimensions.ViewValueSize.X / args.ViewPixelSize.ActualPixelSize.X);
+                    args.ValueDimensions.Width / args.PixelSize.ActualPixelSize.X);
                 y1 = xAxisLine.Y - strokeLenght / 2;
                 y2 = xAxisLine.Y + strokeLenght / 2;
 
@@ -97,14 +97,14 @@ namespace GraphomatDrawingLibUwp
             int yAxisStrokeCount;
             float actualPixelHeight, valueHeight, valueDistanceBetweenStrokes, min, max;
 
-            actualPixelHeight = args.ViewPixelSize.ActualPixelSize.Y;
-            valueHeight = args.ViewDimensions.ViewValueSize.Y;
+            actualPixelHeight = args.PixelSize.Height;
+            valueHeight = args.ValueDimensions.Height;
             valueDistanceBetweenStrokes = GetValueDistanceBetweenStrokes(actualPixelHeight, valueHeight);
 
-            min = args.ViewDimensions.TopLeftValuePoint.Y -
-              (args.BufferFactor - 1) / 2F * args.ViewDimensions.ViewValueSize.Y;
-            max = args.ViewDimensions.BottomRightValuePoint.Y +
-                (args.BufferFactor - 1) / 2F * args.ViewDimensions.ViewValueSize.Y;
+            min = args.ValueDimensions.Top -
+              (args.BufferFactor - 1) / 2F * args.ValueDimensions.Height;
+            max = args.ValueDimensions.Bottom +
+                (args.BufferFactor - 1) / 2F * args.ValueDimensions.Height;
 
             List<float> multiples = GetMultipleFromValuesInView(valueDistanceBetweenStrokes, min, max);
 
@@ -115,7 +115,7 @@ namespace GraphomatDrawingLibUwp
                 x1 = yAxisLine.X - strokeLenght / 2;
                 x2 = yAxisLine.X + strokeLenght / 2;
                 y = GetAcutalPixelValue(multiples[yAxisStrokeCount] * -1, xAxisLine.Y,
-                    -1 * args.ViewDimensions.ViewValueSize.Y / args.ViewPixelSize.ActualPixelSize.Y);
+                    -1 * args.ValueDimensions.Height / args.PixelSize.Height);
 
                 SetYAxisStroke(yAxisStrokeCount, x1, x2, y, multiples[yAxisStrokeCount] * -1);
             }

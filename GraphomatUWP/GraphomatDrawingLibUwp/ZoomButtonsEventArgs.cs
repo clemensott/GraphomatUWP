@@ -2,7 +2,7 @@
 
 namespace GraphomatDrawingLibUwp
 {
-    public  class ZoomButtonsEventArgs : EventArgs
+    public class ZoomButtonsEventArgs : EventArgs
     {
         public float ZoomFactorWidth { get; private set; }
 
@@ -14,14 +14,14 @@ namespace GraphomatDrawingLibUwp
             ZoomFactorHeight = zoomFactorHeight;
         }
 
-        internal ViewDimensions GetChangedViewDimensions(ViewDimensions viewDimensions)
+        internal ViewValueDimensions GetChangedValueDimensions(ViewValueDimensions valueDimensions)
         {
-            double viewValueWidth = viewDimensions.ViewValueSize.X / ZoomFactorWidth, 
-                viewValueHeight = viewDimensions.ViewValueSize.Y / ZoomFactorHeight,
-                middleOfViewValueX = viewDimensions.MiddleOfViewValuePoint.X,
-                middleOfViewValueY = viewDimensions.MiddleOfViewValuePoint.Y;
+            double viewValueWidth = valueDimensions.Width / ZoomFactorWidth,
+                viewValueHeight = valueDimensions.Height / ZoomFactorHeight,
+                middleOfViewValueX = valueDimensions.Middle.X,
+                middleOfViewValueY = valueDimensions.Middle.Y;
 
-            return new ViewDimensions(viewValueWidth, viewValueHeight, middleOfViewValueX, middleOfViewValueY);
+            return new ViewValueDimensions(viewValueWidth, viewValueHeight, middleOfViewValueX, middleOfViewValueY);
         }
     }
 }
