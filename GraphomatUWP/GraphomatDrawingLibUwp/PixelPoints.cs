@@ -30,7 +30,7 @@ namespace GraphomatDrawingLibUwp
 
             points = new Vector2[valuePoints.Count];
 
-            valuePerActualPixelY = args.ValueDimensions.Height / args.PixelSize.Height;
+            valuePerActualPixelY = args.ValueDimensions.Height / args.PixelSize.ActualHeight;
             originFromTopY = args.ValueDimensions.Top / valuePerActualPixelY * -1;
 
             actualPixelXPerValue = args.PixelSize.ActualPixelSize.X / args.ValueDimensions.Width;
@@ -59,7 +59,7 @@ namespace GraphomatDrawingLibUwp
             rawPixelWidth = args.PixelSize.RawPixelWidth;
             valueWidth = args.ValueDimensions.Width;
 
-            valuePerActualPixelY = args.ValueDimensions.Height / args.PixelSize.Height;
+            valuePerActualPixelY = args.ValueDimensions.Height / args.PixelSize.ActualHeight;
             originFromTopY = args.ValueDimensions.Top / valuePerActualPixelY * -1;
 
             valuesValueWidth = valuePoints[valuePoints.Count - 1].X - valuePoints[0].X;

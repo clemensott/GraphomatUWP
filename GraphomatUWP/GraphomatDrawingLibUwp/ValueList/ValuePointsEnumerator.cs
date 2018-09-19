@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Numerics;
 
-namespace GraphomatDrawingLibUwp.Values
+namespace GraphomatDrawingLibUwp.ValueList
 {
     class ValuePointsEnumerator : IEnumerator<Vector2>
     {
@@ -12,13 +12,15 @@ namespace GraphomatDrawingLibUwp.Values
 
         public ValuePointNode CurrentNode { get; private set; }
 
-        public Vector2 Current { get { return CurrentNode.Value; } }
+        public Vector2 Current { get; private set; }
 
         object IEnumerator.Current => Current;
 
         public ValuePointsEnumerator(ValuePointNode first)
         {
-            this.firstNode = first;
+            firstNode = first;
+
+            Reset();
         }
 
         public void Dispose()
@@ -29,19 +31,21 @@ namespace GraphomatDrawingLibUwp.Values
         {
             PreviousNode = CurrentNode;
             CurrentNode = CurrentNode.Next;
+            Current = CurrentNode?.Value ?? default(Vector2);
 
-            return CurrentNode == null;
+            return CurrentNode != null;
         }
 
         public void Reset()
         {
             PreviousNode = null;
-            CurrentNode = firstNode;
+            CurrentNode = new ValuePointNode(firstNode, default(Vector2));
         }
 
         public void RefreshCurrentNode()
         {
             CurrentNode = PreviousNode.Next;
+            Current = CurrentNode.Value;
         }
     }
 }

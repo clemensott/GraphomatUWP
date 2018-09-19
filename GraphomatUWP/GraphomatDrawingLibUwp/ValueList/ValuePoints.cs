@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Threading.Tasks;
 
-namespace GraphomatDrawingLibUwp.Values
+namespace GraphomatDrawingLibUwp.ValueList
 {
     class ValuePoints : IEnumerable<Vector2>
     {

@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace GraphomatDrawingLibUwp.Values
+namespace GraphomatDrawingLibUwp.ValueList
 {
     class ValuePointNode
     {

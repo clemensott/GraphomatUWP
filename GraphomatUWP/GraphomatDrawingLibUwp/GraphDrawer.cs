@@ -16,6 +16,7 @@ namespace GraphomatDrawingLibUwp
 
         private bool isMoving, valuesAreOutdated;
         private ValuePoints valuePoints;
+        private ValueList.ValuePoints valuePointList;
         private PixelPointsManager pixelManager;
         private ViewValueDimensions lastUpdatedValuesValueDimensions;
         private Graph graph;
@@ -37,19 +38,21 @@ namespace GraphomatDrawingLibUwp
         internal GraphDrawer(Graph graph, ViewArgs args)
         {
             this.graph = graph;
-            preViewArgs = args;
+            //preViewArgs = args;
 
-            valuesAreOutdated = true;
-            valuePoints = new ValuePoints(graph);
-            pixelManager = new PixelPointsManager(valuePoints);
+            //valuesAreOutdated = true;
+            //valuePoints = new ValuePoints(graph);
+            //pixelManager = new PixelPointsManager(valuePoints);
 
-            valuePoints.Recalculate(args);
-            pixelManager.Recalculate(args);
+            //valuePoints.Recalculate(args);
+            //pixelManager.Recalculate(args);
 
-            lastUpdatedValuesValueDimensions = args.ValueDimensions;
+            //lastUpdatedValuesValueDimensions = args.ValueDimensions;
+
+            valuePointList = new ValueList.ValuePoints(graph);
         }
 
-        internal void Move(Vector2 deltaValue)
+        private void Move(Vector2 deltaValue)
         {
             Vector2 deltaPixel = deltaValue / preViewArgs.ValueDimensions.Size *
                 preViewArgs.PixelSize.ActualPixelSize;
@@ -57,7 +60,7 @@ namespace GraphomatDrawingLibUwp
             pixelManager.Points.Offset -= deltaPixel;
         }
 
-        internal void MoveScrollView(ViewArgs args)
+        private void MoveScrollView(ViewArgs args)
         {
             valuesAreOutdated = AreValuesOutDated(args);
 
@@ -109,8 +112,7 @@ namespace GraphomatDrawingLibUwp
                  e.ValueDimensions.Right;
         }
 
-        private ViewArgs viewArgs;
-        public void Draw2(ICanvasResourceCreator iCreater,
+        public void DrawArray(ICanvasResourceCreator iCreater,
             CanvasDrawingSession drawingSession, Vector2 actualPixelSize, bool isSelected)
         {
             pixelManager.BeginUsing();
@@ -223,41 +225,53 @@ namespace GraphomatDrawingLibUwp
             return !(point.Y + thickness / 2 < 0 || point.Y - thickness / 2 > pixelSize.Y);
         }               //              */
 
-        private int index;
-        private float lowerX, upperX,endX;
-        private IEnumerable<IEnumerable<Vector2>> GetValuePointsSections()
+        private ViewArgs viewArgs;
+        public void DrawCustomList(ICanvasResourceCreator iCreater, CanvasDrawingSession drawingSession, ViewArgs viewArgs, bool isSelected)
         {
-            index = -1;
-            lowerX = viewArgs.ValueDimensions.Left + viewArgs.ValueDimensions.Width / viewArgs.PixelSize.Width;
-            upperX = viewArgs.ValueDimensions.Left - viewArgs.ValueDimensions.Width / viewArgs.PixelSize.Width;
-            endX = viewArgs.ValueDimensions.Right;
+            this.viewArgs = viewArgs;
 
-            IEnumerator<Vector2> enumerator = valuePoints.ToList().GetEnumerator();
+            bool reachedEnd = false;
+            float curThickness = thickness * (isSelected ? 2 : 1);
+            CanvasPathBuilder cpb = new CanvasPathBuilder(iCreater);
 
-            while (lowerX < endX)
+            float beginX = viewArgs.ValueDimensions.Left;
+            float rangeX = viewArgs.ValueDimensions.Width / viewArgs.PixelSize.RawPixelWidth;
+            float endX = viewArgs.ValueDimensions.Right;
+            IEnumerator<Vector2> enumerator = valuePointList.GetValues(beginX, rangeX, endX).GetEnumerator();
+
+            while (!reachedEnd)
             {
-                yield return GetValuePoints(enumerator);
-            }
-        }
-
-        private IEnumerable<Vector2> GetValuePoints(IEnumerator<Vector2> enumerator)
-        {
-            while (lowerX < endX)
-            {
-                index++;
-
-                if (float.IsNaN(enumerator.Current.Y))
+                while (!reachedEnd)
                 {
-                    while (float.IsNaN(enumerator.Current.Y) && enumerator.MoveNext()) index++;
-
-                    yield break;
+                    if (!enumerator.MoveNext()) reachedEnd = true;
+                    else if (!float.IsNaN(enumerator.Current.Y)) break;
                 }
 
+                cpb.BeginFigure(ToViewPoint(enumerator.Current, viewArgs));
 
+                while (!reachedEnd)
+                {
+                    if (!enumerator.MoveNext()) reachedEnd = true;
+                    else if (float.IsNaN(enumerator.Current.Y)) break;
+
+                    cpb.AddLine(ToViewPoint(enumerator.Current, viewArgs));
+                }
+
+                cpb.EndFigure(CanvasFigureLoop.Open);
             }
+
+            drawingSession.DrawGeometry(CanvasGeometry.CreatePath(cpb), Graph.Color, curThickness);
         }
 
-        public float IsNearCurve(Vector2 vector)
+        private Vector2 ToViewPoint(Vector2 valuePoint, ViewArgs args)
+        {
+            float x = (valuePoint.X - args.ValueDimensions.Left) / args.ValueDimensions.Width * args.PixelSize.ActualWidth;
+            float y = (valuePoint.Y - args.ValueDimensions.Top) / args.ValueDimensions.Height * args.PixelSize.ActualHeight;
+
+            return new Vector2(x, y);
+        }
+
+        private float IsNearCurve(Vector2 vector)
         {
             pixelManager.BeginUsing();
 

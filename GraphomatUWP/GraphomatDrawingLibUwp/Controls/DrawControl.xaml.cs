@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Graphics.Display;
 using Windows.UI.Input;
@@ -59,7 +60,7 @@ namespace GraphomatDrawingLibUwp
             Vector2 oldValue = (Vector2)e.NewValue;
             Vector2 newValue = (Vector2)e.NewValue;
 
-            if (!IsOverZero(newValue) || !IsInfinityOrNaN(newValue)) s.ValueSize = oldValue;
+            if (!IsOverZero(newValue) || IsInfinityOrNaN(newValue)) s.ValueSize = oldValue;
         }
 
 
@@ -405,10 +406,10 @@ namespace GraphomatDrawingLibUwp
 
             Axes.MoveScrollView(args);
 
-            foreach (GraphDrawer child in childrenDrawing)
-            {
-                child.MoveScrollView(args);
-            }
+            //foreach (GraphDrawer child in childrenDrawing)
+            //{
+            //    child.MoveScrollView(args);
+            //}
 
             ccDraw.Invalidate();
         }
@@ -528,16 +529,16 @@ namespace GraphomatDrawingLibUwp
             float min = float.MaxValue;
             nearestChildInRange = null;
 
-            foreach (GraphDrawer child in childrenDrawing)
-            {
-                float distance = child.IsNearCurve(vector);
+            //foreach (GraphDrawer child in childrenDrawing)
+            //{
+            //    float distance = child.IsNearCurve(vector);
 
-                if (min > distance)
-                {
-                    min = distance;
-                    nearestChildInRange = child;
-                }
-            }
+            //    if (min > distance)
+            //    {
+            //        min = distance;
+            //        nearestChildInRange = child;
+            //    }
+            //}
 
             return nearestChildInRange != null;
         }
@@ -555,9 +556,13 @@ namespace GraphomatDrawingLibUwp
                 bool isThick = i == selectedIndex || i == graphNearPointerIndex;
 
                 //  if (cbxWithBuilder.IsChecked == true)
-                childrenDrawing[i].Draw2(sender, args.DrawingSession, actualPixelSize, isThick);
+                //childrenDrawing[i].DrawArray(sender, args.DrawingSession, actualPixelSize, isThick);
+                //childrenDrawing[i].DrawCustomList(sender, args.DrawingSession, ViewArgs, isThick);
                 //else childrenDrawing[i].Draw2(sender, args.DrawingSession, actualPixelSize, isThick);
             }
+
+            ViewArgs viewArgs = ViewArgs;
+            Parallel.ForEach(childrenDrawing, (cd) => cd.DrawCustomList(sender, args.DrawingSession, viewArgs, false));
 
             //Debug((DateTime.Now - now).Ticks);
             lock (this)
@@ -570,7 +575,7 @@ namespace GraphomatDrawingLibUwp
         {
             tblDebug.Text = debugText = string.Format("{0}\n{1}", obj, debugText);
 
-            if (debugText.Length > 100) debugText.Remove(100);
+            if (debugText.Length > 100) debugText = debugText.Remove(100);
         }
     }
 }
