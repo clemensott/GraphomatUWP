@@ -10,6 +10,7 @@ namespace GraphomatDrawingLibUwp.CustomList
     class FloorList : ICustomList
     {
         private Graph graph;
+        private FloorListNode root;
 
         public FloorList(Graph graph)
         {
@@ -18,12 +19,23 @@ namespace GraphomatDrawingLibUwp.CustomList
 
         public IEnumerable<Vector2> GetValues(float beginX, float rangeX, float endX)
         {
-            throw new NotImplementedException();
+            if (root == null)
+            {
+                
+            }
+
+            FloorListNode node = root;
+
+
+
+            IEnumerator<Vector2> enumerator = new FloorListEnumerator(node);
+
+            while (enumerator.MoveNext()) yield return enumerator.Current;
         }
 
         public IEnumerator<Vector2> GetEnumerator()
         {
-            throw new NotImplementedException();
+            return new FloorListEnumerator(root);
         }
     }
 }

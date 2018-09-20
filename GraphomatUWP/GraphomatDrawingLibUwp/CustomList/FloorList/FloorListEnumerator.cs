@@ -1,32 +1,44 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GraphomatDrawingLibUwp.CustomList
 {
     class FloorListEnumerator : IEnumerator<Vector2>
     {
+        private FloorListNode begin;
+
+        public bool Ended { get; private set; }
+
+        public FloorListNode CurrentNode { get; private set; }
+
         public Vector2 Current { get; private set; }
 
         object IEnumerator.Current => Current;
 
+        public FloorListEnumerator(FloorListNode begin)
+        {
+            this.begin = begin;
+        }
+
         public void Dispose()
         {
-            throw new NotImplementedException();
         }
 
         public bool MoveNext()
         {
-            throw new NotImplementedException();
+            if (Ended) return false;
+
+            CurrentNode = CurrentNode?.Next ?? begin;
+
+            Ended = CurrentNode == null;
+            return !Ended;
         }
 
         public void Reset()
         {
-            throw new NotImplementedException();
+            CurrentNode = null;
+            Ended = false;
         }
     }
 }

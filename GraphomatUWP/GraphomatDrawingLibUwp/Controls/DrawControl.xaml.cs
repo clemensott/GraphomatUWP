@@ -21,20 +21,6 @@ namespace GraphomatDrawingLibUwp
 
     public sealed partial class DrawControl : UserControl
     {
-        private long ticks;
-
-        private void StartTimer()
-        {
-            ticks = DateTime.Now.Ticks;
-        }
-
-        private long GetTimerMillis()
-        {
-            long delta = DateTime.Now.Ticks - ticks;
-
-            return delta / TimeSpan.TicksPerMillisecond;
-        }
-
         public const float PixelBufferFactor = 3;
         private const float defaultValueWidthAndHeight = 10F, defaultMiddelOfView = 0F,
             minDistancesBetweenPointersPercent = 0.05F, showAutoZoomFactor = 1.1F;
@@ -212,7 +198,7 @@ namespace GraphomatDrawingLibUwp
 
         private GraphDrawer GetGraphDrawer(Graph graph)
         {
-            return new CustomTwoLinkListDrawer(graph, ViewArgs);
+            return new CustomDictionaryDrawer(graph, ViewArgs);
         }
 
         private void Control_Loaded(object sender, RoutedEventArgs e)

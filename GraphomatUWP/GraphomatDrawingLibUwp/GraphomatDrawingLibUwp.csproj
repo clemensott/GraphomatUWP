@@ -123,7 +123,11 @@
       <DependentUpon>DrawControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="CustomList\CustomListDrawer.cs" />
+    <Compile Include="CustomList\Dictionary\CustomDictionary.cs" />
+    <Compile Include="CustomList\Dictionary\CustomDictionaryDrawer.cs" />
+    <Compile Include="CustomList\Dictionary\ID.cs" />
     <Compile Include="CustomList\FloorList\CustomFloorListDrawer.cs" />
+    <Compile Include="CustomList\FloorList\FirstFloorListSubNode.cs" />
     <Compile Include="CustomList\FloorList\FloorList.cs" />
     <Compile Include="CustomList\FloorList\FloorListEnumerator.cs" />
     <Compile Include="CustomList\FloorList\FloorListNode.cs" />
