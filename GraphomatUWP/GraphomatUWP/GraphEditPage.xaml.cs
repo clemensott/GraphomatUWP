@@ -1,6 +1,7 @@
 ﻿using GraphomatDrawingLibUwp;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -38,13 +39,7 @@ namespace GraphomatUWP
             originalGraph.OriginalEquation = tmpGraph.OriginalEquation;
             originalGraph.Color = tmpGraph.Color;
 
-            if (!ViewModel.Current.Graphs.Contains(originalGraph))
-            {
-                List<Graph> newList = new List<Graph>(ViewModel.Current.Graphs);
-                newList.Add(originalGraph);
-
-                ViewModel.Current.Graphs = newList;
-            }
+            if (!ViewModel.Current.Graphs.Contains(originalGraph)) ViewModel.Current.Graphs.Add(originalGraph);
 
             Frame.GoBack();
         }

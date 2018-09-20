@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Numerics;
 
-namespace GraphomatDrawingLibUwp.ValueList
+namespace GraphomatDrawingLibUwp.CustomList
 {
     class ValuePointsEnumerator : IEnumerator<Vector2>
     {

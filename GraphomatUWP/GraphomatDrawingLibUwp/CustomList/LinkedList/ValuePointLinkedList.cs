@@ -4,17 +4,18 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Threading.Tasks;
 
-namespace GraphomatDrawingLibUwp.ValueList
+namespace GraphomatDrawingLibUwp.CustomList
 {
-    class ValuePoints : IEnumerable<Vector2>
+    class ValuePointLinkedList : IEnumerable<Vector2>, ICustomList
     {
-        private ValuePointNode first;
         private Graph graph;
 
         private float minX, deltaX;
         private Vector2[] points;
 
-        public ValuePoints(Graph graph) : base()
+        public ValuePointNode ViewBeginNode { get; set; }
+
+        public ValuePointLinkedList(Graph graph) : base()
         {
             this.graph = graph;
         }
@@ -34,16 +35,22 @@ namespace GraphomatDrawingLibUwp.ValueList
 
             if (points.Length > 0)
             {
-                ValuePointNode next = new ValuePointNode(null, points[points.Length - 1]);
+                ValuePointNode node = new ValuePointNode(null, points[points.Length - 1]);
 
                 for (int i = points.Length - 2; i >= 0; i--)
                 {
-                    next = new ValuePointNode(next, points[i]);
+                    node = new ValuePointNode(node, points[i]);
                 }
 
-                first = next;
+                ViewBeginNode = node;
+
+                while (node.Next != null)
+                {
+                    node.Next.Previous = node;
+                    node = node.Next;
+                }
             }
-            else first = null;
+            else ViewBeginNode = null;
         }
 
         private void CalculateIntoPoints(int index, ParallelLoopState pls)
@@ -61,9 +68,9 @@ namespace GraphomatDrawingLibUwp.ValueList
             float lowerX = beginX - rangeX / 2f;
             float upperX = beginX;
 
-            if (first == null || first.Value.X >= upperX) InsertAtBeginning(Calculate((lowerX + upperX) / 2f));
+            if (ViewBeginNode == null || ViewBeginNode.Value.X >= upperX) InsertAtBeginning(Calculate((lowerX + upperX) / 2f));
 
-            ValuePointsEnumerator enumerator = new ValuePointsEnumerator(first);
+            ValuePointsEnumerator enumerator = new ValuePointsEnumerator(ViewBeginNode);
 
             while (true)
             {
@@ -102,22 +109,34 @@ namespace GraphomatDrawingLibUwp.ValueList
 
         private void InsertAtBeginning(Vector2 point)
         {
-            first = new ValuePointNode(first, point);
+            ValuePointNode newFirst = new ValuePointNode(ViewBeginNode, point);
+
+            if (ViewBeginNode != null)
+            {
+                ViewBeginNode.Previous = newFirst;
+                ViewBeginNode = newFirst;
+            }
+            else ViewBeginNode = newFirst;
         }
 
         private ValuePointNode InsertAfter(ValuePointNode node, Vector2 point)
         {
-            return node.Next = new ValuePointNode(node.Next, point);
+            ValuePointNode newNode = new ValuePointNode(node.Next, point);
+
+            if (node.Next != null) node.Next.Previous = newNode;
+            node.Next = newNode;
+
+            return newNode;
         }
 
         public IEnumerator<Vector2> GetEnumerator()
         {
-            return new ValuePointsEnumerator(first);
+            return new ValuePointsEnumerator(ViewBeginNode);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return new ValuePointsEnumerator(first);
+            return new ValuePointsEnumerator(ViewBeginNode);
         }
     }
 }

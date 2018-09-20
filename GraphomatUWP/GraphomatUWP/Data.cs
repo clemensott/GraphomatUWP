@@ -1,6 +1,7 @@
 ﻿using GraphomatDrawingLibUwp;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Numerics;
 using System.Threading.Tasks;
@@ -19,14 +20,14 @@ namespace GraphomatUWP
 
         public Vector2 MiddleOfView { get; set; }
 
-        public List<Graph> Graphs { get; set; }
+        public ObservableCollection<Graph> Graphs { get; set; }
 
         public Data()
         {
             ValueSize = new Vector2(defaultValueWidthAndHeight, defaultValueWidthAndHeight);
             MiddleOfView = new Vector2(defaultMiddleOfView, defaultMiddleOfView);
 
-            Graphs = new List<Graph>();
+            Graphs = new ObservableCollection<Graph>();
         }
 
         public async static Task Save()

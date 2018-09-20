@@ -1,5 +1,6 @@
 ﻿using GraphomatDrawingLibUwp;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Numerics;
 using System.Threading.Tasks;
@@ -34,7 +35,7 @@ namespace GraphomatUWP
 
         private int selectedGraphIndex;
         private Vector2 valueSize, middleOfView;
-        private List<Graph> graphs;
+        private ObservableCollection<Graph> graphs;
 
         public int SelectedGraphIndex
         {
@@ -78,9 +79,9 @@ namespace GraphomatUWP
             }
         }
 
-        public List<Graph> Graphs
+        public ObservableCollection<Graph> Graphs
         {
-            get { return new List<Graph>(graphs); }
+            get { return graphs; }
             set
             {
                 if (graphs == value) return;
@@ -94,7 +95,7 @@ namespace GraphomatUWP
 
         private ViewModel()
         {
-            graphs = new List<Graph>();
+            graphs = new ObservableCollection<Graph>();
 
             selectedGraphIndex = -1;
             valueSize = new Vector2(10, 10);

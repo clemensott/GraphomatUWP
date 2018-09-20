@@ -1,11 +1,13 @@
-﻿using Microsoft.Graphics.Canvas.Geometry;
+﻿using GraphomatDrawingLibUwp.CustomList;
+using Microsoft.Graphics.Canvas.Geometry;
 using Microsoft.Graphics.Canvas.UI.Xaml;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
-using Windows.Foundation;
 using Windows.Graphics.Display;
 using Windows.UI.Input;
 using Windows.UI.Xaml;
@@ -35,18 +37,23 @@ namespace GraphomatDrawingLibUwp
 
         public const float PixelBufferFactor = 3;
         private const float defaultValueWidthAndHeight = 10F, defaultMiddelOfView = 0F,
-            minDistancesBetweenPointersPercent = 0.05F, showAutoZoomPercent = 1.1F;
+            minDistancesBetweenPointersPercent = 0.05F, showAutoZoomFactor = 1.1F;
         private const double selectPointOnGraphMaxDistancePercent = 0.1;
 
         public static readonly DependencyProperty ChildrenProperty = DependencyProperty.Register("Children",
-            typeof(List<Graph>), typeof(DrawControl), new PropertyMetadata(new List<Graph>(),
+            typeof(ObservableCollection<Graph>), typeof(DrawControl), new PropertyMetadata(new ObservableCollection<Graph>(),
                 new PropertyChangedCallback(OnChildrenPropertyChanged)));
 
         private static void OnChildrenPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
             var s = sender as DrawControl;
+            var oldValue = (ObservableCollection<Graph>)e.OldValue;
+            var newValue = (ObservableCollection<Graph>)e.NewValue;
 
-            s.children = e.NewValue as List<Graph>;
+            if (oldValue != null) oldValue.CollectionChanged -= s.OnChildrenChanged;
+            s.children = newValue;
+            if (newValue != null) newValue.CollectionChanged += s.OnChildrenChanged;
+
             s.SetGraphDrawingList();
         }
 
@@ -58,7 +65,7 @@ namespace GraphomatDrawingLibUwp
         {
             var s = sender as DrawControl;
             Vector2 oldValue = (Vector2)e.NewValue;
-            Vector2 newValue = (Vector2)e.NewValue;
+            Vector2 newValue = (Vector2)e.OldValue;
 
             if (!IsOverZero(newValue) || IsInfinityOrNaN(newValue)) s.ValueSize = oldValue;
         }
@@ -86,26 +93,22 @@ namespace GraphomatDrawingLibUwp
         {
             var s = sender as DrawControl;
             int newValue = (int)e.NewValue;
-            int oldValue = (int)e.OldValue;
 
-            if (!IsValidSelectionIndex(newValue, s.Children.Count))
-            {
-                s.SelectedGraphIndex = newValue = IsValidSelectionIndex(oldValue, s.Children.Count) ? oldValue : -1;
-            }
+            //if (!IsValidSelectionIndex(newValue, s.Children.Count)) s.SelectedGraphIndex = newValue = -1;
 
             s.ZoomToChild(s.childrenDrawing?.ElementAtOrDefault(newValue));
         }
 
         private string debugText = "";
 
-        private bool isDrew, startAverageDistanceWidthHighEnough, startAverageDistanceHeightHighEnough;
+        private bool isDrew, isMoving, startAverageDistanceWidthHighEnough, startAverageDistanceHeightHighEnough;
         private int graphNearPointerIndex;
         private float oldMiddleOfViewY, oldViewHeight;
         private double startAverageDistanceWidth, startAverageDistanceHeight;
         private List<PointerPoint> pointerPoints;
         private ViewValueDimensions startValueDimensions;
         private AxesGraph axes;
-        private List<Graph> children;
+        private ObservableCollection<Graph> children;
         private List<GraphDrawer> childrenDrawing;
         private DisplayInformation displayInfo;
 
@@ -151,9 +154,9 @@ namespace GraphomatDrawingLibUwp
             set { SetValue(MiddleOfViewProperty, value); }
         }
 
-        public List<Graph> Children
+        public ObservableCollection<Graph> Children
         {
-            get { return (List<Graph>)GetValue(ChildrenProperty); }
+            get { return (ObservableCollection<Graph>)GetValue(ChildrenProperty); }
             set { SetValue(ChildrenProperty, value); }
         }
 
@@ -176,8 +179,13 @@ namespace GraphomatDrawingLibUwp
             SelectedGraphIndex = -1;
             graphNearPointerIndex = -1;
             pointerPoints = new List<PointerPoint>();
-            children = new List<Graph>();
+            Children = new ObservableCollection<Graph>();
             childrenDrawing = new List<GraphDrawer>();
+        }
+
+        private void OnChildrenChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            SetGraphDrawingList();
         }
 
         private void SetGraphDrawingList()
@@ -190,40 +198,38 @@ namespace GraphomatDrawingLibUwp
             {
                 int index = childrenDrawing.FindIndex(x => x.Graph == graph);
 
-                if (index == -1) newChildrenDrawing.Add(new GraphDrawer(graph, ViewArgs));
+                if (index == -1) newChildrenDrawing.Add(GetGraphDrawer(graph));
                 else newChildrenDrawing.Add(childrenDrawing[index]);
             }
 
-            childrenDrawing = newChildrenDrawing;
+            if (!childrenDrawing.SequenceEqual(newChildrenDrawing))
+            {
+                childrenDrawing = newChildrenDrawing;
+
+                ZoomToChild(childrenDrawing.ElementAtOrDefault(SelectedGraphIndex));
+            }
+        }
+
+        private GraphDrawer GetGraphDrawer(Graph graph)
+        {
+            return new CustomTwoLinkListDrawer(graph, ViewArgs);
         }
 
         private void Control_Loaded(object sender, RoutedEventArgs e)
         {
             displayInfo = DisplayInformation.GetForCurrentView();
             SetGraphDrawingList();
+
+            ccDraw.Invalidate();
         }
 
         private void Control_PointerEntered(object sender, PointerRoutedEventArgs e)
         {
-            //if (enteredPointerCount == 0) foreach (GraphDrawing child in childrenDrawing) child.IsMoving = true;
-
-            //enteredPointerCount++;
-
             SetGraphNearPointerIndex(e.GetCurrentPoint(ccDraw).Position.ToVector2());
         }
 
         private void Control_PointerExited(object sender, PointerRoutedEventArgs e)
         {
-            //enteredPointerCount--;
-
-            //if (enteredPointerCount < 0) enteredPointerCount = 0;
-            //if (enteredPointerCount == 0)
-            //{
-            //    foreach (GraphDrawing child in childrenDrawing) child.IsMoving = false;
-
-            //    ccDraw.Invalidate();
-            //}
-
             if (graphNearPointerIndex == -1) return;
 
             graphNearPointerIndex = -1;
@@ -406,11 +412,6 @@ namespace GraphomatDrawingLibUwp
 
             Axes.MoveScrollView(args);
 
-            //foreach (GraphDrawer child in childrenDrawing)
-            //{
-            //    child.MoveScrollView(args);
-            //}
-
             ccDraw.Invalidate();
         }
 
@@ -440,12 +441,12 @@ namespace GraphomatDrawingLibUwp
 
         private void Control_ManipulationStarted(object sender, ManipulationStartedRoutedEventArgs e)
         {
-            foreach (GraphDrawer child in childrenDrawing) child.IsMoving = true;
+            isMoving = true;
         }
 
         private void Control_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
         {
-            foreach (GraphDrawer child in childrenDrawing) child.IsMoving = false;
+            isMoving = false;
 
             ccDraw.Invalidate();
         }
@@ -496,7 +497,7 @@ namespace GraphomatDrawingLibUwp
                 child.GetMinAndMaxValue(out minValue, out maxValue);
 
                 MiddleOfView = new Vector2(MiddleOfView.X, (maxValue + minValue) / -2F);
-                ValueSize = new Vector2(ValueSize.X, (maxValue - minValue) * showAutoZoomPercent);
+                ValueSize = new Vector2(ValueSize.X, (maxValue - minValue) * showAutoZoomFactor);
             }
 
             SetViewDimensionToAxesAndChildren();
@@ -506,7 +507,7 @@ namespace GraphomatDrawingLibUwp
         {
             GraphDrawer tappedChild;
 
-            RestoreOldValueDimensions();
+            if (SelectedGraphIndex != -1) RestoreOldValueDimensions();
 
             if (!GetNearestChildDrawingInRange(e.GetPosition(ccDraw).ToVector2(), out tappedChild)) return;
             if (DoubleTappedCurve == null) return;
@@ -529,16 +530,16 @@ namespace GraphomatDrawingLibUwp
             float min = float.MaxValue;
             nearestChildInRange = null;
 
-            //foreach (GraphDrawer child in childrenDrawing)
-            //{
-            //    float distance = child.IsNearCurve(vector);
+            foreach (GraphDrawer child in childrenDrawing)
+            {
+                float distance = child.IsNearCurve(vector);
 
-            //    if (min > distance)
-            //    {
-            //        min = distance;
-            //        nearestChildInRange = child;
-            //    }
-            //}
+                if (min > distance)
+                {
+                    min = distance;
+                    nearestChildInRange = child;
+                }
+            }
 
             return nearestChildInRange != null;
         }
@@ -547,22 +548,26 @@ namespace GraphomatDrawingLibUwp
         {
             int selectedIndex = SelectedGraphIndex;
             Vector2 actualPixelSize = CurrentViewPixelSize.ActualPixelSize;
-            CanvasGeometry[] gemotries = new CanvasGeometry[childrenDrawing.Count];
+            ViewArgs viewArgs = ViewArgs;
+
             Axes.Draw(args.DrawingSession, actualPixelSize);
 
-            //DateTime now = DateTime.Now;
-            for (int i = 0; i < childrenDrawing.Count; i++)
+            Parallel.For(0, childrenDrawing.Count, (i) =>
             {
+                GraphDrawer childDrawing = childrenDrawing[i];
                 bool isThick = i == selectedIndex || i == graphNearPointerIndex;
+                float thickness = GraphDrawer.Thickness * (isThick ? 2 : 1);
 
-                //  if (cbxWithBuilder.IsChecked == true)
-                //childrenDrawing[i].DrawArray(sender, args.DrawingSession, actualPixelSize, isThick);
-                //childrenDrawing[i].DrawCustomList(sender, args.DrawingSession, ViewArgs, isThick);
-                //else childrenDrawing[i].Draw2(sender, args.DrawingSession, actualPixelSize, isThick);
-            }
+                childDrawing.ViewArgs = viewArgs;
 
-            ViewArgs viewArgs = ViewArgs;
-            Parallel.ForEach(childrenDrawing, (cd) => cd.DrawCustomList(sender, args.DrawingSession, viewArgs, false));
+                CanvasGeometry geometry = childDrawing.Draw(sender, isMoving);
+
+                if (isMoving)
+                {
+                    args.DrawingSession.DrawGeometry(geometry, childDrawing.Graph.Color, thickness);
+                }
+                else lock (childrenDrawing) args.DrawingSession.DrawGeometry(geometry, childDrawing.Graph.Color, thickness);
+            });
 
             //Debug((DateTime.Now - now).Ticks);
             lock (this)

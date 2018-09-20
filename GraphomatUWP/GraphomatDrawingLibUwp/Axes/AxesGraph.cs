@@ -54,7 +54,7 @@ namespace GraphomatDrawingLibUwp
             valuePerAcutalPixelX = args.ValueDimensions.Width / args.PixelSize.ActualPixelSize.X;
             valuePerAcutalPixelY = args.ValueDimensions.Height / args.PixelSize.ActualHeight;
 
-            xAxisLine.Y = args.ValueDimensions.Top / valuePerAcutalPixelY * -1;
+            xAxisLine.Y = args.ValueDimensions.Bottom / valuePerAcutalPixelY * -1;
             yAxisLine.X = args.ValueDimensions.Left / valuePerAcutalPixelX * -1;
 
             xAxisLine.X2 = args.PixelSize.ActualPixelSize.X;
@@ -101,9 +101,9 @@ namespace GraphomatDrawingLibUwp
             valueHeight = args.ValueDimensions.Height;
             valueDistanceBetweenStrokes = GetValueDistanceBetweenStrokes(actualPixelHeight, valueHeight);
 
-            min = args.ValueDimensions.Top -
+            min = args.ValueDimensions.Bottom -
               (args.BufferFactor - 1) / 2F * args.ValueDimensions.Height;
-            max = args.ValueDimensions.Bottom +
+            max = args.ValueDimensions.Top +
                 (args.BufferFactor - 1) / 2F * args.ValueDimensions.Height;
 
             List<float> multiples = GetMultipleFromValuesInView(valueDistanceBetweenStrokes, min, max);
@@ -152,7 +152,7 @@ namespace GraphomatDrawingLibUwp
 
         private double GetFactor(double aboutValueDistanceBetweenStrokes)
         {
-            if (aboutValueDistanceBetweenStrokes <= 0) { }
+            if (aboutValueDistanceBetweenStrokes <= 0) throw new Exception("Distance between axes can not be smaller than zero.");
 
             if (aboutValueDistanceBetweenStrokes < 1)
             {

@@ -43,10 +43,7 @@ namespace GraphomatUWP
         {
             Graph graph = (sender as SymbolIcon).DataContext as Graph;
 
-            List<Graph> newList = new List<Graph>(ViewModel.Current.Graphs);
-            newList.Remove(graph);
-
-            ViewModel.Current.Graphs = newList;
+            ViewModel.Current.Graphs.Add(graph);
         }
 
         private void AddGraph_Click(object sender, RoutedEventArgs e)
@@ -68,15 +65,12 @@ namespace GraphomatUWP
 
         private void AddRandom_Click(object sender, RoutedEventArgs e)
         {
-            List<Graph> graphs = ViewModel.Current.Graphs;
-            graphs.Add(RandomGraph.Get());
+            ViewModel.Current.Graphs.Add(RandomGraph.Get());
 
-            for (int i = 0; i < 10; i++)
-            {
-             //   graphs.Add(new RandomGraph());
-            }
-
-            ViewModel.Current.Graphs = graphs;
+            //for (int i = 0; i < 10; i++)
+            //{
+            //       graphs.Add(new RandomGraph());
+            //}
         }
     }
 }

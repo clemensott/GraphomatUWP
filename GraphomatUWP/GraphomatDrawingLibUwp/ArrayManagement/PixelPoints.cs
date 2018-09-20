@@ -3,10 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace GraphomatDrawingLibUwp
+namespace GraphomatDrawingLibUwp.ArrayManagement
 {
     class PixelPoints : IEnumerable<Vector2>
     {
@@ -26,12 +24,11 @@ namespace GraphomatDrawingLibUwp
 
         public void Calculate(ViewArgs args)
         {
-            float valuePerActualPixelY, originFromTopY, actualPixelXPerValue, leftSideX;
+            float valuePerActualPixelY, actualPixelXPerValue, leftSideX;
 
             points = new Vector2[valuePoints.Count];
 
             valuePerActualPixelY = args.ValueDimensions.Height / args.PixelSize.ActualHeight;
-            originFromTopY = args.ValueDimensions.Top / valuePerActualPixelY * -1;
 
             actualPixelXPerValue = args.PixelSize.ActualPixelSize.X / args.ValueDimensions.Width;
             leftSideX = args.ValueDimensions.Left;
@@ -40,7 +37,7 @@ namespace GraphomatDrawingLibUwp
             {
                 Vector2 curValue = valuePoints[i];
                 float curPixelPointX = (curValue.X - leftSideX) * actualPixelXPerValue;
-                float curPixelPointY = originFromTopY - curValue.Y / valuePerActualPixelY;
+                float curPixelPointY = (-args.ValueDimensions.Bottom - curValue.Y) / valuePerActualPixelY;
 
                 points[i] = new Vector2(curPixelPointX, curPixelPointY);
             }
@@ -51,7 +48,7 @@ namespace GraphomatDrawingLibUwp
         public void Recalculate(ViewArgs args)
         {
             int pixelPointsLength, pixelPointsIndex = 0;
-            float valuePerActualPixelY, originFromTopY, selectValueMin, valuesValueWidth, valuePerRawPixelX,
+            float valuePerActualPixelY, selectValueMin, valuesValueWidth, valuePerRawPixelX,
                 selectValueMax, rawPixelXPerValues, actualPixelXPerValue, leftSideX, rawPixelWidth, valueWidth;
 
             if (valuePoints.Count < 2) return;
@@ -60,7 +57,6 @@ namespace GraphomatDrawingLibUwp
             valueWidth = args.ValueDimensions.Width;
 
             valuePerActualPixelY = args.ValueDimensions.Height / args.PixelSize.ActualHeight;
-            originFromTopY = args.ValueDimensions.Top / valuePerActualPixelY * -1;
 
             valuesValueWidth = valuePoints[valuePoints.Count - 1].X - valuePoints[0].X;
             pixelPointsLength = Convert.ToInt32(rawPixelWidth * valuesValueWidth / valueWidth) + 1;
@@ -83,7 +79,7 @@ namespace GraphomatDrawingLibUwp
 
                 if (selectValueMin <= nearAllowedValue && nearAllowedValue < selectValueMax)
                 {
-                    float currentPixelPointY = originFromTopY - curValue.Y / valuePerActualPixelY;
+                    float currentPixelPointY = (-args.ValueDimensions.Bottom - curValue.Y) / valuePerActualPixelY;
                     float currentPixelPointX = (curValue.X - leftSideX) * actualPixelXPerValue;
 
                     points[pixelPointsIndex] = new Vector2(currentPixelPointX, currentPixelPointY);
