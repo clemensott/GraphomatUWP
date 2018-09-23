@@ -122,6 +122,7 @@
     <Compile Include="Controls\DrawControl.xaml.cs">
       <DependentUpon>DrawControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CustomList\Bool.cs" />
     <Compile Include="CustomList\CustomListDrawer.cs" />
     <Compile Include="CustomList\Dictionary\CustomDictionary.cs" />
     <Compile Include="CustomList\Dictionary\CustomDictionaryDrawer.cs" />

@@ -3,13 +3,13 @@ using System.Numerics;
 
 namespace GraphomatDrawingLibUwp.CustomList
 {
-    class CustomFloorListDrawer : CustomListDrawer
+    class CustomFloorListDrawer : CustomListDrawer<FloorList>
     {
         public CustomFloorListDrawer(Graph graph, ViewArgs args) : base(graph, args)
         {
         }
 
-        protected override ICustomList CreateValuePointList()
+        protected override FloorList CreateValuePointList()
         {
             return new FloorList(Graph);
         }

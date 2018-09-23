@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using Windows.UI.Xaml.Media;
 
 namespace GraphomatDrawingLibUwp
 {
@@ -48,9 +47,9 @@ namespace GraphomatDrawingLibUwp
 
         protected abstract void MoveScrollView();
 
-        public float IsNearCurve(Vector2 refPoint)
+        public bool IsNearCurve(Vector2 refPoint, out float minDistance)
         {
-            float minDistance = float.MaxValue;
+            minDistance = float.MaxValue;
             Vector2[] points = GetPoints().Where(IsRelevantInView).Select(ToViewPoint).ToArray();
             Vector2 prePoint = points.FirstOrDefault();
 
@@ -63,7 +62,7 @@ namespace GraphomatDrawingLibUwp
                 prePoint = viewPoint;
             }
 
-            return minDistance;
+            return minDistance <= nearDistance;
         }
 
         public void GetMinAndMaxValue(out float min, out float max)

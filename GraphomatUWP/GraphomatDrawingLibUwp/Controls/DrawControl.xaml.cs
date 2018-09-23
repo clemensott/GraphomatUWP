@@ -518,9 +518,9 @@ namespace GraphomatDrawingLibUwp
 
             foreach (GraphDrawer child in childrenDrawing)
             {
-                float distance = child.IsNearCurve(vector);
+                float distance;
 
-                if (min > distance)
+                if (child.IsNearCurve(vector, out distance) && distance < min)
                 {
                     min = distance;
                     nearestChildInRange = child;

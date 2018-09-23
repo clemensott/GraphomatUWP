@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -36,6 +37,11 @@ namespace GraphomatDrawingLibUwp.CustomList
         public IEnumerator<Vector2> GetEnumerator()
         {
             return new FloorListEnumerator(root);
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

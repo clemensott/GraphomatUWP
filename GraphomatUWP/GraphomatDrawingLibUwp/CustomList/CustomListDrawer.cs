@@ -1,26 +1,26 @@
 ﻿using Microsoft.Graphics.Canvas;
 using Microsoft.Graphics.Canvas.Geometry;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 
 namespace GraphomatDrawingLibUwp.CustomList
 {
-    internal abstract class CustomListDrawer : GraphDrawer
+    internal abstract class CustomListDrawer<T> : GraphDrawer where T: ICustomList
     {
-        protected ValuePointLinkedList valuePointList;
+        protected T valuePointList;
 
         public CustomListDrawer(Graph graph, ViewArgs args) : base(graph, args)
         {
-            valuePointList = new ValuePointLinkedList(graph);
+            valuePointList = CreateValuePointList();
         }
 
-        protected abstract ICustomList CreateValuePointList();
+        protected abstract T CreateValuePointList();
 
         public override CanvasGeometry Draw(ICanvasResourceCreator iCreater, bool isMoving)
         {
             if (ViewArgs.PixelSize.RawPixelWidth == 0) return null;
 
-            bool reachedEnd = false;
             CanvasPathBuilder cpb = new CanvasPathBuilder(iCreater);
 
             float beginX = ViewArgs.ValueDimensions.Left;
@@ -29,30 +29,74 @@ namespace GraphomatDrawingLibUwp.CustomList
 
             if (isMoving) rangeX *= (1 + movingSkipPoints);
 
-            IEnumerator<Vector2> enumerator = valuePointList.GetValues(beginX, rangeX, endX).GetEnumerator();
+            IEnumerable<IEnumerable<Vector2>> valueSections = GetSections(valuePointList.GetValues(beginX, rangeX, endX));
+            IEnumerable<IEnumerable<Vector2>> viewSections = valueSections.Select(s => s.Select(ToViewPoint));
 
-            while (!reachedEnd)
+            foreach (IEnumerable<Vector2> section in viewSections)
             {
-                while (!reachedEnd)
-                {
-                    if (!enumerator.MoveNext()) reachedEnd = true;
-                    else if (!float.IsNaN(enumerator.Current.Y)) break;
-                }
+                IEnumerator<Vector2> enumerator = section.GetEnumerator();
+                enumerator.MoveNext();
 
-                cpb.BeginFigure(ToViewPoint(enumerator.Current));
+                cpb.BeginFigure(enumerator.Current);
 
-                while (!reachedEnd)
-                {
-                    if (!enumerator.MoveNext()) reachedEnd = true;
-                    else if (float.IsNaN(enumerator.Current.Y)) break;
-
-                    cpb.AddLine(ToViewPoint(enumerator.Current));
-                }
+                while (enumerator.MoveNext()) cpb.AddLine(enumerator.Current);
 
                 cpb.EndFigure(CanvasFigureLoop.Open);
             }
 
             return CanvasGeometry.CreatePath(cpb);
+        }
+
+        private IEnumerable<IEnumerable<Vector2>> GetSections(IEnumerable<Vector2> points)
+        {
+            Bool ended = new Bool(false);
+
+            IEnumerator<Vector2> enumerator = points.GetEnumerator();
+
+            while (!ended)
+            {
+                yield return GetSection(enumerator, ended);
+            }
+        }
+
+        private IEnumerable<Vector2> GetSection(IEnumerator<Vector2> enumerator, Bool ended)
+        {
+            while (true)
+            {
+                if (!enumerator.MoveNext())
+                {
+                    ended.Value = true;
+                    yield break;
+                }
+
+                Vector2 first = enumerator.Current;
+
+                if (!enumerator.MoveNext())
+                {
+                    ended.Value = true;
+                    yield break;
+                }
+
+                if (float.IsNaN(enumerator.Current.Y)) continue;
+
+                yield return first;
+                yield return enumerator.Current;
+
+                break;
+            }
+
+            while (true)
+            {
+                if (!enumerator.MoveNext())
+                {
+                    ended.Value = true;
+                    yield break;
+                }
+
+                if (float.IsNaN(enumerator.Current.Y)) yield break;
+
+                yield return enumerator.Current;
+            }
         }
 
         protected override IEnumerable<Vector2> GetPoints()

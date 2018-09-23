@@ -2,13 +2,13 @@
 
 namespace GraphomatDrawingLibUwp.CustomList
 {
-    class CustomDictionaryDrawer : CustomListDrawer
+    class CustomDictionaryDrawer : CustomListDrawer<CustomDictionary>
     {
         public CustomDictionaryDrawer(Graph graph, ViewArgs args) : base(graph, args)
         {
         }
 
-        protected override ICustomList CreateValuePointList()
+        protected override CustomDictionary CreateValuePointList()
         {
             return new CustomDictionary(Graph);
         }

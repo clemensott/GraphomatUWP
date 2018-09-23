@@ -2,14 +2,14 @@
 
 namespace GraphomatDrawingLibUwp.CustomList
 {
-    internal class CustomTwoLinkListDrawer : CustomListDrawer
+    internal class CustomTwoLinkListDrawer : CustomListDrawer<ValuePointLinkedList>
     {
         public CustomTwoLinkListDrawer(Graph graph, ViewArgs args) : base(graph, args)
         {
             UpdateFirstNode();
         }
 
-        protected override ICustomList CreateValuePointList()
+        protected override ValuePointLinkedList CreateValuePointList()
         {
             return new ValuePointLinkedList(Graph);
         }

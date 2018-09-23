@@ -4,22 +4,54 @@ namespace GraphomatDrawingLibUwp.CustomList
 {
     struct ID : IEquatable<ID>
     {
-        public int Offset { get; set; }
+        private int offset, digits, digitsLength;
 
-        public int Digits { get; set; }
+        public int Offset
+        {
+            get { return offset; }
+            set
+            {
+                offset = value;
+                Value = GetValue();
+            }
+        }
+
+        public int Digits
+        {
+            get { return digits; }
+            set
+            {
+                digits = value;
+                Value = GetValue();
+            }
+        }
+
+        public int DigitsLength
+        {
+            get { return digitsLength; }
+            set { digitsLength = value; }
+        }
+
+
+        public float Value { get; private set; }
 
         public ID(int offset, int digits) : this()
         {
             Offset = offset;
             Digits = digits;
+
+            Value = GetValue();
         }
 
         public ID(float value, float minPrecision)
         {
-            Offset = (int)Math.Floor(Math.Log10(value));
+            offset = (int)Math.Floor(Math.Log10(Math.Abs(value)));
 
-            int minPrecisionDigits = (int)Math.Log10(minPrecision);
-            Digits = (int)(Math.Pow(0.1, minPrecisionDigits) * value);
+            int minPrecisionDigits = (int)Math.Log10(minPrecision) - 1;
+            digits = (int)(Math.Pow(0.1, minPrecisionDigits) * value);
+            digitsLength = (int)Math.Log10(Math.Abs(digits));
+
+            Value = GetValue(offset, digits, digitsLength);
         }
 
         public ID GetNext()
@@ -36,9 +68,14 @@ namespace GraphomatDrawingLibUwp.CustomList
             return this;
         }
 
-        public float GetValue()
+        private float GetValue()
         {
-            return (float)(Math.Pow(10, Offset) * Digits);
+            return GetValue(Offset, Digits, DigitsLength);
+        }
+
+        public static float GetValue(int offset, int digits, int digitsLength)
+        {
+            return (float)(Math.Pow(10, offset - digitsLength) * digits);
         }
 
         public override bool Equals(object obj)
@@ -48,12 +85,12 @@ namespace GraphomatDrawingLibUwp.CustomList
 
         public bool Equals(ID other)
         {
-            return GetValue() == other.GetValue();
+            return Value == Value;
         }
 
         public override int GetHashCode()
         {
-            return GetValue().GetHashCode();
+            return Value.GetHashCode();
         }
     }
 }
