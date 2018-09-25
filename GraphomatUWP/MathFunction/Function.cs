@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace MathFunction
@@ -110,16 +107,16 @@ namespace MathFunction
 
         public static string GetRandomEquation(Random ran)
         {
-            var allTypes = Parts.GetAllTypes();
+            Part[] allTypes = Parts.GetAllTypes().ToArray();
 
             int partsLenght = ran.Next(5, 20);
             string equation = "";
 
             for (int i = 0; i < partsLenght; i++)
             {
-                int partType = ran.Next(allTypes.Count + 1);
+                int partType = ran.Next(allTypes.Length + 1);
 
-                equation += partType == allTypes.Count ? GetRandomNumber(ran) : allTypes[partType].ToEquationString();
+                equation += partType == allTypes.Length ? GetRandomNumber(ran) : allTypes[partType].ToEquationString();
             }
 
             return equation;

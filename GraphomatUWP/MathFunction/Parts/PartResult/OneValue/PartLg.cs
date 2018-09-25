@@ -1,22 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace MathFunction
 {
     class PartLg : PartResultOneValue
     {
-        protected override string[] GetLowerLooks()
+        protected override IEnumerable<string> GetLowerLooks()
         {
-            return new string[] { "lg" };
+            yield return "lg" ;
         }
 
         public override double GetResult(double x)
         {
             return Math.Log10(valueRight.GetResult(x));
-        }
-
-        public override Part Clone()
-        {
-            return new PartLg();
         }
     }
 }

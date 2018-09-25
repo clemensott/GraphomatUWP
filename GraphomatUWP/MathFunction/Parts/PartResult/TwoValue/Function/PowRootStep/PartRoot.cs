@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace MathFunction
 {
@@ -9,19 +10,14 @@ namespace MathFunction
             return PriorityType.RightHigher;
         }
 
-        protected override string[] GetLowerLooks()
+        protected override IEnumerable<string> GetLowerLooks()
         {
-            return new string[] { "r" };
+            yield return "r" ;
         }
 
         public override double GetResult(double x)
         {
             return Math.Pow(valueRight.GetResult(x), 1 / valueLeft.GetResult(x));
-        }
-
-        public override Part Clone()
-        {
-            return new PartRoot();
         }
     }
 }

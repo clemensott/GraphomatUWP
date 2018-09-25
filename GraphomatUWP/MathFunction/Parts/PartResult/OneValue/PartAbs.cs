@@ -1,22 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace MathFunction
 {
     class PartAbs : PartResultOneValue
     {
-        protected override string[] GetLowerLooks()
+        protected override IEnumerable<string> GetLowerLooks()
         {
-            return new string[] { "abs" };
+            yield return "abs" ;
         }
 
         public override double GetResult(double x)
         {
             return Math.Abs(valueRight.GetResult(x));
-        }
-
-        public override Part Clone()
-        {
-            return new PartAbs();
         }
     }
 }

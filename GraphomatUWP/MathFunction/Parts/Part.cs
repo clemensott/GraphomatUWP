@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MathFunction
 {
@@ -37,12 +35,12 @@ namespace MathFunction
 
         protected abstract bool WasAbleToChangeIfNecessary(Parts parts, int thisIndex, PartRuleType nextType);
 
-        protected virtual string[] GetLowerLooks()
+        protected virtual IEnumerable<string> GetLowerLooks()
         {
-            return new string[] { "?" };
+            yield return GetType().Name;
         }
 
-        public bool IsType(Equation equation)
+        public virtual bool Matches(Equation equation)
         {
             foreach (string look in GetLowerLooks())
             {
@@ -52,23 +50,23 @@ namespace MathFunction
             return false;
         }
 
-        private bool LooksLike(Equation equation, string look)
+        private static bool LooksLike(Equation equation, string look)
         {
-            for (int i = 0; i < look.Length; i++)
-            {
-                if (i >= equation.Count || char.ToLower(equation[i]) != look[i]) return false;
-            }
+            if (!equation.ToString().StartsWith(look)) return false;
 
             for (int i = 0; i < look.Length; i++) equation.RemoveAt(0);
 
             return true;
         }
 
-        public abstract Part Clone();
-
         public virtual string ToEquationString()
         {
-            return GetLowerLooks()[0];
+            return GetLowerLooks().FirstOrDefault();
+        }
+
+        public override string ToString()
+        {
+            return ToEquationString();
         }
     }
 }

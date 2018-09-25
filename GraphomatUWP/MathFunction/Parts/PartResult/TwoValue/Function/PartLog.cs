@@ -1,12 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace MathFunction
 {
     class PartLog : PartResultTwoValue
     {
-        protected override string[] GetLowerLooks()
+        protected override IEnumerable<string> GetLowerLooks()
         {
-            return new string[] { "log" };
+            yield return "log";
         }
 
         public override int GetPriorityValue()
@@ -22,11 +23,6 @@ namespace MathFunction
         public override double GetResult(double x)
         {
             return Math.Log(valueLeft.GetResult(x), valueLeft.GetResult(x));
-        }
-
-        public override Part Clone()
-        {
-            return new PartLog();
         }
     }
 }

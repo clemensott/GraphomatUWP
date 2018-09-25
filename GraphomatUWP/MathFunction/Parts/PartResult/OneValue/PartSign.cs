@@ -1,22 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace MathFunction
 {
     class PartSign : PartResultOneValue
     {
-        protected override string[] GetLowerLooks()
+        protected override IEnumerable<string> GetLowerLooks()
         {
-            return new string[] { "-" };
+            yield return "-" ;
         }
 
         public override double GetResult(double x)
         {
             return -1 * valueRight.GetResult(x);
-        }
-
-        public override Part Clone()
-        {
-            return new PartSign();
         }
     }
 }

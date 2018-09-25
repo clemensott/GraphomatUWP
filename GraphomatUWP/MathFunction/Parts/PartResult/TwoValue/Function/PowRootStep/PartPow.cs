@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace MathFunction
 {
@@ -9,9 +10,9 @@ namespace MathFunction
             return PriorityType.LeftHigher;
         }
 
-        protected override string[] GetLowerLooks()
+        protected override IEnumerable<string> GetLowerLooks()
         {
-            return new string[] { "^" };
+            yield return "^" ;
         }
 
         public override double GetResult(double x)
@@ -22,11 +23,6 @@ namespace MathFunction
         public override string ToEquationString()
         {
             return "^";
-        }
-
-        public override Part Clone()
-        {
-            return new PartRoot();
         }
     }
 }

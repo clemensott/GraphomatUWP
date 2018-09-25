@@ -1,23 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MathFunction
 {
     class PartBracket : PartValue
     {
-        private static readonly char[] allDoubleChars = new char[] { '0', '1', '2',
-            '3', '4', '5', '6', '7', '8', '9', '.', ',', 'e', 'E', '+', '-' };
-        private static readonly char[] startDoubleChars = new char[] { '0', '1', '2',
-            '3', '4', '5', '6', '7', '8', '9', '.', ',' };
-
         private Equation equation;
         private Parts parts;
 
-        public PartBracket(string equation) : this(Equation.GetBasicImprovedEquation(equation))
+        public PartBracket()
         {
+        }
+
+        public PartBracket(string equation)
+        {
+            this.equation = GetBasicImprovedEquation(equation);
+
+            SetParts();
             SetValues(null);
             ImproveParts();
         }
@@ -29,20 +29,45 @@ namespace MathFunction
             SetParts();
         }
 
-        private void SetParts()
+        public Equation GetBasicImprovedEquation(string equation)
         {
-            parts = GetAsParts();
+            int level = 0;
+            string improvedEquation = "";
 
-            CheckIfEquationIsPossible();
+            foreach (char c in equation)
+            {
+                if (c != ' ')
+                {
+                    if (IsBeginLook(c)) level++;
+                    else if (IsEndLook(c)) level--;
+
+                    if (level < 0)
+                    {
+                        level++;
+                        improvedEquation = GetBeginLooks().First() + improvedEquation;
+                    }
+
+                    improvedEquation += c;
+                }
+            }
+
+            while (level > 0)
+            {
+                improvedEquation += GetEndLooks().First();
+                level--;
+            }
+
+            if (improvedEquation == "") throw new ArgumentException("Equation is null or empty.");
+
+            return new Equation(improvedEquation);
         }
 
-        private Parts GetAsParts()
+        private void SetParts()
         {
             parts = new Parts();
 
             GoThroughEquation();
-
-            return parts;
+            CheckIfEquationIsPossible();
         }
 
         private void GoThroughEquation()
@@ -51,66 +76,80 @@ namespace MathFunction
             {
                 Part addPart;
 
-                if (IsHeigherBracket(out addPart) || IsSimpleValue(out addPart) ||
-                    IsOtherPart(out addPart)) parts.Add(addPart);
+                if (IsPart(out addPart)) parts.Add(addPart);
                 else equation.RemoveAt(0);
             }
         }
 
-        private bool IsHeigherBracket(out Part bracket)
+        public override bool Matches(Equation equation)
         {
-            if (equation[0] != '(')
+            if (!IsBeginLook(equation[0])) return false;
+
+            this.equation = GetShorted(equation);
+            SetParts();
+
+            return true;
+        }
+
+        public Equation GetShorted(Equation equation)
+        {
+            int level = 1;
+            string higherLevelEquation = "";
+
+            equation.RemoveAt(0);
+
+            while (equation.Count > 0)
             {
-                bracket = null;
-                return false;
+                char c = equation[0];
+                equation.RemoveAt(0);
+
+                if (IsBeginLook(c)) level++;
+                else if (IsEndLook(c)) level--;
+
+                if (level == 0) return new Equation(higherLevelEquation);
+
+                higherLevelEquation += c;
             }
 
-            bracket = new PartBracket(Equation.GetShorted(equation));
-            return true;
+            return new Equation();
         }
 
-        private bool IsSimpleValue(out Part value)
+        private bool IsBeginLook(char c)
         {
-            value = null;
-
-            if (!startDoubleChars.Contains(equation[0])) return false;
-
-            string simpleValueText = "";
-            double preValue = -1, curValue;
-
-            do
-            {
-                simpleValueText += equation[0];
-
-                if (!double.TryParse(simpleValueText, out curValue))
-                {
-                    if (preValue == -1) return false;
-
-                    value = new PartSimpleValue(preValue);
-                    return true;
-                }
-
-                equation.RemoveAt(0);
-                preValue = curValue;
-
-            } while (equation.Count > 0 && allDoubleChars.Contains(equation[0]));
-
-            value = new PartSimpleValue(simpleValueText);
-            return true;
+            return GetBeginLooks().Any(l => l == c);
         }
 
-        private bool IsOtherPart(out Part otherPart)
+        private bool IsEndLook(char c)
+        {
+            return GetEndLooks().Any(l => l == c);
+        }
+
+        private IEnumerable<char> GetBeginLooks()
+        {
+            yield return '(';
+            yield return '[';
+            yield return '{';
+        }
+
+        private IEnumerable<char> GetEndLooks()
+        {
+            yield return ')';
+            yield return ']';
+            yield return '}';
+        }
+
+        private bool IsPart(out Part part)
         {
             foreach (Part partType in Parts.GetAllTypes())
             {
-                if (partType.IsType(equation))
+                if (partType.Matches(equation))
                 {
-                    otherPart = partType;
+                    part = partType;
                     return true;
                 }
             }
 
-            otherPart = null;
+            part = null;
             return false;
         }
 
@@ -162,11 +201,6 @@ namespace MathFunction
             return iResult.GetRelativePriority(relativeTo);
         }
 
-        public override Part Clone()
-        {
-            throw new NotImplementedException();
-        }
-
         public override void SetValues(Parts parts)
         {
             valueRight = this.parts.GetPartResultWithLowestRelativePriority();
@@ -177,14 +211,7 @@ namespace MathFunction
 
         public override string ToEquationString()
         {
-            string output = "(";
-
-            foreach (Part part in parts)
-            {
-                output += part.ToEquationString();
-            }
-
-            return output + ")";
+            return "(" + string.Concat(parts) + ")";
         }
     }
 }

@@ -532,6 +532,7 @@ namespace GraphomatDrawingLibUwp
 
         private void CanvasControl_Draw(CanvasControl sender, CanvasDrawEventArgs args)
         {
+            System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
             int selectedIndex = SelectedGraphIndex;
             Vector2 actualPixelSize = CurrentViewPixelSize.ActualPixelSize;
             ViewArgs viewArgs = ViewArgs;
@@ -548,14 +549,13 @@ namespace GraphomatDrawingLibUwp
 
                 CanvasGeometry geometry = childDrawing.Draw(sender, isMoving);
 
-                if (isMoving)
-                {
-                    args.DrawingSession.DrawGeometry(geometry, childDrawing.Graph.Color, thickness);
-                }
+                if (geometry == null) return;
+
+                if (isMoving) args.DrawingSession.DrawGeometry(geometry, childDrawing.Graph.Color, thickness);
                 else lock (childrenDrawing) args.DrawingSession.DrawGeometry(geometry, childDrawing.Graph.Color, thickness);
             });
 
-            //Debug((DateTime.Now - now).Ticks);
+            Debug((sw.ElapsedTicks + " ticks").PadLeft(18));
             lock (this)
             {
                 isDrew = true;
@@ -564,9 +564,10 @@ namespace GraphomatDrawingLibUwp
 
         private void Debug(object obj)
         {
-            tblDebug.Text = debugText = string.Format("{0}\n{1}", obj, debugText);
+            tblDebug.Text = debugText = string.Format("{0}\r\n{1}", obj, debugText);
 
-            if (debugText.Length > 100) debugText = debugText.Remove(100);
+            int maxLength = 20 * 10;
+            if (debugText.Length > maxLength) debugText = debugText.Remove(maxLength);
         }
     }
 }

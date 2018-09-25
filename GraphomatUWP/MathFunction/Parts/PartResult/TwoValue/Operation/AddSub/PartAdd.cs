@@ -10,9 +10,9 @@ namespace MathFunction
             return PriorityType.Same;
         }
         
-        protected override string[] GetLowerLooks()
+        protected override IEnumerable<string> GetLowerLooks()
         {
-            return new string[] { "+" };
+            yield return "+" ;
         }
 
         public override void ChangeToPartSignIfSub(Parts parts)
@@ -23,11 +23,6 @@ namespace MathFunction
         public override double GetResult(double x)
         {
             return valueLeft.GetResult(x) + valueRight.GetResult(x);
-        }
-
-        public override Part Clone()
-        {
-            return new PartAdd();
         }
     }
 }

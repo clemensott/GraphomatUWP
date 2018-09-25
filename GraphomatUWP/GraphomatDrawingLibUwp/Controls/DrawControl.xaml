@@ -20,6 +20,7 @@
                               Tapped="ccDraw_Tapped" DoubleTapped="ccDraw_DoubleTapped"/>
 
         <local:ZoomButtonsControl Width="100" Height="100" Zoomed="ZoomButtons_Zoomed"/>
-        <TextBlock Name="tblDebug" Text="Debug" Visibility="Collapsed"/>
+        <TextBlock Name="tblDebug" Text="Debug" Margin="0,15,0,0" Visibility="Visible"
+                   VerticalAlignment="Top" HorizontalAlignment="Left"/>
     </Grid>
 </UserControl>

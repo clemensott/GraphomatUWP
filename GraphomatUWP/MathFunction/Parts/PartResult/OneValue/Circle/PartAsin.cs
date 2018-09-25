@@ -1,22 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace MathFunction
 {
     class PartAsin : PartResultOneValue
     {
-        protected override string[] GetLowerLooks()
+        protected override IEnumerable<string> GetLowerLooks()
         {
-            return new string[] { "asin", "arcsin" };
+            yield return "asin";
+            yield return "arcsin";
         }
 
         public override double GetResult(double x)
         {
             return Math.Asin(valueRight.GetResult(x));
-        }
-
-        public override Part Clone()
-        {
-            return new PartAsin();
         }
     }
 }

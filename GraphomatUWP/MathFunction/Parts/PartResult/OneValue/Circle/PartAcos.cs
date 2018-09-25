@@ -1,22 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace MathFunction
 {
     class PartAcos : PartResultOneValue
     {
-        protected override string[] GetLowerLooks()
+        protected override IEnumerable<string> GetLowerLooks()
         {
-            return new string[] { "acos", "arccos" };
+            yield return "acos";
+            yield return "arccos";
         }
 
         public override double GetResult(double x)
         {
             return Math.Acos(valueRight.GetResult(x));
-        }
-
-        public override Part Clone()
-        {
-            return new PartAcos();
         }
     }
 }

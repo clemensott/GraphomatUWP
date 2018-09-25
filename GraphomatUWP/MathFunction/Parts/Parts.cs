@@ -6,34 +6,30 @@ namespace MathFunction
 {
     class Parts : List<Part>
     {
-        public static IReadOnlyList<Part> GetAllTypes()
+        public static IEnumerable<Part> GetAllTypes()
         {
-            List<Part> allTypes = new List<Part>();
-
-            //allTypes.Add(new PartStart());
-            //allTypes.Add(new PartEnd());
-            allTypes.Add(new PartAcos());
-            allTypes.Add(new PartAsin());
-            allTypes.Add(new PartAtan());
-            allTypes.Add(new PartCos());
-            allTypes.Add(new PartSin());
-            allTypes.Add(new PartTan());
-            allTypes.Add(new PartAbs());
-            allTypes.Add(new PartLg());
-            allTypes.Add(new PartLn());
-            allTypes.Add(new PartPow());
-            allTypes.Add(new PartRoot());
-            allTypes.Add(new PartLog());
-            allTypes.Add(new PartAdd());
-            allTypes.Add(new PartSub());
-            allTypes.Add(new PartDiv());
-            allTypes.Add(new PartMult());
-            allTypes.Add(new PartVariable());
-            allTypes.Add(new PartConstants(Math.PI, "π", "pi"));
-            allTypes.Add(new PartConstants(Math.PI / 180.0, "(π ÷ 180)", "(pi / 180)", "°"));
-            allTypes.Add(new PartConstants(Math.E, "e"));
-
-            return allTypes.AsReadOnly();
+            yield return new PartBracket();
+            yield return new PartSimpleValue();
+            yield return new PartAcos();
+            yield return new PartAsin();
+            yield return new PartAtan();
+            yield return new PartCos();
+            yield return new PartSin();
+            yield return new PartTan();
+            yield return new PartAbs();
+            yield return new PartLg();
+            yield return new PartLn();
+            yield return new PartPow();
+            yield return new PartRoot();
+            yield return new PartLog();
+            yield return new PartAdd();
+            yield return new PartSub();
+            yield return new PartDiv();
+            yield return new PartMult();
+            yield return new PartVariable();
+            yield return new PartConstants(Math.PI, "π", "pi");
+            yield return new PartConstants(Math.PI / 180.0, "(π ÷ 180)", "(pi / 180)", "°");
+            yield return new PartConstants(Math.E, "e");
         }
 
         new public Part this[int index]

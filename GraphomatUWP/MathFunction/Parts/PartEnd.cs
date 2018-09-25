@@ -39,9 +39,11 @@ namespace MathFunction
                 nextType == PartRuleType.OneValueFunction || nextType == PartRuleType.Value;
         }
 
-        public override Part Clone()
+        protected override IEnumerable<string> GetLowerLooks()
         {
-            return new PartEnd();
+            yield return ")";
+            yield return "]";
+            yield return "}";
         }
     }
 }

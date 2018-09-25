@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MathFunction
 {
@@ -8,14 +10,9 @@ namespace MathFunction
         {
         }
 
-        protected override string[] GetLowerLooks()
+        protected override IEnumerable<string> GetLowerLooks()
         {
-            return new string[] { "x" };
-        }
-
-        public override string ToEquationString()
-        {
-            return GetLowerLooks()[0];
+            yield return "x" ;
         }
 
         public override string ToString()
@@ -26,11 +23,6 @@ namespace MathFunction
         public override double GetResult(double x)
         {
             return x;
-        }
-
-        public override Part Clone()
-        {
-            return new PartVariable();
         }
     }
 }

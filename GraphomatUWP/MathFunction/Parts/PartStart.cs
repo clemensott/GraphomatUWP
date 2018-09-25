@@ -37,9 +37,11 @@ namespace MathFunction
             return PartRuleType.Start;
         }
 
-        public override Part Clone()
+        protected override IEnumerable<string> GetLowerLooks()
         {
-            return new PartStart();
+            yield return "(";
+            yield return "[";
+            yield return "{";
         }
     }
 }

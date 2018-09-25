@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MathFunction
+﻿namespace MathFunction
 {
     abstract class PartOperation : PartResultTwoValue
     {
@@ -16,7 +10,7 @@ namespace MathFunction
 
         public override string ToEquationString()
         {
-            return " " + GetLowerLooks()[0] + " ";
+            return " " + base.ToEquationString() + " ";
         }
     }
 }

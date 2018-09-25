@@ -1,22 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace MathFunction
 {
     class PartSin : PartResultOneValue
     {
-        protected override string[] GetLowerLooks()
+        protected override IEnumerable<string> GetLowerLooks()
         {
-            return new string[] { "sin" };
+            yield return "sin";
         }
 
         public override double GetResult(double x)
         {
             return Math.Sin(valueRight.GetResult(x));
-        }
-
-        public override Part Clone()
-        {
-            return new PartSin();
         }
     }
 }

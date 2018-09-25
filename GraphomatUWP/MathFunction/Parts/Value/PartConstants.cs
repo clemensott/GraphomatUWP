@@ -1,30 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace MathFunction
 {
-    class PartConstants : PartSimpleValue
+    class PartConstants : PartValue
     {
         private string[] names;
 
+        public double Value { get; protected set; }
+
         public string Name { get { return ToEquationString(); } }
 
-        public PartConstants(double value, params string[] names) : base(value)
+        public PartConstants(double value, params string[] names)
         {
+            Value = value;
             this.names = names;
         }
 
-        public PartConstants(string value, params string[] names) : base(value)
+        public PartConstants(string value, params string[] names) : this(double.Parse(value), names)
         {
-            this.names = names;
         }
 
-        protected override string[] GetLowerLooks()
+        public override bool Matches(Equation equation)
+        {
+            return base.Matches(equation);
+        }
+
+        protected override IEnumerable<string> GetLowerLooks()
         {
             return names;
+        }
+
+        public override double GetResult(double x)
+        {
+            return Value;
+        }
+
+        public override string ToString()
+        {
+            return ToEquationString();
         }
     }
 }
