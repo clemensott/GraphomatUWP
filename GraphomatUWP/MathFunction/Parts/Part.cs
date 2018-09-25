@@ -52,7 +52,7 @@ namespace MathFunction
 
         private static bool LooksLike(Equation equation, string look)
         {
-            if (!equation.ToString().StartsWith(look)) return false;
+            if (!equation.ToString().ToLower().StartsWith(look)) return false;
 
             for (int i = 0; i < look.Length; i++) equation.RemoveAt(0);
 
