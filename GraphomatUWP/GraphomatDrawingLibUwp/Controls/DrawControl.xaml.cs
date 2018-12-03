@@ -532,7 +532,7 @@ namespace GraphomatDrawingLibUwp
 
         private void CanvasControl_Draw(CanvasControl sender, CanvasDrawEventArgs args)
         {
-            System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
+            //System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
             int selectedIndex = SelectedGraphIndex;
             Vector2 actualPixelSize = CurrentViewPixelSize.ActualPixelSize;
             ViewArgs viewArgs = ViewArgs;
@@ -555,7 +555,7 @@ namespace GraphomatDrawingLibUwp
                 else lock (childrenDrawing) args.DrawingSession.DrawGeometry(geometry, childDrawing.Graph.Color, thickness);
             });
 
-            Debug((sw.ElapsedTicks + " ticks").PadLeft(18));
+            //Debug((sw.ElapsedTicks + " ticks").PadLeft(18));
             lock (this)
             {
                 isDrew = true;

@@ -43,7 +43,7 @@ namespace GraphomatUWP
         {
             Graph graph = (sender as SymbolIcon).DataContext as Graph;
 
-            ViewModel.Current.Graphs.Add(graph);
+            ViewModel.Current.Graphs.Remove(graph);
         }
 
         private void AddGraph_Click(object sender, RoutedEventArgs e)
