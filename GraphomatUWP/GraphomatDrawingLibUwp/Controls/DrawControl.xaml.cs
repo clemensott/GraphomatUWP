@@ -9,6 +9,7 @@ using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
 using Windows.Graphics.Display;
+using Windows.UI;
 using Windows.UI.Input;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -504,7 +505,6 @@ namespace GraphomatDrawingLibUwp
 
         private void RestoreOldValueDimensions()
         {
-            System.Diagnostics.Debug.WriteLine("SetFromOld: {0}\t{1}", oldViewHeight, ValueSize.Y);
             MiddleOfView = new Vector2(MiddleOfView.X, oldMiddleOfViewY);
             ValueSize = new Vector2(ValueSize.X, oldViewHeight);
 
@@ -539,26 +539,40 @@ namespace GraphomatDrawingLibUwp
 
             Axes.Draw(args.DrawingSession, actualPixelSize);
 
-            Parallel.For(0, childrenDrawing.Count, (i) =>
+            if (isMoving)
+            {
+                Parallel.For(0, childrenDrawing.Count, (i) =>
+                {
+                    var (geo, color, thickness) = drawGeo(i);
+                    args.DrawingSession.DrawGeometry(geo, color, thickness);
+                });
+            }
+            else
+            {
+                for (int i = 0; i < childrenDrawing.Count; i++)
+                {
+                    var (geo, color, thickness) = drawGeo(i);
+                    args.DrawingSession.DrawGeometry(geo, color, thickness);
+                }
+            }
+
+            //Debug((sw.ElapsedTicks + " ticks").PadLeft(18));
+            lock (this)
+            {
+                isDrew = true;
+            }
+
+            (CanvasGeometry geo, Color color, float thickness) drawGeo(int i)
             {
                 GraphDrawer childDrawing = childrenDrawing[i];
-                bool isThick = i == selectedIndex || i == graphNearPointerIndex;
+                bool isThick = i == selectedIndex || (!isMoving && i == graphNearPointerIndex);
                 float thickness = GraphDrawer.Thickness * (isThick ? 2 : 1);
 
                 childDrawing.ViewArgs = viewArgs;
 
                 CanvasGeometry geometry = childDrawing.Draw(sender, isMoving);
 
-                if (geometry == null) return;
-
-                if (isMoving) args.DrawingSession.DrawGeometry(geometry, childDrawing.Graph.Color, thickness);
-                else lock (childrenDrawing) args.DrawingSession.DrawGeometry(geometry, childDrawing.Graph.Color, thickness);
-            });
-
-            //Debug((sw.ElapsedTicks + " ticks").PadLeft(18));
-            lock (this)
-            {
-                isDrew = true;
+                return (geometry, childDrawing.Graph.Color, thickness);
             }
         }
 
