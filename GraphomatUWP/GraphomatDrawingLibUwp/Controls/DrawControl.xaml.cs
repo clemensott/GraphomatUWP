@@ -86,6 +86,16 @@ namespace GraphomatDrawingLibUwp
             s.ZoomToChild(s.childrenDrawing?.ElementAtOrDefault(newValue));
         }
 
+        public static readonly DependencyProperty IsDebugEnabledProperty =
+            DependencyProperty.Register("IsDebugEnabled", typeof(bool), typeof(DrawControl),
+                new PropertyMetadata(false, new PropertyChangedCallback(OnIsDebugEnabledPropertyChanged)));
+
+        private static void OnIsDebugEnabledPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        {
+            var s = (DrawControl)sender;
+            var value = (bool)e.NewValue;
+        }
+
         private string debugText = "";
 
         private bool isDrew, isMoving, startAverageDistanceWidthHighEnough, startAverageDistanceHeightHighEnough;
@@ -159,6 +169,12 @@ namespace GraphomatDrawingLibUwp
             }
         }
 
+        public bool IsDebugEnabled
+        {
+            get { return (bool)GetValue(IsDebugEnabledProperty); }
+            set { SetValue(IsDebugEnabledProperty, value); }
+        }
+
         public DrawControl()
         {
             this.InitializeComponent();
@@ -185,8 +201,9 @@ namespace GraphomatDrawingLibUwp
             {
                 int index = childrenDrawing.FindIndex(x => x.Graph == graph);
 
-                if (index == -1) newChildrenDrawing.Add(GetGraphDrawer(graph));
-                else newChildrenDrawing.Add(childrenDrawing[index]);
+                /*if (index == -1) */
+                newChildrenDrawing.Add(GetGraphDrawer(graph));
+                //else newChildrenDrawing.Add(childrenDrawing[index]);
             }
 
             if (!childrenDrawing.SequenceEqual(newChildrenDrawing))
@@ -199,6 +216,10 @@ namespace GraphomatDrawingLibUwp
 
         private GraphDrawer GetGraphDrawer(Graph graph)
         {
+            if (rbxDict.IsChecked == true) return new CustomDictionaryDrawer(graph, ViewArgs);
+            if (rbxOne.IsChecked == true) return new CustomOneLinkListDrawer(graph, ViewArgs);
+            if (rbxTwo.IsChecked == true) return new CustomTwoLinkListDrawer(graph, ViewArgs);
+            
             return new CustomDictionaryDrawer(graph, ViewArgs);
         }
 
@@ -438,6 +459,11 @@ namespace GraphomatDrawingLibUwp
             ccDraw.Invalidate();
         }
 
+        private void Rbx_UnChecked(object sender, RoutedEventArgs e)
+        {
+            SetGraphDrawingList();
+        }
+
         private bool AreValueDimensionsPossible(ViewValueDimensions valueDimensions)
         {
             if (float.IsInfinity(valueDimensions.Middle.X)) return false;
@@ -532,7 +558,7 @@ namespace GraphomatDrawingLibUwp
 
         private void CanvasControl_Draw(CanvasControl sender, CanvasDrawEventArgs args)
         {
-            //System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
+            System.Diagnostics.Stopwatch sw = System.Diagnostics.Stopwatch.StartNew();
             int selectedIndex = SelectedGraphIndex;
             Vector2 actualPixelSize = CurrentViewPixelSize.ActualPixelSize;
             ViewArgs viewArgs = ViewArgs;
@@ -556,7 +582,7 @@ namespace GraphomatDrawingLibUwp
                 }
             }
 
-            //Debug((sw.ElapsedTicks + " ticks").PadLeft(18));
+            Debug(sw.ElapsedMilliseconds + " ms");
             lock (this)
             {
                 isDrew = true;
@@ -578,10 +604,16 @@ namespace GraphomatDrawingLibUwp
 
         private void Debug(object obj)
         {
-            tblDebug.Text = debugText = string.Format("{0}\r\n{1}", obj, debugText);
+            tblDebug.Text = debugText = string.Format("{0}\r\n{1}", debugText, obj);
 
-            int maxLength = 20 * 10;
-            if (debugText.Length > maxLength) debugText = debugText.Remove(maxLength);
+            int maxLength = 10;
+
+            for (int i = debugText.Length - 1; i >= 0; i--)
+            {
+                if (debugText[i] != '\r') continue;
+
+                if (maxLength-- == 0) debugText = debugText.Substring(i);
+            }
         }
     }
 }

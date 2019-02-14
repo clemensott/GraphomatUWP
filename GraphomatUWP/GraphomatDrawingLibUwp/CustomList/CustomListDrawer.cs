@@ -6,7 +6,7 @@ using System.Numerics;
 
 namespace GraphomatDrawingLibUwp.CustomList
 {
-    internal abstract class CustomListDrawer<T> : GraphDrawer where T: ICustomList
+    internal abstract class CustomListDrawer<T> : GraphDrawer where T : ICustomList
     {
         protected T valuePointList;
 
@@ -24,12 +24,13 @@ namespace GraphomatDrawingLibUwp.CustomList
             CanvasPathBuilder cpb = new CanvasPathBuilder(iCreater);
 
             float beginX = ViewArgs.ValueDimensions.Left;
-            float rangeX = ViewArgs.ValueDimensions.Width / ViewArgs.PixelSize.RawPixelWidth;
+            float rangeX = ViewArgs.ValueDimensions.Width / ViewArgs.PixelSize.RawPixelWidth / 1f;
             float endX = ViewArgs.ValueDimensions.Right;
 
             if (isMoving) rangeX *= (1 + movingSkipPoints);
 
-            IEnumerable<IEnumerable<Vector2>> valueSections = GetSections(valuePointList.GetValues(beginX, rangeX, endX));
+            IEnumerable<Vector2> valuePoints = valuePointList.GetValues(beginX, rangeX, endX);
+            IEnumerable<IEnumerable<Vector2>> valueSections = GetSections(valuePoints);
             IEnumerable<IEnumerable<Vector2>> viewSections = valueSections.Select(s => s.Select(ToViewPoint));
 
             foreach (IEnumerable<Vector2> section in viewSections)
@@ -49,53 +50,54 @@ namespace GraphomatDrawingLibUwp.CustomList
 
         private IEnumerable<IEnumerable<Vector2>> GetSections(IEnumerable<Vector2> points)
         {
-            Bool ended = new Bool(false);
-
+            bool ended = false;
             IEnumerator<Vector2> enumerator = points.GetEnumerator();
 
             while (!ended)
             {
-                yield return GetSection(enumerator, ended);
-            }
-        }
-
-        private IEnumerable<Vector2> GetSection(IEnumerator<Vector2> enumerator, Bool ended)
-        {
-            while (true)
-            {
-                if (!enumerator.MoveNext())
-                {
-                    ended.Value = true;
-                    yield break;
-                }
-
-                Vector2 first = enumerator.Current;
-
-                if (!enumerator.MoveNext())
-                {
-                    ended.Value = true;
-                    yield break;
-                }
-
-                if (float.IsNaN(enumerator.Current.Y)) continue;
-
-                yield return first;
-                yield return enumerator.Current;
-
-                break;
+                yield return getSection();
             }
 
-            while (true)
+            IEnumerable<Vector2> getSection()
             {
-                if (!enumerator.MoveNext())
+                while (true)
                 {
-                    ended.Value = true;
-                    yield break;
+                    if (!enumerator.MoveNext())
+                    {
+                        ended = true;
+                        yield break;
+                    }
+
+                    if (float.IsNaN(enumerator.Current.Y)) continue;
+
+                    Vector2 first = enumerator.Current;
+
+                    if (!enumerator.MoveNext())
+                    {
+                        ended = true;
+                        yield break;
+                    }
+
+                    if (float.IsNaN(enumerator.Current.Y)) continue;
+
+                    yield return first;
+                    yield return enumerator.Current;
+
+                    break;
                 }
 
-                if (float.IsNaN(enumerator.Current.Y)) yield break;
+                while (true)
+                {
+                    if (!enumerator.MoveNext())
+                    {
+                        ended = true;
+                        yield break;
+                    }
 
-                yield return enumerator.Current;
+                    if (float.IsNaN(enumerator.Current.Y)) yield break;
+
+                    yield return enumerator.Current;
+                }
             }
         }
 

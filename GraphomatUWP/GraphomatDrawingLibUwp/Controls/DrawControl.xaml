@@ -13,14 +13,29 @@
     PointerReleased="Control_PointerReleased" PointerWheelChanged="Control_PointerWheelChanged" 
     PointerCaptureLost="Control_PointerCaptureLost" ManipulationStarted="Control_ManipulationStarted"
     ManipulationDelta="Control_ManipulationDelta" ManipulationCompleted="Control_ManipulationCompleted"
-    SizeChanged="Control_SizeChanged">
+    SizeChanged="Control_SizeChanged"
+    x:Name="control">
+
+    <UserControl.Resources>
+        <local:VisibilityConverter x:Key="visCon"/>
+    </UserControl.Resources>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <canvas:CanvasControl x:Name="ccDraw" Draw="CanvasControl_Draw" 
                               Tapped="ccDraw_Tapped" DoubleTapped="ccDraw_DoubleTapped"/>
 
         <local:ZoomButtonsControl Width="100" Height="100" Zoomed="ZoomButtons_Zoomed"/>
-        <TextBlock Name="tblDebug" Text="Debug" Margin="0,15,0,0" Visibility="Collapsed"
-                   VerticalAlignment="Top" HorizontalAlignment="Left"/>
+
+        <Grid Visibility="{Binding ElementName=control,Path=IsDebugEnabled,Converter={StaticResource visCon}}">
+            <TextBlock Name="tblDebug" Text="Debug" Margin="0,15,0,0" Visibility="Visible"
+                       VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
+
+            <StackPanel VerticalAlignment="Bottom">
+                <RadioButton Name="rbxDict" Content="Dict" Checked="Rbx_UnChecked" Unchecked="Rbx_UnChecked"/>
+                <RadioButton Name="rbxOne" Content="One" Checked="Rbx_UnChecked" Unchecked="Rbx_UnChecked"/>
+                <RadioButton Name="rbxTwo" Content="Two" Checked="Rbx_UnChecked" Unchecked="Rbx_UnChecked"/>
+                <RadioButton Name="rbxCalc" Content="Calc" Checked="Rbx_UnChecked" Unchecked="Rbx_UnChecked"/>
+            </StackPanel>
+        </Grid>
     </Grid>
 </UserControl>

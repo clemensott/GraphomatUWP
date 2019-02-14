@@ -35,7 +35,7 @@ namespace GraphomatDrawingLibUwp.CustomList
                 valuePointList.ViewBeginNode = valuePointList.ViewBeginNode.Previous;
             }
 
-            while (valuePointList.ViewBeginNode.Previous != null && valuePointList.ViewBeginNode.Next.Value.X < left)
+            while (valuePointList.ViewBeginNode.Next != null && valuePointList.ViewBeginNode.Next.Value.X < left)
             {
                 valuePointList.ViewBeginNode = valuePointList.ViewBeginNode.Next;
             }

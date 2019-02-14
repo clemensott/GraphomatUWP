@@ -1,5 +1,4 @@
 ﻿using GraphomatDrawingLibUwp;
-using System;
 using Windows.Phone.UI.Input;
 using Windows.System.Profile;
 using Windows.UI.Xaml;
@@ -34,6 +33,12 @@ namespace GraphomatUWP
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
+            Graph graph1 = new Graph("Herz Links", "(-x)^(2/3)+0,9*(3,3-x^2)^(1/2)*sin(80* pi*x)", Windows.UI.Colors.Red);
+            Graph graph2 = new Graph("Herz Rechts", "x^(2/3)+0,9*(3,3-x^2)^(1/2)*sin(80* pi*x)", Windows.UI.Colors.Red);
+
+            ViewModel.Current.Graphs.Clear();
+            ViewModel.Current.Graphs.Add(graph1);
+            ViewModel.Current.Graphs.Add(graph2);
         }
 
         private void EquationAppBar_Click(object sender, RoutedEventArgs e)

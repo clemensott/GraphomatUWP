@@ -10,10 +10,11 @@
     Loaded="Page_Loaded">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <g:DrawControl SelectedGraphIndex="{Binding SelectedGraphIndex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+        <g:DrawControl IsDebugEnabled="{Binding ElementName=atb,Path=IsChecked}" Children="{Binding Graphs}"
+                       SelectedGraphIndex="{Binding SelectedGraphIndex,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                        ValueSize="{Binding ValueSize,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                        MiddleOfView="{Binding MiddleOfView,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-                       Children="{Binding Graphs}" DoubleTapped="DrawControl_DoubleTapped" 
+                       DoubleTapped="DrawControl_DoubleTapped" 
                        DoubleTappedCurve="DrawControl_DoubleTappedCurve"/>
     </Grid>
 
@@ -21,6 +22,7 @@
         <CommandBar>
             <CommandBar.PrimaryCommands>
                 <AppBarButton Label="Equations" Icon="List" Click="EquationAppBar_Click"/>
+                <AppBarToggleButton x:Name="atb" Label="Debug" Icon="Remote"/>
             </CommandBar.PrimaryCommands>
         </CommandBar>
     </Page.BottomAppBar>

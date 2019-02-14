@@ -90,6 +90,8 @@ namespace GraphomatDrawingLibUwp
 
         protected Vector2 ToViewPoint(Vector2 valuePoint)
         {
+            if (float.IsNaN(valuePoint.Y)) return valuePoint;
+
             float x = (valuePoint.X - ViewArgs.ValueDimensions.Left) / ViewArgs.ValueDimensions.Width * ViewArgs.PixelSize.ActualWidth;
             float y = (-valuePoint.Y - ViewArgs.ValueDimensions.Bottom) / ViewArgs.ValueDimensions.Height * ViewArgs.PixelSize.ActualHeight;
 
