@@ -12,9 +12,9 @@ namespace GraphomatDrawingLibUwp.ArrayManagement
         private Vector2[] points;
         private Graph graph;
 
-        public Vector2 this[int index] { get { return points[index]; } }
+        public Vector2 this[int index] => points[index];
 
-        public int Count { get { return points.Length; } }
+        public int Count => points.Length;
 
         public ValuePoints(Graph graph) : base()
         {

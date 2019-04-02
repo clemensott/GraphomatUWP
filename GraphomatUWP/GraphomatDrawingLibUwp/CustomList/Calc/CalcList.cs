@@ -22,12 +22,12 @@ namespace GraphomatDrawingLibUwp.CustomList
 
         public IEnumerable<Vector2> GetValues(float beginX, float rangeX, float endX)
         {
-            //return GetValuesSyncron(beginX, rangeX, endX);
+            //return GetValuesSync(beginX, rangeX, endX);
 
             return GetValuesParallel(beginX, rangeX, endX);
         }
 
-        private IEnumerable<Vector2> GetValuesSyncron(float beginX, float rangeX, float endX)
+        private IEnumerable<Vector2> GetValuesSync(float beginX, float rangeX, float endX)
         {
             float x = beginX;
 

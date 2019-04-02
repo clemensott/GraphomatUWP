@@ -8,7 +8,7 @@ namespace GraphomatDrawingLibUwp.CustomList
 
         public ValuePointNode Next { get; set; }
 
-        public Vector2 Value { get; private set; }
+        public Vector2 Value { get; }
 
         public ValuePointNode(ValuePointNode next, Vector2 value)
         {

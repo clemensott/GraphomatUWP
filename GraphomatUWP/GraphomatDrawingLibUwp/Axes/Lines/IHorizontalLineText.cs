@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Numerics;
 
 namespace GraphomatDrawingLibUwp
 {
-    enum HorizontalPostition { Right, Left }
+    enum HorizontalPosition { Right, Left }
 
     interface IHorizontalLineText
     {
-        HorizontalPostition PositionMode { get; }
+        HorizontalPosition PositionMode { get; }
 
         IHorizontalLineText OtherIHorizontalLineText { get; }
 

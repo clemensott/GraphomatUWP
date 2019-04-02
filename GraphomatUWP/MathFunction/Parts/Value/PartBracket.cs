@@ -172,22 +172,21 @@ namespace MathFunction
         {
             for (int i = 0; i < parts.Count; i++)
             {
-                if (parts[i] is PartBracket)
+                if (!(parts[i] is PartBracket)) continue;
+
+                PartBracket bracket = (PartBracket) parts[i];
+
+                bracket.ImplementBracketsIfPriorityIsHigher();
+
+                double relPriBracketToLeft = bracket.valueRight.GetRelativePriority(RelativeTo.Left);
+                double relPriBracketToRight = bracket.valueRight.GetRelativePriority(RelativeTo.Right);
+                double relPriLeftToRight = GetRelativePriority(i - 1, RelativeTo.Right);
+                double relPriRightToLeft = GetRelativePriority(i + 1, RelativeTo.Left);
+
+                if (relPriBracketToLeft > relPriLeftToRight && relPriBracketToRight > relPriRightToLeft)
                 {
-                    PartBracket bracket = parts[i] as PartBracket;
-
-                    bracket.ImplementBracketsIfPriorityIsHigher();
-
-                    double relPriBracketToLeft = bracket.valueRight.GetRelativePriority(RelativeTo.Left);
-                    double relPriBracketToRight = bracket.valueRight.GetRelativePriority(RelativeTo.Right);
-                    double relPriLeftToRight = GetRelativePriority(i - 1, RelativeTo.Right);
-                    double relPriRightToLeft = GetRelativePriority(i + 1, RelativeTo.Left);
-
-                    if (relPriBracketToLeft > relPriLeftToRight && relPriBracketToRight > relPriRightToLeft)
-                    {
-                        parts.RemoveAt(i);
-                        parts.InsertRange(i, bracket.parts);
-                    }
+                    parts.RemoveAt(i);
+                    parts.InsertRange(i, bracket.parts);
                 }
             }
         }

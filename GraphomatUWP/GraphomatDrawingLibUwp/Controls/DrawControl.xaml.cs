@@ -23,7 +23,7 @@ namespace GraphomatDrawingLibUwp
     public sealed partial class DrawControl : UserControl
     {
         public const float PixelBufferFactor = 3;
-        private const float defaultValueWidthAndHeight = 10F, defaultMiddelOfView = 0F,
+        private const float defaultValueWidthAndHeight = 10F, defaultMiddleOfView = 0F,
             minDistancesBetweenPointersPercent = 0.05F, showAutoZoomFactor = 1.1F;
         private const double selectPointOnGraphMaxDistancePercent = 0.1;
 
@@ -33,9 +33,9 @@ namespace GraphomatDrawingLibUwp
 
         private static void OnChildrenPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
-            var s = sender as DrawControl;
-            var oldValue = (ObservableCollection<Graph>)e.OldValue;
-            var newValue = (ObservableCollection<Graph>)e.NewValue;
+            DrawControl s = (DrawControl)sender;
+            ObservableCollection<Graph> oldValue = (ObservableCollection<Graph>)e.OldValue;
+            ObservableCollection<Graph> newValue = (ObservableCollection<Graph>)e.NewValue;
 
             if (oldValue != null) oldValue.CollectionChanged -= s.OnChildrenChanged;
             s.children = newValue;
@@ -50,7 +50,7 @@ namespace GraphomatDrawingLibUwp
 
         private static void OnValueSizePropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
-            var s = sender as DrawControl;
+            DrawControl s = (DrawControl)sender;
             Vector2 oldValue = (Vector2)e.NewValue;
             Vector2 newValue = (Vector2)e.OldValue;
 
@@ -59,12 +59,12 @@ namespace GraphomatDrawingLibUwp
 
 
         public static readonly DependencyProperty MiddleOfViewProperty = DependencyProperty.Register("MiddleOfView",
-            typeof(Vector2), typeof(DrawControl), new PropertyMetadata(new Vector2(defaultMiddelOfView,
-                defaultMiddelOfView), new PropertyChangedCallback(OnMiddleOfViewPropertyChanged)));
+            typeof(Vector2), typeof(DrawControl), new PropertyMetadata(new Vector2(defaultMiddleOfView,
+                defaultMiddleOfView), new PropertyChangedCallback(OnMiddleOfViewPropertyChanged)));
 
         private static void OnMiddleOfViewPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
-            var s = sender as DrawControl;
+            DrawControl s = (DrawControl)sender;
             Vector2 oldValue = (Vector2)e.NewValue;
             Vector2 newValue = (Vector2)e.NewValue;
 
@@ -78,7 +78,7 @@ namespace GraphomatDrawingLibUwp
         private static void OnSelectedGraphIndexPropertyChanged(DependencyObject sender,
             DependencyPropertyChangedEventArgs e)
         {
-            var s = sender as DrawControl;
+            DrawControl s = (DrawControl)sender;
             int newValue = (int)e.NewValue;
 
             //if (!IsValidSelectionIndex(newValue, s.Children.Count)) s.SelectedGraphIndex = newValue = -1;
@@ -92,8 +92,8 @@ namespace GraphomatDrawingLibUwp
 
         private static void OnIsDebugEnabledPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
-            var s = (DrawControl)sender;
-            var value = (bool)e.NewValue;
+            DrawControl s = (DrawControl)sender;
+            bool value = (bool)e.NewValue;
         }
 
         private string debugText = "";
@@ -114,7 +114,7 @@ namespace GraphomatDrawingLibUwp
 
         internal ViewValueDimensions CurrentValueDimensions
         {
-            get { return new ViewValueDimensions(ValueSize, MiddleOfView); }
+            get => new ViewValueDimensions(ValueSize, MiddleOfView);
             private set
             {
                 ValueSize = value.Size;
@@ -122,42 +122,36 @@ namespace GraphomatDrawingLibUwp
             }
         }
 
-        internal ViewPixelSize CurrentViewPixelSize
-        {
-            get
-            {
-                return new ViewPixelSize(ActualWidth, ActualHeight,
-                    displayInfo == null ? 1 : displayInfo.RawPixelsPerViewPixel);
-            }
-        }
+        internal ViewPixelSize CurrentViewPixelSize =>
+            new ViewPixelSize(ActualWidth, ActualHeight, displayInfo?.RawPixelsPerViewPixel ?? 1);
 
-        internal ViewArgs ViewArgs { get { return new ViewArgs(CurrentValueDimensions, CurrentViewPixelSize); } }
+        internal ViewArgs ViewArgs => new ViewArgs(CurrentValueDimensions, CurrentViewPixelSize);
 
         public int SelectedGraphIndex
         {
-            get { return (int)GetValue(SelectedGraphIndexProperty); }
-            set { SetValue(SelectedGraphIndexProperty, value); }
+            get => (int)GetValue(SelectedGraphIndexProperty);
+            set => SetValue(SelectedGraphIndexProperty, value);
         }
 
         public Vector2 ValueSize
         {
-            get { return (Vector2)GetValue(ValueSizeProperty); }
-            set { SetValue(ValueSizeProperty, value); }
+            get => (Vector2)GetValue(ValueSizeProperty);
+            set => SetValue(ValueSizeProperty, value);
         }
 
         public Vector2 MiddleOfView
         {
-            get { return (Vector2)GetValue(MiddleOfViewProperty); }
-            set { SetValue(MiddleOfViewProperty, value); }
+            get => (Vector2)GetValue(MiddleOfViewProperty);
+            set => SetValue(MiddleOfViewProperty, value);
         }
 
         public ObservableCollection<Graph> Children
         {
-            get { return (ObservableCollection<Graph>)GetValue(ChildrenProperty); }
-            set { SetValue(ChildrenProperty, value); }
+            get => (ObservableCollection<Graph>)GetValue(ChildrenProperty);
+            set => SetValue(ChildrenProperty, value);
         }
 
-        private bool PixelSizeLoaded { get { return CurrentViewPixelSize.RawPixelWidth > 0; } }
+        private bool PixelSizeLoaded => CurrentViewPixelSize.RawPixelWidth > 0;
 
         private AxesGraph Axes
         {
@@ -171,8 +165,8 @@ namespace GraphomatDrawingLibUwp
 
         public bool IsDebugEnabled
         {
-            get { return (bool)GetValue(IsDebugEnabledProperty); }
-            set { SetValue(IsDebugEnabledProperty, value); }
+            get => (bool)GetValue(IsDebugEnabledProperty);
+            set => SetValue(IsDebugEnabledProperty, value);
         }
 
         public DrawControl()
@@ -219,7 +213,7 @@ namespace GraphomatDrawingLibUwp
             if (rbxDict.IsChecked == true) return new CustomDictionaryDrawer(graph, ViewArgs);
             if (rbxOne.IsChecked == true) return new CustomOneLinkListDrawer(graph, ViewArgs);
             if (rbxTwo.IsChecked == true) return new CustomTwoLinkListDrawer(graph, ViewArgs);
-            
+
             return new CustomDictionaryDrawer(graph, ViewArgs);
         }
 
@@ -248,7 +242,7 @@ namespace GraphomatDrawingLibUwp
         {
             pointerPoints.Add(e.GetCurrentPoint(ccDraw));
 
-            (sender as UIElement).CapturePointer(e.Pointer);
+            ((UIElement)sender).CapturePointer(e.Pointer);
 
             startAverageDistanceWidthHighEnough = startAverageDistanceHeightHighEnough = true;
             GetAverageDistanceBetweenPointers(out startAverageDistanceWidth, out startAverageDistanceHeight);
@@ -361,7 +355,7 @@ namespace GraphomatDrawingLibUwp
             if (index == -1) return;
 
             pointerPoints.RemoveAt(index);
-            (sender as UIElement).ReleasePointerCapture(e.Pointer);
+            ((UIElement)sender).ReleasePointerCapture(e.Pointer);
 
             startAverageDistanceWidthHighEnough = startAverageDistanceHeightHighEnough = true;
             GetAverageDistanceBetweenPointers(out startAverageDistanceWidth, out startAverageDistanceHeight);
@@ -464,7 +458,7 @@ namespace GraphomatDrawingLibUwp
             SetGraphDrawingList();
         }
 
-        private bool AreValueDimensionsPossible(ViewValueDimensions valueDimensions)
+        private bool AreValueDimensionsValid(ViewValueDimensions valueDimensions)
         {
             if (float.IsInfinity(valueDimensions.Middle.X)) return false;
             if (float.IsInfinity(valueDimensions.Middle.Y)) return false;
@@ -569,7 +563,7 @@ namespace GraphomatDrawingLibUwp
             {
                 Parallel.For(0, childrenDrawing.Count, (i) =>
                 {
-                    var (geo, color, thickness) = drawGeo(i);
+                    (CanvasGeometry geo, Color color, float thickness) = DrawGeo(i);
                     args.DrawingSession.DrawGeometry(geo, color, thickness);
                 });
             }
@@ -577,7 +571,7 @@ namespace GraphomatDrawingLibUwp
             {
                 for (int i = 0; i < childrenDrawing.Count; i++)
                 {
-                    var (geo, color, thickness) = drawGeo(i);
+                    (CanvasGeometry geo, Color color, float thickness) = DrawGeo(i);
                     args.DrawingSession.DrawGeometry(geo, color, thickness);
                 }
             }
@@ -588,7 +582,7 @@ namespace GraphomatDrawingLibUwp
                 isDrew = true;
             }
 
-            (CanvasGeometry geo, Color color, float thickness) drawGeo(int i)
+            (CanvasGeometry geo, Color color, float thickness) DrawGeo(int i)
             {
                 GraphDrawer childDrawing = childrenDrawing[i];
                 bool isThick = i == selectedIndex || (!isMoving && i == graphNearPointerIndex);

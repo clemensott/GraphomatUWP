@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace MathFunction
+﻿namespace MathFunction
 {
     abstract class PartPowRoot : PartResultTwoValue
     {

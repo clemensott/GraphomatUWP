@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace MathFunction
+﻿namespace MathFunction
 {
     abstract class PartAddSub : PartOperation
     {

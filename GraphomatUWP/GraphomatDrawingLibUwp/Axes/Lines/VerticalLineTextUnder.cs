@@ -1,20 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Numerics;
 
 namespace GraphomatDrawingLibUwp
 {
     class VerticalLineTextUnder : IVerticalLineText
     {
-        public IVerticalLineText OtherVerticalLineText
-        {
-            get { return new VerticalLineTextAbove(); }
-        }
+        public IVerticalLineText OtherVerticalLineText => new VerticalLineTextAbove();
 
-        public VerticalPostition PositionMode { get { return VerticalPostition.Under; } }
+        public VerticalPostition PositionMode => VerticalPostition.Under;
 
         public Vector2 GetBottomRightPoint(float x, float y1, float y2, float width, float height)
         {

@@ -32,7 +32,7 @@ namespace MathFunction
             yield return new PartConstants(Math.E, "e");
         }
 
-        new public Part this[int index]
+        public new Part this[int index]
         {
             get
             {
@@ -41,12 +41,11 @@ namespace MathFunction
 
                 return base[index];
             }
-            set { base[index] = value; }
+            set => base[index] = value;
         }
 
         public Parts()
         {
-
         }
 
         public int ExtendedIndexOf(Part part)
@@ -63,14 +62,13 @@ namespace MathFunction
 
             for (int i = curIndex + 1; i < Count; i++)
             {
-                if (this[i] is PartResult)
-                {
-                    PartResult part = this[i] as PartResult;
+                if (!(this[i] is PartResult)) continue;
 
-                    if (part.Used) break;
+                PartResult part = (PartResult)this[i];
 
-                    possibleParts.Add(part);
-                }
+                if (part.Used) break;
+
+                possibleParts.Add(part);
             }
 
             return GetPartResultWithLowestRelativePriorityAndNearest(possibleParts, curIndex);
@@ -83,14 +81,13 @@ namespace MathFunction
 
             for (int i = curIndex - 1; i >= 0; i--)
             {
-                if (this[i] is PartResult)
-                {
-                    PartResult part = this[i] as PartResult;
+                if (!(this[i] is PartResult)) continue;
 
-                    if (part.Used) break;
+                PartResult part = (PartResult)this[i];
 
-                    possibleParts.Add(part);
-                }
+                if (part.Used) break;
+
+                possibleParts.Add(part);
             }
 
             return GetPartResultWithLowestRelativePriorityAndNearest(possibleParts, curIndex);
@@ -114,9 +111,9 @@ namespace MathFunction
             //    ThenBy(x => Math.Abs(IndexOf(x) - toIndex)).ToArray();
 
 
-            //int sum = parts.Sum(x2 => GetRelativePrority(parts.ElementAt(1), x2));
-            //var list3s = parts.Select(x1 => parts.Sum(x2 => GetRelativePrority(x1, x2))).ToArray();
-            var list3 = parts.OrderBy(x1 => parts.Sum(x2 => GetRelativePrority(x1, x2))).
+            //int sum = parts.Sum(x2 => GetRelativePriority(parts.ElementAt(1), x2));
+            //var list3s = parts.Select(x1 => parts.Sum(x2 => GetRelativePriority(x1, x2))).ToArray();
+            PartResult[] list3 = parts.OrderBy(x1 => parts.Sum(x2 => GetRelativePriority(x1, x2))).
                 ThenBy(x => Math.Abs(IndexOf(x) - toIndex)).ToArray();
 
             return list3.First();
@@ -127,7 +124,7 @@ namespace MathFunction
             return IndexOf(partFrom) > toIndex ? RelativeTo.Right : RelativeTo.Left;
         }
 
-        private int GetRelativePrority(PartResult part1, PartResult part2)
+        private int GetRelativePriority(PartResult part1, PartResult part2)
         {
             int index1 = IndexOf(part1);
             int index2 = IndexOf(part2);

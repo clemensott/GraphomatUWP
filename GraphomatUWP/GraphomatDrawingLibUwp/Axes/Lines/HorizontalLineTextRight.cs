@@ -1,20 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Numerics;
 
 namespace GraphomatDrawingLibUwp
 {
     class HorizontalLineTextRight : IHorizontalLineText
     {
-        public IHorizontalLineText OtherIHorizontalLineText
-        {
-            get { return new HorizontalLineTextLeft(); }
-        }
+        public IHorizontalLineText OtherIHorizontalLineText => new HorizontalLineTextLeft();
 
-        public HorizontalPostition PositionMode { get { return HorizontalPostition.Right; } }
+        public HorizontalPosition PositionMode => HorizontalPosition.Right;
 
         public Vector2 GetBottomRightPoint(float x1, float x2, float y, float width, float height)
         {

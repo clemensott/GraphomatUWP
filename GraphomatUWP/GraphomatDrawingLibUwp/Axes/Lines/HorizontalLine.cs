@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Numerics;
 
 namespace GraphomatDrawingLibUwp
 {
@@ -15,9 +10,9 @@ namespace GraphomatDrawingLibUwp
 
         public float Y { get; set; }
 
-        public Vector2 Point1 { get { return new Vector2(X1, Y); } }
+        public Vector2 Point1 => new Vector2(X1, Y);
 
-        public Vector2 Point2 { get { return new Vector2(X2, Y); } }
+        public Vector2 Point2 => new Vector2(X2, Y);
 
         public HorizontalLine()
         {

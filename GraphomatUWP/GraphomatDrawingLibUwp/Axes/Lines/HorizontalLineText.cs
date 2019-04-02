@@ -1,11 +1,5 @@
 ﻿using Microsoft.Graphics.Canvas.Text;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.UI;
 
 namespace GraphomatDrawingLibUwp
 {
@@ -18,43 +12,25 @@ namespace GraphomatDrawingLibUwp
 
         public float Value
         {
-            get { return value; }
-            set { SetValuePoint(value); }
+            get => value;
+            set => SetValuePoint(value);
         }
 
-        public string ValueText { get { return value.ToString(); } }
+        public string ValueText => value.ToString();
 
-        public HorizontalPostition PositionMode
+        public HorizontalPosition PositionMode
         {
-            get { return ihorizontalLineText.PositionMode; }
+            get => ihorizontalLineText.PositionMode;
             set { if (value != PositionMode) ChangePosition(); }
         }
 
-        public Vector2 ValuePoint
-        {
-            get
-            {
-                return ihorizontalLineText.GetValuePoint(X1, X2, Y, valueTextWidth, valueTextHeight);
-            }
-        }
+        public Vector2 ValuePoint => ihorizontalLineText.GetValuePoint(X1, X2, Y, valueTextWidth, valueTextHeight);
 
-        public Vector2 TopLeftPoint
-        {
-            get
-            {
-                return ihorizontalLineText.GetTopLeftPoint(X1, X2, Y, valueTextWidth, valueTextHeight);
-            }
-        }
+        public Vector2 TopLeftPoint => ihorizontalLineText.GetTopLeftPoint(X1, X2, Y, valueTextWidth, valueTextHeight);
 
-        public Vector2 BottomRightPoint
-        {
-            get
-            {
-                return ihorizontalLineText.GetBottomRightPoint(X1, X2, Y, valueTextWidth, valueTextHeight);
-            }
-        }
+        public Vector2 BottomRightPoint => ihorizontalLineText.GetBottomRightPoint(X1, X2, Y, valueTextWidth, valueTextHeight);
 
-        public CanvasTextFormat Format { get; private set; }
+        public CanvasTextFormat Format { get; }
 
         public HorizontalLineText() : base()
         {

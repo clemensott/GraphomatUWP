@@ -4,9 +4,9 @@ namespace GraphomatDrawingLibUwp
 {
     public class ZoomButtonsEventArgs : EventArgs
     {
-        public float ZoomFactorWidth { get; private set; }
+        public float ZoomFactorWidth { get; }
 
-        public float ZoomFactorHeight { get; private set; }
+        public float ZoomFactorHeight { get; }
 
         public ZoomButtonsEventArgs(float zoomFactorWidth, float zoomFactorHeight)
         {

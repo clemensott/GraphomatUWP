@@ -1,5 +1,4 @@
 ﻿using GraphomatDrawingLibUwp;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Numerics;
@@ -39,7 +38,7 @@ namespace GraphomatUWP
 
         public int SelectedGraphIndex
         {
-            get { return selectedGraphIndex; }
+            get => selectedGraphIndex;
             set
             {
                 System.Diagnostics.Debug.WriteLine("SelectedView: " + System.DateTime.Now.Millisecond);
@@ -50,14 +49,11 @@ namespace GraphomatUWP
             }
         }
 
-        public Visibility NoGraphsVisibility
-        {
-            get { return Graphs.Count > 0 ? Visibility.Collapsed : Visibility.Visible; }
-        }
+        public Visibility NoGraphsVisibility => Graphs.Count > 0 ? Visibility.Collapsed : Visibility.Visible;
 
         public Vector2 ValueSize
         {
-            get { return valueSize; }
+            get => valueSize;
             set
             {
                 if (value == valueSize) return;
@@ -69,7 +65,7 @@ namespace GraphomatUWP
 
         public Vector2 MiddleOfView
         {
-            get { return middleOfView; }
+            get => middleOfView;
             set
             {
                 if (value == middleOfView) return;
@@ -81,7 +77,7 @@ namespace GraphomatUWP
 
         public ObservableCollection<Graph> Graphs
         {
-            get { return graphs; }
+            get => graphs;
             set
             {
                 if (graphs == value) return;
@@ -106,13 +102,7 @@ namespace GraphomatUWP
 
         public void NotifyPropertyChanged(string propertyName)
         {
-            if (null == PropertyChanged) return;
-
-            try
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
-            catch { }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

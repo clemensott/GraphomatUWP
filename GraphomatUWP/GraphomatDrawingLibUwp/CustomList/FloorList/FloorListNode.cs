@@ -10,15 +10,15 @@ namespace GraphomatDrawingLibUwp.CustomList
         private Vector2 value;
         private FloorListNode[] subs;
 
-        public FloorListNode this[int index] { get { return subs[index]; } }
+        public FloorListNode this[int index] => subs[index];
 
-        public int Numerator { get; private set; }
+        public int Numerator { get; }
 
-        public int DenominatorExpo { get; private set; }
+        public int DenominatorExpo { get; }
 
-        public Vector2 Value { get { return GetValue(); } }
+        public Vector2 Value => GetValue();
 
-        public FloorListNode Next { get; private set; }
+        public FloorListNode Next { get; }
 
         public FloorListNode(int numerator, int denominatorExpo, Vector2 value, FloorListNode next)
         {

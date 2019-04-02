@@ -4,7 +4,7 @@
     {
         protected IResult valueRight;
 
-        public double this[double x] { get { return GetResult(x); } }
+        public double this[double x] => GetResult(x);
 
         public abstract double GetResult(double x);
 
@@ -42,7 +42,7 @@
         {
             if (nextType == PartRuleType.AddSub)
             {
-                (parts[thisIndex + 1] as PartAddSub).ChangeToPartSignIfSub(parts);
+                ((PartAddSub) parts[thisIndex + 1]).ChangeToPartSignIfSub(parts);
 
                 return true;
             }

@@ -1,6 +1,5 @@
 ﻿using GraphomatDrawingLibUwp;
 using MyToolkit.Controls;
-using System.Collections.Generic;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
@@ -25,7 +24,7 @@ namespace GraphomatUWP
 
         private void FindIcon_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            Graph graph = (sender as SymbolIcon).DataContext as Graph;
+            Graph graph = (Graph)((SymbolIcon)sender).DataContext;
 
             ViewModel.Current.SelectedGraphIndex = ViewModel.Current.Graphs.IndexOf(graph);
 
@@ -34,14 +33,14 @@ namespace GraphomatUWP
 
         private void EditIcon_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            Graph graph = (sender as SymbolIcon).DataContext as Graph;
+            Graph graph = (Graph)((SymbolIcon)sender).DataContext;
 
             Frame.Navigate(typeof(GraphEditPage), graph);
         }
 
         private void DeleteIcon_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            Graph graph = (sender as SymbolIcon).DataContext as Graph;
+            Graph graph = (Graph)((SymbolIcon) sender).DataContext;
 
             ViewModel.Current.Graphs.Remove(graph);
         }
@@ -58,9 +57,9 @@ namespace GraphomatUWP
 
         private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if ((sender as DataGrid).SelectedItem == null) return;
+            if (((DataGrid) sender).SelectedItem == null) return;
 
-            (sender as DataGrid).SelectedItem = null;
+            ((DataGrid) sender).SelectedItem = null;
         }
 
         private void AddRandom_Click(object sender, RoutedEventArgs e)

@@ -6,25 +6,25 @@ namespace GraphomatDrawingLibUwp
 {
     struct ViewValueDimensions : IEquatable<ViewValueDimensions>
     {
-        public float Width { get; private set; }
+        public float Width { get; }
 
-        public float Height { get; private set; }
+        public float Height { get; }
 
-        public Vector2 Size { get; private set; }
+        public Vector2 Size { get; }
 
-        public Vector2 Middle { get; private set; }
+        public Vector2 Middle { get; }
 
-        public float Left { get; private set; }
+        public float Left { get; }
 
-        public float Top { get; private set; }
+        public float Top { get; }
 
-        public Vector2 TopLeft { get; private set; }
+        public Vector2 TopLeft { get; }
 
-        public float Right { get; private set; }
+        public float Right { get; }
 
-        public float Bottom { get; private set; }
+        public float Bottom { get; }
 
-        public Vector2 BottomRight { get; private set; }
+        public Vector2 BottomRight { get; }
 
         public ViewValueDimensions(Vector2 valueSize, Vector2 middleOfViewValue) :
             this(valueSize.X, valueSize.Y, middleOfViewValue.X, middleOfViewValue.Y)

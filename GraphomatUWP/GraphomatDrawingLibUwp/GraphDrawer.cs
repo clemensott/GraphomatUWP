@@ -19,7 +19,7 @@ namespace GraphomatDrawingLibUwp
 
         public ViewArgs ViewArgs
         {
-            get { return viewArgs; }
+            get => viewArgs;
             set
             {
                 if (value == viewArgs) return;

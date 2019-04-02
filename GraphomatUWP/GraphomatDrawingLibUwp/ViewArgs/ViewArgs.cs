@@ -5,11 +5,11 @@ namespace GraphomatDrawingLibUwp
 {
     struct ViewArgs : IEquatable<ViewArgs>
     {
-        public float BufferFactor { get { return DrawControl.PixelBufferFactor; } }
+        public float BufferFactor => DrawControl.PixelBufferFactor;
 
-        public ViewValueDimensions ValueDimensions { get; private set; }
+        public ViewValueDimensions ValueDimensions { get; }
 
-        public ViewPixelSize PixelSize { get; private set; }
+        public ViewPixelSize PixelSize { get; }
 
         public ViewArgs(ViewValueDimensions valueDimensions, ViewPixelSize pixelSize)
         {

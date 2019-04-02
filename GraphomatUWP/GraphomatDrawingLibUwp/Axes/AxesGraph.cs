@@ -1,32 +1,25 @@
 ﻿using Microsoft.Graphics.Canvas;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 using Windows.UI;
-using Windows.UI.Xaml;
 
 namespace GraphomatDrawingLibUwp
 {
     class AxesGraph
     {
-        private const float thickness = 2, strokeLenght = 10;
+        private const float thickness = 2, strokeLength = 10;
 
-        private readonly float[] possibleDistanceBetweenStrokes = new float[] { 1, 1.5F, 2, 3, 5, 7 };
+        private readonly float[] possibleDistanceBetweenStrokes = { 1, 1.5F, 2, 3, 5, 7 };
 
-        private HorizontalLine xAxisLine;
-        private List<VerticalLineText> xAxisStrokes;
-        private VerticalLine yAxisLine;
-        private List<HorizontalLineText> yAxisStrokes;
-        private Color color;
-        private ViewArgs preViewArgs;
+        private readonly HorizontalLine xAxisLine;
+        private readonly List<VerticalLineText> xAxisStrokes;
+        private readonly VerticalLine yAxisLine;
+        private readonly List<HorizontalLineText> yAxisStrokes;
+        private readonly Color color;
 
         public AxesGraph(ViewArgs args)
         {
-            preViewArgs = args;
-
             xAxisLine = new HorizontalLine();
             yAxisLine = new VerticalLine();
 
@@ -49,13 +42,13 @@ namespace GraphomatDrawingLibUwp
 
         private void SetAxesLines(ViewArgs args)
         {
-            float valuePerAcutalPixelX, valuePerAcutalPixelY;
+            float valuePerActualPixelX, valuePerActualPixelY;
 
-            valuePerAcutalPixelX = args.ValueDimensions.Width / args.PixelSize.ActualPixelSize.X;
-            valuePerAcutalPixelY = args.ValueDimensions.Height / args.PixelSize.ActualHeight;
+            valuePerActualPixelX = args.ValueDimensions.Width / args.PixelSize.ActualPixelSize.X;
+            valuePerActualPixelY = args.ValueDimensions.Height / args.PixelSize.ActualHeight;
 
-            xAxisLine.Y = args.ValueDimensions.Bottom / valuePerAcutalPixelY * -1;
-            yAxisLine.X = args.ValueDimensions.Left / valuePerAcutalPixelX * -1;
+            xAxisLine.Y = args.ValueDimensions.Bottom / valuePerActualPixelY * -1;
+            yAxisLine.X = args.ValueDimensions.Left / valuePerActualPixelX * -1;
 
             xAxisLine.X2 = args.PixelSize.ActualPixelSize.X;
             yAxisLine.Y2 = args.PixelSize.ActualHeight;
@@ -81,10 +74,10 @@ namespace GraphomatDrawingLibUwp
             {
                 float x, y1, y2;
 
-                x = GetAcutalPixelValue(multiples[xAxisStrokeCount], yAxisLine.X,
+                x = GetActualPixelValue(multiples[xAxisStrokeCount], yAxisLine.X,
                     args.ValueDimensions.Width / args.PixelSize.ActualPixelSize.X);
-                y1 = xAxisLine.Y - strokeLenght / 2;
-                y2 = xAxisLine.Y + strokeLenght / 2;
+                y1 = xAxisLine.Y - strokeLength / 2;
+                y2 = xAxisLine.Y + strokeLength / 2;
 
                 SetXAxisStroke(xAxisStrokeCount, x, y1, y2, multiples[xAxisStrokeCount]);
             }
@@ -112,9 +105,9 @@ namespace GraphomatDrawingLibUwp
             {
                 float x1, x2, y;
 
-                x1 = yAxisLine.X - strokeLenght / 2;
-                x2 = yAxisLine.X + strokeLenght / 2;
-                y = GetAcutalPixelValue(multiples[yAxisStrokeCount] * -1, xAxisLine.Y,
+                x1 = yAxisLine.X - strokeLength / 2;
+                x2 = yAxisLine.X + strokeLength / 2;
+                y = GetActualPixelValue(multiples[yAxisStrokeCount] * -1, xAxisLine.Y,
                     -1 * args.ValueDimensions.Height / args.PixelSize.ActualHeight);
 
                 SetYAxisStroke(yAxisStrokeCount, x1, x2, y, multiples[yAxisStrokeCount] * -1);
@@ -239,9 +232,9 @@ namespace GraphomatDrawingLibUwp
             return multiples;
         }
 
-        private float GetAcutalPixelValue(float value, float originAcutalPixelValue, float acutalPixelPerValue)
+        private float GetActualPixelValue(float value, float originActualPixelValue, float actualPixelPerValue)
         {
-            return originAcutalPixelValue + value / acutalPixelPerValue;
+            return originActualPixelValue + value / actualPixelPerValue;
         }
 
         private void SetXAxisStroke(int index, float x, float y1, float y2, float value)

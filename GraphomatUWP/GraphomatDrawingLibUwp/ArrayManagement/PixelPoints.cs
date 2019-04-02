@@ -11,11 +11,11 @@ namespace GraphomatDrawingLibUwp.ArrayManagement
         private Vector2[] points;
         private ValuePoints valuePoints;
 
-        public Vector2 this[int index] { get { return points[index] + Offset; } }
+        public Vector2 this[int index] => points[index] + Offset;
 
         public Vector2 Offset { get; set; }
 
-        public int Count { get { return points.Length; } }
+        public int Count => points.Length;
 
         public PixelPoints(ValuePoints valuePoints)
         {

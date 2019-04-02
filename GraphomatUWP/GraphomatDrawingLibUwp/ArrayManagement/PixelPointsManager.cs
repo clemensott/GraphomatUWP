@@ -6,7 +6,7 @@
 
         private PixelPoints pointsCur, pointsEdit;
 
-        public PixelPoints Points { get { return pointsCur; } }
+        public PixelPoints Points => pointsCur;
 
         public PixelPointsManager(ValuePoints valuePoints)
         {

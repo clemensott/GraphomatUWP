@@ -14,7 +14,7 @@ namespace MathFunction
         [XmlIgnore]
         public bool IsPossible
         {
-            get { return isPossible; }
+            get => isPossible;
             set
             {
                 if (isPossible == value) return;
@@ -24,11 +24,11 @@ namespace MathFunction
             }
         }
 
-        public double this[double x] { get { return GetResult(x); } }
+        public double this[double x] => GetResult(x);
 
         public string OriginalEquation
         {
-            get { return original; }
+            get => original;
             set
             {
                 if (IsOriginalEquation(value)) return;
@@ -44,10 +44,10 @@ namespace MathFunction
         }
 
         [XmlIgnore]
-        public string ImprovedEquation { get { return GetImprovedEquation(); } }
+        public string ImprovedEquation => GetImprovedEquation();
 
         [XmlIgnore]
-        public string OriginalAndImprovedEquations { get { return OriginalEquation + " = " + ImprovedEquation; } }
+        public string OriginalAndImprovedEquations => OriginalEquation + " = " + ImprovedEquation;
 
         public Function(string equation)
         {
@@ -91,13 +91,7 @@ namespace MathFunction
 
         protected void NotifyPropertyChanged(string propertyName)
         {
-            if (null == PropertyChanged) return;
-
-            try
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
-            catch { }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         public override string ToString()
@@ -109,10 +103,10 @@ namespace MathFunction
         {
             Part[] allTypes = Parts.GetAllTypes().ToArray();
 
-            int partsLenght = ran.Next(5, 20);
+            int partsLength = ran.Next(5, 20);
             string equation = "";
 
-            for (int i = 0; i < partsLenght; i++)
+            for (int i = 0; i < partsLength; i++)
             {
                 int partType = ran.Next(allTypes.Length + 1);
 
@@ -122,7 +116,7 @@ namespace MathFunction
             return equation;
         }
 
-        private static string GetRandomNumber(System.Random ran)
+        private static string GetRandomNumber(Random ran)
         {
             return (ran.NextDouble() * ran.Next(-100000, 100000)).ToString();
         }

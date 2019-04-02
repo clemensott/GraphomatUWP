@@ -5,13 +5,13 @@ namespace GraphomatDrawingLibUwp
 {
     struct ViewPixelSize : IEquatable<ViewPixelSize>
     {
-        public float RawPixelWidth { get; private set; }
+        public float RawPixelWidth { get; }
 
-        public float ActualWidth { get; private set; }
+        public float ActualWidth { get; }
 
-        public float ActualHeight { get; private set; }
+        public float ActualHeight { get; }
 
-        public Vector2 ActualPixelSize { get; private set; }
+        public Vector2 ActualPixelSize { get; }
 
         public ViewPixelSize(double actualPixelWidth, double actualPixelHeight, double rawPixelPerActualPixel)
         {

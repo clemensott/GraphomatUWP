@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MathFunction
+﻿namespace MathFunction
 {
     struct PartResultPriority
     {
-        public int TypePriority { get; private set; }
+        public int TypePriority { get; }
 
-        public PriorityType PositionType { get; private set; }
+        public PriorityType PositionType { get; }
 
         public PartResultPriority(int priority, PriorityType type)
         {

@@ -8,7 +8,7 @@ namespace MathFunction
 
         public double Value { get; protected set; }
 
-        public string Name { get { return ToEquationString(); } }
+        public string Name => ToEquationString();
 
         public PartConstants(double value, params string[] names)
         {

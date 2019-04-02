@@ -21,52 +21,50 @@ namespace GraphomatDrawingLibUwp
         private const float zoomFactorWidth = 1.5F, zoomFactorHeight = 1.5F,
             borderAroundCanvasPercent = 0.15F, lineThicknessPercent = 0.1F;
 
-        private List<bool> setBorders;
-        private List<CanvasControl> canvases;
+        private readonly List<bool> setBorders;
+        private readonly List<CanvasControl> buttons;
 
         public ZoomButtonsControl()
         {
             this.InitializeComponent();
 
             setBorders = new List<bool>();
-            canvases = new List<CanvasControl>();
+            buttons = new List<CanvasControl>();
         }
 
         private void Zoom(ZoomProperty widthProperty, ZoomProperty heightProperty)
         {
-            if (Zoomed == null) return;
-
-            Zoomed(this, new ZoomButtonsEventArgs(GetFactor(widthProperty, zoomFactorWidth),
+            Zoomed?.Invoke(this, new ZoomButtonsEventArgs(GetFactor(widthProperty, zoomFactorWidth),
                 GetFactor(heightProperty, zoomFactorHeight)));
         }
 
         private void Canvases_PointerEntered(object sender, PointerRoutedEventArgs e)
         {
-            CanvasControl canvas = sender as CanvasControl;
+            CanvasControl canvas = (CanvasControl)sender;
 
             AddCanvasToListAndResetOthers(canvas, true);
         }
 
         private void Canvases_PointerExited(object sender, PointerRoutedEventArgs e)
         {
-            CanvasControl canvas = sender as CanvasControl;
+            CanvasControl canvas = (CanvasControl)sender;
 
             AddCanvasToListAndResetOthers(canvas, false);
         }
 
         private void AddCanvasToListAndResetOthers(CanvasControl canvas, bool value)
         {
-            if (!canvases.Contains(canvas))
+            if (!buttons.Contains(canvas))
             {
-                canvases.Add(canvas);
+                buttons.Add(canvas);
                 setBorders.Add(false);
             }
 
-            for (int i = 0; i < canvases.Count; i++)
+            for (int i = 0; i < buttons.Count; i++)
             {
-                setBorders[i] = canvases[i] == canvas ? value : false;
+                setBorders[i] = buttons[i] == canvas && value;
 
-                canvases[i].Invalidate();
+                buttons[i].Invalidate();
             }
         }
 
@@ -149,7 +147,7 @@ namespace GraphomatDrawingLibUwp
 
         private void DrawBorder(CanvasControl sender, CanvasDrawEventArgs args)
         {
-            int index = canvases.IndexOf(sender);
+            int index = buttons.IndexOf(sender);
 
             if (index < 0 || !setBorders[index]) return;
 

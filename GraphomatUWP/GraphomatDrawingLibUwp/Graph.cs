@@ -13,7 +13,7 @@ namespace GraphomatDrawingLibUwp
 
         public Color Color
         {
-            get { return color; }
+            get => color;
             set
             {
                 if (color == value) return;
@@ -27,11 +27,11 @@ namespace GraphomatDrawingLibUwp
         }
 
         [XmlIgnore]
-        public Brush Brush { get { return brush; } }
+        public Brush Brush => brush;
 
         public string Name
         {
-            get { return name; }
+            get => name;
             set
             {
                 if (name == value) return;

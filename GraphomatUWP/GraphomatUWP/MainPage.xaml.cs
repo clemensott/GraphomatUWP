@@ -23,22 +23,22 @@ namespace GraphomatUWP
 
         private void HardwareButtons_BackPressed(object sender, BackPressedEventArgs e)
         {
-            Frame curFrame = Window.Current.Content as Frame;
+            if (Frame.BackStackDepth == 0) return;
 
-            if (curFrame.BackStackDepth == 0) return;
-
-            curFrame.GoBack();
+            Frame.GoBack();
             e.Handled = true;
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            Graph graph1 = new Graph("Herz Links", "(-x)^(2/3)+0,9*(3,3-x^2)^(1/2)*sin(80* pi*x)", Windows.UI.Colors.Red);
-            Graph graph2 = new Graph("Herz Rechts", "x^(2/3)+0,9*(3,3-x^2)^(1/2)*sin(80* pi*x)", Windows.UI.Colors.Red);
+            //Graph graph1 = new Graph("Herz Links", "(-x)^(2/3)+0,9*(3,3-x^2)^(1/2)*sin(80* pi*x)", Windows.UI.Colors.Red);
+            //Graph graph2 = new Graph("Herz Rechts", "x^(2/3)+0,9*(3,3-x^2)^(1/2)*sin(80* pi*x)", Windows.UI.Colors.Red);
+            //Graph graph1 = new Graph("Log", "(lgx)^5", Windows.UI.Colors.Blue);
+            //Graph graph2 = new Graph("N", "(lgx", Windows.UI.Colors.Red);
 
-            ViewModel.Current.Graphs.Clear();
-            ViewModel.Current.Graphs.Add(graph1);
-            ViewModel.Current.Graphs.Add(graph2);
+            //ViewModel.Current.Graphs.Clear();
+            //ViewModel.Current.Graphs.Add(graph1);
+            //ViewModel.Current.Graphs.Add(graph2);
         }
 
         private void EquationAppBar_Click(object sender, RoutedEventArgs e)
