@@ -67,13 +67,13 @@ namespace GraphomatDrawingLibUwp.ArrayManagement
 
         private bool AreValuesOutDated(ViewArgs e)
         {
-            float outOfLastViewAreaX = (e.BufferFactor - 1) / 2 *
+            float outOfLastViewAreaX = (ViewArgs.BufferFactor - 1) / 2 *
                 lastUpdatedValuesValueDimensions.Width;
 
-            if (lastUpdatedValuesValueDimensions.Width * e.BufferFactor <
+            if (lastUpdatedValuesValueDimensions.Width * ViewArgs.BufferFactor <
                 e.ValueDimensions.Width) return true;
 
-            if (e.ValueDimensions.Width * e.BufferFactor <
+            if (e.ValueDimensions.Width * ViewArgs.BufferFactor <
                lastUpdatedValuesValueDimensions.Width) return true;
 
             if (e.ValueDimensions.Left <
@@ -83,7 +83,7 @@ namespace GraphomatDrawingLibUwp.ArrayManagement
                  e.ValueDimensions.Right;
         }
 
-        public override CanvasGeometry Draw(ICanvasResourceCreator iCreater, bool isMoving)
+        public override CanvasGeometry GetGeometry(ICanvasResourceCreator iCreator, bool isMoving)
         {
             pixelManager.BeginUsing();
 
@@ -91,7 +91,7 @@ namespace GraphomatDrawingLibUwp.ArrayManagement
             int i = -1, addToI, pixelPointsCount = pixelManager.Points.Count;
             float pixelWidth = ViewArgs.PixelSize.ActualWidth;
             Vector2 curPoint;
-            CanvasPathBuilder cpb = new CanvasPathBuilder(iCreater);
+            CanvasPathBuilder cpb = new CanvasPathBuilder(iCreator);
 
             addToI = isMoving ? 1 + movingSkipPoints : 1;
 

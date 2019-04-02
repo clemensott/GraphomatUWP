@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 
 namespace GraphomatDrawingLibUwp
 {
     struct ViewArgs : IEquatable<ViewArgs>
     {
-        public float BufferFactor => DrawControl.PixelBufferFactor;
+        public static float BufferFactor => DrawControl.PixelBufferFactor;
 
         public ViewValueDimensions ValueDimensions { get; }
 
@@ -17,6 +18,21 @@ namespace GraphomatDrawingLibUwp
             PixelSize = pixelSize;
         }
 
+        public float ToViewX(float value)
+        {
+            return (value - ValueDimensions.Left) * PixelSize.ActualWidth / ValueDimensions.Width;
+        }
+
+        public float ToViewY(float value)
+        {
+            return (ValueDimensions.Bottom - value) * PixelSize.ActualHeight / -ValueDimensions.Height;
+        }
+
+        public Vector2 ToView(Vector2 value)
+        {
+            return new Vector2(ToViewX(value.X), ToViewY(value.Y));
+        }
+
         public override bool Equals(object obj)
         {
             return obj is ViewArgs && Equals((ViewArgs)obj);
@@ -24,8 +40,7 @@ namespace GraphomatDrawingLibUwp
 
         public bool Equals(ViewArgs other)
         {
-            return BufferFactor == other.BufferFactor &&
-                   EqualityComparer<ViewValueDimensions>.Default.Equals(ValueDimensions, other.ValueDimensions) &&
+            return EqualityComparer<ViewValueDimensions>.Default.Equals(ValueDimensions, other.ValueDimensions) &&
                    PixelSize.Equals(other.PixelSize);
         }
 

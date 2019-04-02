@@ -13,7 +13,7 @@ namespace GraphomatDrawingLibUwp
         protected const int movingSkipPoints = 0;
         public const float Thickness = 2.5F;
 
-        public Graph Graph { get; protected set; }
+        public Graph Graph { get; }
 
         private ViewArgs viewArgs;
 
@@ -90,12 +90,7 @@ namespace GraphomatDrawingLibUwp
 
         protected Vector2 ToViewPoint(Vector2 valuePoint)
         {
-            if (float.IsNaN(valuePoint.Y)) return valuePoint;
-
-            float x = (valuePoint.X - ViewArgs.ValueDimensions.Left) / ViewArgs.ValueDimensions.Width * ViewArgs.PixelSize.ActualWidth;
-            float y = (-valuePoint.Y - ViewArgs.ValueDimensions.Bottom) / ViewArgs.ValueDimensions.Height * ViewArgs.PixelSize.ActualHeight;
-
-            return new Vector2(x, y);
+            return float.IsNaN(valuePoint.Y) ? valuePoint : ViewArgs.ToView(valuePoint);
         }
 
         private bool IsRelevantInView(Vector2 valuePoint)
@@ -104,7 +99,7 @@ namespace GraphomatDrawingLibUwp
                 valuePoint.X <= ViewArgs.ValueDimensions.Right && !float.IsNaN(valuePoint.Y);
         }
 
-        private float GetDistance(Vector2 point, Vector2 v1, Vector2 v2)
+        private static float GetDistance(Vector2 point, Vector2 v1, Vector2 v2)
         {
             float k12 = (v2.Y - v1.Y) / (v2.X - v1.X);
             float kp = -(v2.X - v1.X) / (v2.Y - v1.Y);
@@ -124,7 +119,7 @@ namespace GraphomatDrawingLibUwp
             return Math.Min(dist1, dist2);
         }
 
-        public abstract CanvasGeometry Draw(ICanvasResourceCreator iCreater, bool isMoving);
+        public abstract CanvasGeometry GetGeometry(ICanvasResourceCreator iCreator, bool isMoving);
 
         public override string ToString()
         {

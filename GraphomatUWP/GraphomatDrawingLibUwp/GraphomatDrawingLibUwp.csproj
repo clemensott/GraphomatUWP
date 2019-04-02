@@ -113,7 +113,7 @@
     <Compile Include="Axes\Lines\IHorizontalLineText.cs" />
     <Compile Include="Axes\Lines\ILineText.cs" />
     <Compile Include="Axes\Lines\IVerticalLineText.cs" />
-    <Compile Include="Axes\Lines\LineTextMesuare - Kopieren.cs" />
+    <Compile Include="Axes\Lines\LineTextMesuare2.cs" />
     <Compile Include="Axes\Lines\LineTextMesuare.cs" />
     <Compile Include="Axes\Lines\VerticalLine.cs" />
     <Compile Include="Axes\Lines\VerticalLineText.cs" />

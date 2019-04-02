@@ -56,7 +56,7 @@ namespace GraphomatDrawingLibUwp
 
         private void SetXAxisStrokes(ViewArgs args)
         {
-            int xAxisStrokeCount;
+            int xAxisStrokeCount = 0;
             float actualPixelWidth, valueWidth, valueDistanceBetweenStrokes, min, max;
 
             actualPixelWidth = args.PixelSize.ActualPixelSize.X;
@@ -64,22 +64,21 @@ namespace GraphomatDrawingLibUwp
             valueDistanceBetweenStrokes = GetValueDistanceBetweenStrokes(actualPixelWidth, valueWidth);
 
             min = args.ValueDimensions.Left -
-                (args.BufferFactor - 1) / 2F * args.ValueDimensions.Width;
+                (ViewArgs.BufferFactor - 1) / 2F * args.ValueDimensions.Width;
             max = args.ValueDimensions.Right +
-                (args.BufferFactor - 1) / 2F * args.ValueDimensions.Width;
+                (ViewArgs.BufferFactor - 1) / 2F * args.ValueDimensions.Width;
 
-            List<float> multiples = GetMultipleFromValuesInView(valueDistanceBetweenStrokes, min, max);
-
-            for (xAxisStrokeCount = 0; xAxisStrokeCount < multiples.Count; xAxisStrokeCount++)
+            foreach (float value in GetMultipleFromValuesInView(valueDistanceBetweenStrokes, min, max))
             {
                 float x, y1, y2;
 
-                x = GetActualPixelValue(multiples[xAxisStrokeCount], yAxisLine.X,
-                    args.ValueDimensions.Width / args.PixelSize.ActualPixelSize.X);
+                x = args.ToViewX(value);
                 y1 = xAxisLine.Y - strokeLength / 2;
                 y2 = xAxisLine.Y + strokeLength / 2;
 
-                SetXAxisStroke(xAxisStrokeCount, x, y1, y2, multiples[xAxisStrokeCount]);
+                SetXAxisStroke(xAxisStrokeCount, x, y1, y2, value);
+
+                xAxisStrokeCount++;
             }
 
             while (xAxisStrokes.Count > xAxisStrokeCount) xAxisStrokes.RemoveAt(xAxisStrokeCount);
@@ -87,7 +86,7 @@ namespace GraphomatDrawingLibUwp
 
         private void SetYAxisStrokes(ViewArgs args)
         {
-            int yAxisStrokeCount;
+            int yAxisStrokeCount = 0;
             float actualPixelHeight, valueHeight, valueDistanceBetweenStrokes, min, max;
 
             actualPixelHeight = args.PixelSize.ActualHeight;
@@ -95,22 +94,21 @@ namespace GraphomatDrawingLibUwp
             valueDistanceBetweenStrokes = GetValueDistanceBetweenStrokes(actualPixelHeight, valueHeight);
 
             min = args.ValueDimensions.Bottom -
-              (args.BufferFactor - 1) / 2F * args.ValueDimensions.Height;
+              (ViewArgs.BufferFactor - 1) / 2F * args.ValueDimensions.Height;
             max = args.ValueDimensions.Top +
-                (args.BufferFactor - 1) / 2F * args.ValueDimensions.Height;
+                (ViewArgs.BufferFactor - 1) / 2F * args.ValueDimensions.Height;
 
-            List<float> multiples = GetMultipleFromValuesInView(valueDistanceBetweenStrokes, min, max);
-
-            for (yAxisStrokeCount = 0; yAxisStrokeCount < multiples.Count; yAxisStrokeCount++)
+            foreach (float value in GetMultipleFromValuesInView(valueDistanceBetweenStrokes, min, max))
             {
                 float x1, x2, y;
 
                 x1 = yAxisLine.X - strokeLength / 2;
                 x2 = yAxisLine.X + strokeLength / 2;
-                y = GetActualPixelValue(multiples[yAxisStrokeCount] * -1, xAxisLine.Y,
-                    -1 * args.ValueDimensions.Height / args.PixelSize.ActualHeight);
+                y = args.ToViewY(value);
 
-                SetYAxisStroke(yAxisStrokeCount, x1, x2, y, multiples[yAxisStrokeCount] * -1);
+                SetYAxisStroke(yAxisStrokeCount, x1, x2, y, value);
+
+                yAxisStrokeCount++;
             }
 
             while (yAxisStrokes.Count > yAxisStrokeCount) yAxisStrokes.RemoveAt(yAxisStrokeCount);
@@ -138,51 +136,51 @@ namespace GraphomatDrawingLibUwp
             return (float)minMultiAbsDistance;
         }
 
-        private double GetAboutNumberOfStrokes(double pixelWidthOrHeight)
+        private static double GetAboutNumberOfStrokes(double pixelWidthOrHeight)
         {
             return Math.Sqrt(pixelWidthOrHeight) / 2.5;
         }
 
         private double GetFactor(double aboutValueDistanceBetweenStrokes)
         {
-            if (aboutValueDistanceBetweenStrokes <= 0) throw new Exception("Distance between axes can not be smaller than zero.");
-
-            if (aboutValueDistanceBetweenStrokes < 1)
+            if (aboutValueDistanceBetweenStrokes <= 0)
             {
-                return GetFactorIfDistanceIsLow(aboutValueDistanceBetweenStrokes);
+                throw new ArgumentException("Distance between axes can not be smaller than or equal to zero.");
             }
 
-            return GetFactorIfDistanceIsHigh(aboutValueDistanceBetweenStrokes);
+            return aboutValueDistanceBetweenStrokes < 1 ?
+                GetFactorIfDistanceIsLow(aboutValueDistanceBetweenStrokes) :
+                GetFactorIfDistanceIsHigh(aboutValueDistanceBetweenStrokes);
         }
 
         private double GetFactorIfDistanceIsHigh(double aboutValueDistanceBetweenStrokes)
         {
             float possibleDistance = possibleDistanceBetweenStrokes[0];
-            double currentfactor = 1, stepFactor = 10;
+            double currentFactor = 1, stepFactor = 10;
 
             while (true)
             {
-                if (aboutValueDistanceBetweenStrokes < possibleDistance * currentfactor * stepFactor)
+                if (aboutValueDistanceBetweenStrokes < possibleDistance * currentFactor * stepFactor)
                 {
-                    return currentfactor;
+                    return currentFactor;
                 }
 
-                currentfactor *= stepFactor;
+                currentFactor *= stepFactor;
             }
         }
 
         private double GetFactorIfDistanceIsLow(double aboutValueDistanceBetweenStrokes)
         {
             float possibleDistance = possibleDistanceBetweenStrokes[0];
-            double currentfactor = 1, stepFactor = 0.1;
+            double currentFactor = 1, stepFactor = 0.1;
 
             while (true)
             {
-                currentfactor *= stepFactor;
+                currentFactor *= stepFactor;
 
-                if (aboutValueDistanceBetweenStrokes > possibleDistance * currentfactor)
+                if (aboutValueDistanceBetweenStrokes > possibleDistance * currentFactor)
                 {
-                    return currentfactor;
+                    return currentFactor;
                 }
             }
         }
@@ -192,15 +190,12 @@ namespace GraphomatDrawingLibUwp
         {
             double multiAbs = GetMultiAbs(aboutValueDistanceBetweenStrokes, distance);
 
-            if (minMultiAbs > multiAbs)
-            {
-                minMultiAbs = multiAbs;
-                minMultiAbsDistance = distance;
+            if (minMultiAbs <= multiAbs) return false;
 
-                return true;
-            }
+            minMultiAbs = multiAbs;
+            minMultiAbsDistance = distance;
 
-            return false;
+            return true;
         }
 
         private double GetMultiAbs(double aboutValueDistanceBetweenStrokes, double distance)
@@ -212,9 +207,8 @@ namespace GraphomatDrawingLibUwp
             return multi;
         }
 
-        private List<float> GetMultipleFromValuesInView(float value, float min, float max)
+        private static IEnumerable<float> GetMultipleFromValuesInView(float value, float min, float max)
         {
-            List<float> multiples = new List<float>();
             long currentMultiple = Convert.ToInt64(Math.Floor(min / value));
 
             if (currentMultiple > 0) currentMultiple--;
@@ -223,18 +217,11 @@ namespace GraphomatDrawingLibUwp
             {
                 if (currentMultiple != 0)
                 {
-                    multiples.Add(value * currentMultiple);
+                    yield return value * currentMultiple;
                 }
 
                 currentMultiple++;
             }
-
-            return multiples;
-        }
-
-        private float GetActualPixelValue(float value, float originActualPixelValue, float actualPixelPerValue)
-        {
-            return originActualPixelValue + value / actualPixelPerValue;
         }
 
         private void SetXAxisStroke(int index, float x, float y1, float y2, float value)

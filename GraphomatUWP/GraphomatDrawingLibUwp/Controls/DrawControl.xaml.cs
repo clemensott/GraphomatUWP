@@ -28,8 +28,8 @@ namespace GraphomatDrawingLibUwp
         private const double selectPointOnGraphMaxDistancePercent = 0.1;
 
         public static readonly DependencyProperty ChildrenProperty = DependencyProperty.Register("Children",
-            typeof(ObservableCollection<Graph>), typeof(DrawControl), new PropertyMetadata(new ObservableCollection<Graph>(),
-                new PropertyChangedCallback(OnChildrenPropertyChanged)));
+            typeof(ObservableCollection<Graph>), typeof(DrawControl),
+                new PropertyMetadata(new ObservableCollection<Graph>(), OnChildrenPropertyChanged));
 
         private static void OnChildrenPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
@@ -46,7 +46,7 @@ namespace GraphomatDrawingLibUwp
 
         public static readonly DependencyProperty ValueSizeProperty = DependencyProperty.Register("ValueSize",
             typeof(Vector2), typeof(DrawControl), new PropertyMetadata(new Vector2(defaultValueWidthAndHeight,
-                defaultValueWidthAndHeight), new PropertyChangedCallback(OnValueSizePropertyChanged)));
+                defaultValueWidthAndHeight), OnValueSizePropertyChanged));
 
         private static void OnValueSizePropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
@@ -60,7 +60,7 @@ namespace GraphomatDrawingLibUwp
 
         public static readonly DependencyProperty MiddleOfViewProperty = DependencyProperty.Register("MiddleOfView",
             typeof(Vector2), typeof(DrawControl), new PropertyMetadata(new Vector2(defaultMiddleOfView,
-                defaultMiddleOfView), new PropertyChangedCallback(OnMiddleOfViewPropertyChanged)));
+                defaultMiddleOfView), OnMiddleOfViewPropertyChanged));
 
         private static void OnMiddleOfViewPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
@@ -73,7 +73,7 @@ namespace GraphomatDrawingLibUwp
 
         public static readonly DependencyProperty SelectedGraphIndexProperty = DependencyProperty.
             Register("SelectedGraphIndex", typeof(int), typeof(DrawControl),
-            new PropertyMetadata(-1, new PropertyChangedCallback(OnSelectedGraphIndexPropertyChanged)));
+            new PropertyMetadata(-1, OnSelectedGraphIndexPropertyChanged));
 
         private static void OnSelectedGraphIndexPropertyChanged(DependencyObject sender,
             DependencyPropertyChangedEventArgs e)
@@ -88,7 +88,7 @@ namespace GraphomatDrawingLibUwp
 
         public static readonly DependencyProperty IsDebugEnabledProperty =
             DependencyProperty.Register("IsDebugEnabled", typeof(bool), typeof(DrawControl),
-                new PropertyMetadata(false, new PropertyChangedCallback(OnIsDebugEnabledPropertyChanged)));
+                new PropertyMetadata(false, OnIsDebugEnabledPropertyChanged));
 
         private static void OnIsDebugEnabledPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
@@ -102,7 +102,7 @@ namespace GraphomatDrawingLibUwp
         private int graphNearPointerIndex;
         private float oldMiddleOfViewY, oldViewHeight;
         private double startAverageDistanceWidth, startAverageDistanceHeight;
-        private List<PointerPoint> pointerPoints;
+        private readonly List<PointerPoint> pointerPoints;
         private ViewValueDimensions startValueDimensions;
         private AxesGraph axes;
         private ObservableCollection<Graph> children;
@@ -112,20 +112,20 @@ namespace GraphomatDrawingLibUwp
         public event TappedCurveEventHandler TappedCurve;
         public event DoubleTappedCurveEventHandler DoubleTappedCurve;
 
-        internal ViewValueDimensions CurrentValueDimensions
+        private ViewValueDimensions CurrentValueDimensions
         {
             get => new ViewValueDimensions(ValueSize, MiddleOfView);
-            private set
+            set
             {
                 ValueSize = value.Size;
                 MiddleOfView = value.Middle;
             }
         }
 
-        internal ViewPixelSize CurrentViewPixelSize =>
+        private ViewPixelSize CurrentViewPixelSize =>
             new ViewPixelSize(ActualWidth, ActualHeight, displayInfo?.RawPixelsPerViewPixel ?? 1);
 
-        internal ViewArgs ViewArgs => new ViewArgs(CurrentValueDimensions, CurrentViewPixelSize);
+        private ViewArgs ViewArgs => new ViewArgs(CurrentValueDimensions, CurrentViewPixelSize);
 
         public int SelectedGraphIndex
         {
@@ -193,7 +193,7 @@ namespace GraphomatDrawingLibUwp
 
             foreach (Graph graph in children)
             {
-                int index = childrenDrawing.FindIndex(x => x.Graph == graph);
+                //int index = childrenDrawing.FindIndex(x => x.Graph == graph);
 
                 /*if (index == -1) */
                 newChildrenDrawing.Add(GetGraphDrawer(graph));
@@ -458,24 +458,6 @@ namespace GraphomatDrawingLibUwp
             SetGraphDrawingList();
         }
 
-        private bool AreValueDimensionsValid(ViewValueDimensions valueDimensions)
-        {
-            if (float.IsInfinity(valueDimensions.Middle.X)) return false;
-            if (float.IsInfinity(valueDimensions.Middle.Y)) return false;
-            if (float.IsInfinity(valueDimensions.Width)) return false;
-            if (float.IsInfinity(valueDimensions.Height)) return false;
-
-            if (float.IsNaN(valueDimensions.Middle.X)) return false;
-            if (float.IsNaN(valueDimensions.Middle.Y)) return false;
-            if (float.IsNaN(valueDimensions.Width)) return false;
-            if (float.IsNaN(valueDimensions.Height)) return false;
-
-            if (valueDimensions.Width <= 0) return false;
-            if (valueDimensions.Height <= 0) return false;
-
-            return true;
-        }
-
         private void ccDraw_Tapped(object sender, TappedRoutedEventArgs e)
         {
             GraphDrawer tappedChild;
@@ -540,11 +522,10 @@ namespace GraphomatDrawingLibUwp
             {
                 float distance;
 
-                if (child.IsNearCurve(vector, out distance) && distance < min)
-                {
-                    min = distance;
-                    nearestChildInRange = child;
-                }
+                if (!child.IsNearCurve(vector, out distance) || distance >= min) continue;
+
+                min = distance;
+                nearestChildInRange = child;
             }
 
             return nearestChildInRange != null;
@@ -563,7 +544,7 @@ namespace GraphomatDrawingLibUwp
             {
                 Parallel.For(0, childrenDrawing.Count, (i) =>
                 {
-                    (CanvasGeometry geo, Color color, float thickness) = DrawGeo(i);
+                    (CanvasGeometry geo, Color color, float thickness) = GetGeometry(i);
                     args.DrawingSession.DrawGeometry(geo, color, thickness);
                 });
             }
@@ -571,7 +552,7 @@ namespace GraphomatDrawingLibUwp
             {
                 for (int i = 0; i < childrenDrawing.Count; i++)
                 {
-                    (CanvasGeometry geo, Color color, float thickness) = DrawGeo(i);
+                    (CanvasGeometry geo, Color color, float thickness) = GetGeometry(i);
                     args.DrawingSession.DrawGeometry(geo, color, thickness);
                 }
             }
@@ -582,7 +563,7 @@ namespace GraphomatDrawingLibUwp
                 isDrew = true;
             }
 
-            (CanvasGeometry geo, Color color, float thickness) DrawGeo(int i)
+            (CanvasGeometry geo, Color color, float thickness) GetGeometry(int i)
             {
                 GraphDrawer childDrawing = childrenDrawing[i];
                 bool isThick = i == selectedIndex || (!isMoving && i == graphNearPointerIndex);
@@ -590,7 +571,7 @@ namespace GraphomatDrawingLibUwp
 
                 childDrawing.ViewArgs = viewArgs;
 
-                CanvasGeometry geometry = childDrawing.Draw(sender, isMoving);
+                CanvasGeometry geometry = childDrawing.GetGeometry(sender, isMoving);
 
                 return (geometry, childDrawing.Graph.Color, thickness);
             }

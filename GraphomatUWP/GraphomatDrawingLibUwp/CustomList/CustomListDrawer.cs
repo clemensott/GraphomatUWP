@@ -10,18 +10,18 @@ namespace GraphomatDrawingLibUwp.CustomList
     {
         protected T valuePointList;
 
-        public CustomListDrawer(Graph graph, ViewArgs args) : base(graph, args)
+        protected CustomListDrawer(Graph graph, ViewArgs args) : base(graph, args)
         {
             valuePointList = CreateValuePointList();
         }
 
         protected abstract T CreateValuePointList();
 
-        public override CanvasGeometry Draw(ICanvasResourceCreator iCreater, bool isMoving)
+        public override CanvasGeometry GetGeometry(ICanvasResourceCreator iCreator, bool isMoving)
         {
             if (ViewArgs.PixelSize.RawPixelWidth == 0) return null;
 
-            CanvasPathBuilder cpb = new CanvasPathBuilder(iCreater);
+            CanvasPathBuilder cpb = new CanvasPathBuilder(iCreator);
 
             float beginX = ViewArgs.ValueDimensions.Left;
             float rangeX = ViewArgs.ValueDimensions.Width / ViewArgs.PixelSize.RawPixelWidth / 1f;
@@ -43,6 +43,7 @@ namespace GraphomatDrawingLibUwp.CustomList
                 while (enumerator.MoveNext()) cpb.AddLine(enumerator.Current);
 
                 cpb.EndFigure(CanvasFigureLoop.Open);
+                enumerator.Dispose();
             }
 
             return CanvasGeometry.CreatePath(cpb);
@@ -55,10 +56,10 @@ namespace GraphomatDrawingLibUwp.CustomList
 
             while (!ended)
             {
-                yield return getSection();
+                yield return GetSection();
             }
 
-            IEnumerable<Vector2> getSection()
+            IEnumerable<Vector2> GetSection()
             {
                 while (true)
                 {
