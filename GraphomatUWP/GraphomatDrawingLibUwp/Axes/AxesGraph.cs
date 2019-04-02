@@ -42,16 +42,19 @@ namespace GraphomatDrawingLibUwp
 
         private void SetAxesLines(ViewArgs args)
         {
-            float valuePerActualPixelX, valuePerActualPixelY;
-
-            valuePerActualPixelX = args.ValueDimensions.Width / args.PixelSize.ActualPixelSize.X;
-            valuePerActualPixelY = args.ValueDimensions.Height / args.PixelSize.ActualHeight;
-
-            xAxisLine.Y = args.ValueDimensions.Bottom / valuePerActualPixelY * -1;
-            yAxisLine.X = args.ValueDimensions.Left / valuePerActualPixelX * -1;
+            xAxisLine.Y = GetBetween(args.ToViewY(0), 0, args.PixelSize.ActualHeight);
+            yAxisLine.X = GetBetween(args.ToViewX(0), 0, args.PixelSize.ActualWidth);
 
             xAxisLine.X2 = args.PixelSize.ActualPixelSize.X;
             yAxisLine.Y2 = args.PixelSize.ActualHeight;
+        }
+
+        private static float GetBetween(float value, float min, float max)
+        {
+            if (value < min) return min;
+            if (value > max) return max;
+
+            return value;
         }
 
         private void SetXAxisStrokes(ViewArgs args)
